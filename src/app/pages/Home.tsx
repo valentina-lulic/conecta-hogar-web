@@ -1,20 +1,21 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router";
 import { motion, useInView } from "motion/react";
 import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
 import { Link } from "react-router";
 import { ImageWithFallback } from "../components/ui-helpers/ImageWithFallback";
 import { InteractiveLogo } from "../components/custom/InteractiveLogo";
 
-const PINK   = "#e83360";
+const PINK = "#e83360";
 const YELLOW = "#f5d318";
-const SKY    = "#55bcd9";
-const DARK   = "#0a6880";
+const SKY = "#55bcd9";
+const DARK = "#0a6880";
 
 const categories = [
-  { icon: Wrench,  label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
-  { icon: Zap,     label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
-  { icon: HardHat, label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
-  { icon: Wrench,  label: "Soldaduría",   color: "#f97316", bg: "#f9731620" },
+  { icon: Wrench, label: "Gasfitería", color: SKY, bg: `${SKY}20` },
+  { icon: Zap, label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
+  { icon: HardHat, label: "Albañilería", color: PINK, bg: `${PINK}18` },
+  { icon: Wrench, label: "Soldaduría", color: "#f97316", bg: "#f9731620" },
 ];
 
 const trades = [
@@ -45,25 +46,25 @@ const trades = [
 ];
 
 const professionals = [
-  { name: "Carlos Muñoz",   specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true,  img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK   },
-  { name: "Ana Rodríguez",  specialty: "Electricista",          likes: 89,  location: "Providencia",     available: true,  img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada",     badgeColor: SKY    },
-  { name: "Pedro Saavedra", specialty: "Pintor profesional",    likes: 64,  location: "Las Condes",      available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado",      badgeColor: YELLOW },
+  { name: "Carlos Muñoz", specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true, img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK },
+  { name: "Ana Rodríguez", specialty: "Electricista", likes: 89, location: "Providencia", available: true, img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada", badgeColor: SKY },
+  { name: "Pedro Saavedra", specialty: "Pintor profesional", likes: 64, location: "Las Condes", available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado", badgeColor: YELLOW },
 ];
 
 const steps = [
-  { num: "01", color: SKY,    title: "Busca un profesional acorde a tu necesidad", desc: "Explora nuestra red de profesionales verificados por especialidad y zona. Encuentra al indicado en segundos." },
-  { num: "02", color: YELLOW, title: "Contáctalo",                                 desc: "Escríbele directamente, pide un presupuesto y coordina el trabajo a tu horario. Sin intermediarios." },
-  { num: "03", color: PINK,   title: "¡Listo! Tu hogar está conectado",            desc: "El profesional llega y resuelve el problema. Pagas solo cuando estés 100% satisfecho." },
+  { num: "01", color: SKY, title: "Busca un profesional acorde a tu necesidad", desc: "Explora nuestra red de profesionales verificados por especialidad y zona. Encuentra al indicado en segundos." },
+  { num: "02", color: YELLOW, title: "Contáctalo", desc: "Escríbele directamente, pide un presupuesto y coordina el trabajo a tu horario. Sin intermediarios." },
+  { num: "03", color: PINK, title: "¡Listo! Tu hogar está conectado", desc: "El profesional llega y resuelve el problema. Pagas solo cuando estés 100% satisfecho." },
 ];
 
 const testimonials = [
-  { name: "Valentina Torres", location: "Santiago",    rating: 5, text: "¡Increíble servicio! En menos de 2 horas tenía a Carlos arreglando mi cañería. Super recomendado.", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format", color: PINK   },
-  { name: "Diego Fuentes",    location: "Providencia", rating: 5, text: "La electricista Ana fue puntual, profesional y dejó todo perfecto. Conecta Hogar es lo mejor.",    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&auto=format", color: SKY    },
-  { name: "Camila Herrera",   location: "Las Condes",  rating: 5, text: "Repararon mi calefacción justo antes del invierno. El proceso fue súper fácil desde la app.",      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&auto=format", color: YELLOW },
+  { name: "Valentina Torres", location: "Santiago", rating: 5, text: "¡Increíble servicio! En menos de 2 horas tenía a Carlos arreglando mi cañería. Super recomendado.", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format", color: PINK },
+  { name: "Diego Fuentes", location: "Providencia", rating: 5, text: "La electricista Ana fue puntual, profesional y dejó todo perfecto. Conecta Hogar es lo mejor.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&auto=format", color: SKY },
+  { name: "Camila Herrera", location: "Las Condes", rating: 5, text: "Repararon mi calefacción justo antes del invierno. El proceso fue súper fácil desde la app.", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&auto=format", color: YELLOW },
 ];
 
 function TradeCard({ img, label, sub, color, index }: { img: string; label: string; sub: string; color: string; index: number }) {
-  const ref    = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div ref={ref}
@@ -92,9 +93,20 @@ function TradeCard({ img, label, sub, color, index }: { img: string; label: stri
 
 export function Home() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [searchQuery,    setSearchQuery]    = useState("");
-  const [searchFocused,  setSearchFocused]  = useState(false);
-  const [activeTab,      setActiveTab]      = useState<"particulares" | "profesionales">("particulares");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [activeTab, setActiveTab] = useState<"particulares" | "profesionales">("particulares");
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      // Quitamos el '#' del string para buscar el elemento por su ID
+      const targetId = hash.replace("#", "");
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [hash]);
 
   return (
     <div>
@@ -183,13 +195,18 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── Oficios — justo debajo del hero ───────────────── */}
+      {/* ── Oficios / Nosotros — justo debajo del hero ───────────────── */}
       {/* Zona turquesa del fondo — texto oscuro */}
-      <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.78)" }}>
+      <section id="nosotros" className="py-16 px-4 md:px-10 backdrop-blur-sm scroll-mt-24" style={{ background: "rgba(255,255,255,0.78)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>En acción</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Nuestros oficios</h2>
+            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Sobre Nosotros</p>
+            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
+              Conecta Hogar: Tu red de confianza
+            </h2>
+            <p className="mt-3 max-w-2xl mx-auto text-sm font-semibold leading-relaxed" style={{ color: "#6b7280" }}>
+              Nacimos para eliminar la incertidumbre al contratar técnicos a domicilio. Creamos un puente transparente, seguro y rápido entre tus necesidades y los mejores maestros especialistas de Chile.
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
             {trades.map((t, i) => <TradeCard key={t.label} {...t} index={i} />)}
@@ -254,9 +271,9 @@ export function Home() {
           </div>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { icon: ShieldCheck, label: "Profesionales verificados",    color: PINK   },
-              { icon: Clock,       label: "Respuesta en menos de 1 hora", color: SKY    },
-              { icon: ThumbsUp,    label: "Garantía de satisfacción",     color: YELLOW },
+              { icon: ShieldCheck, label: "Profesionales verificados", color: PINK },
+              { icon: Clock, label: "Respuesta en menos de 1 hora", color: SKY },
+              { icon: ThumbsUp, label: "Garantía de satisfacción", color: YELLOW },
             ].map(({ icon: Icon, label, color }) => (
               <div key={label} className="flex items-center gap-3 rounded-xl p-4 border-2" style={{ borderColor: `${color}40`, background: `${color}0c` }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}25` }}>
