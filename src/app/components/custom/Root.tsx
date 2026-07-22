@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, Link, useLocation } from "react-router";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ImageWithFallback } from "../ui-helpers/ImageWithFallback";
@@ -11,7 +11,7 @@ const PINK = "#e83360";
 
 const navLinks = [
   { href: "/#nosotros",      label: "Nosotros" },
-  { href: "/#profesionales", label: "Profesionales" },
+  { href: "/profesionales", label: "Profesionales", route: true },
   { href: "/contacto",       label: "Contacto", route: true },
   { href: "/garantia",       label: "Garantía", route: true },
 ];

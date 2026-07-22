@@ -1,9 +1,13 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
-import { Link } from "react-router";
+import { Search, Star, ChevronRight, Wrench, Zap, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ImageWithFallback } from "../components/ui-helpers/ImageWithFallback";
 import { InteractiveLogo } from "../components/custom/InteractiveLogo";
+import gasfiteriaImg from "../../assets/images/gasfiter.png";
+import electricidadImg from "../../assets/images/electricista.png";
+import albanileriaImg from "../../assets/images/albanil.png";
+import soldaduraImg from "../../assets/images/soldador.png";
 
 const PINK   = "#e83360";
 const YELLOW = "#f5d318";
@@ -19,28 +23,24 @@ const categories = [
 
 const trades = [
   {
-    img: "https://images.unsplash.com/photo-1594233078955-e1f73a02ebb2?w=800&h=1067&fit=crop&auto=format",
+    img: gasfiteriaImg,
     label: "Gasfitería",
-    sub: "Mantención de califont",
     color: SKY,
   },
   {
-    img: "https://images.unsplash.com/photo-1751486289947-4f5f5961b3aa?w=800&h=1067&fit=crop&auto=format",
+    img: electricidadImg,
     label: "Electricidad",
-    sub: "Poner enchufe",
     color: YELLOW,
   },
   {
-    img: "https://images.unsplash.com/photo-1779971685817-77e596abd71a?w=800&h=1067&fit=crop&auto=format",
+    img: albanileriaImg,
     label: "Albañilería",
-    sub: "Enyesar",
     color: PINK,
   },
   {
-    img: "https://images.unsplash.com/photo-1579382311054-0701b08da226?w=800&h=1067&fit=crop&auto=format",
+    img: soldaduraImg,
     label: "Soldaduría",
-    sub: "Poner una chapa",
-    color: "#f97316",
+    color: "#ec561b",
   },
 ];
 
@@ -136,7 +136,7 @@ export function Home() {
               <p className="text-lg font-semibold leading-relaxed" style={{ color: DARK }}>
                 {activeTab === "particulares"
                   ? "Gasfiteros, electricistas, albañiles y más. Profesionales verificados, precios transparentes y garantía de satisfacción."
-                  : "Únete a nuestra red de +2.400 profesionales y recibe solicitudes de trabajo en tu zona hoy mismo."}
+                  : "Únete a nuestra red de +1.500 profesionales y recibe solicitudes de trabajo en tu zona hoy mismo."}
               </p>
             </div>
 
@@ -173,7 +173,7 @@ export function Home() {
 
           {/* Stats */}
           <div className="max-w-3xl mx-auto mt-14 grid grid-cols-3 gap-4 text-center">
-            {[{ n: "+2.400", l: "Profesionales", c: PINK }, { n: "+18.000", l: "Servicios completados", c: SKY }, { n: "98%", l: "Clientes satisfechos", c: YELLOW }].map(({ n, l, c }) => (
+            {[{ n: "+1.000", l: "Profesionales", c: PINK }, { n: "+4.500", l: "Servicios completados", c: SKY }, { n: "98%", l: "Clientes satisfechos", c: YELLOW }].map(({ n, l, c }) => (
               <div key={l} className="rounded-2xl py-5 px-4 backdrop-blur-md" style={{ background: "rgba(255,255,255,0.65)", border: `2px solid ${c}55` }}>
                 <p className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: c }}>{n}</p>
                 <p className="text-xs font-bold mt-1" style={{ color: DARK }}>{l}</p>
@@ -183,7 +183,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── Oficios — justo debajo del hero ───────────────── */}
+      {/* ── Nuestros ficios — justo debajo del hero ───────────────── */}
       {/* Zona turquesa del fondo — texto oscuro */}
       <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.78)" }}>
         <div className="max-w-5xl mx-auto">
@@ -192,79 +192,7 @@ export function Home() {
             <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Nuestros oficios</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-            {trades.map((t, i) => <TradeCard key={t.label} {...t} index={i} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Categorías ────────────────────────────────────── */}
-      {/* Zona turquesa/amarilla — texto oscuro */}
-      <section id="servicios" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.75)" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: PINK }}>Servicios</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Qué necesitas hoy?</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            {categories.map(({ icon: Icon, label, color, bg }, i) => {
-              const active = activeCategory === label;
-              return (
-                <motion.button key={label} onClick={() => setActiveCategory(active ? null : label)}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                  whileHover={{ y: -5, scale: 1.06 }} whileTap={{ scale: 0.93 }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 text-center transition-colors"
-                  style={{ backgroundColor: active ? color : bg, borderColor: active ? color : "transparent", color: active ? "white" : DARK, boxShadow: active ? `0 8px 24px ${color}55` : "none" }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: active ? "rgba(255,255,255,0.25)" : `${color}25` }}>
-                    <Icon size={20} style={{ color: active ? "white" : color }} />
-                  </div>
-                  <span className="text-xs font-bold leading-tight">{label}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Cómo funciona ─────────────────────────────────── */}
-      {/* Zona amarilla del fondo — texto oscuro */}
-      <section id="como-funciona" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.78)" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: YELLOW }}>Simple y rápido</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Cómo funciona Conecta Hogar</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {steps.map((step, i) => (
-              <motion.div key={step.num}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-                whileHover={{ y: -6 }}
-                className="relative rounded-2xl p-8 border-2 bg-white hover:shadow-lg transition-shadow"
-                style={{ borderColor: `${step.color}40` }}>
-                {i < steps.length - 1 && (
-                  <div className="hidden md:flex absolute top-12 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: step.color }}>
-                    <ChevronRight size={14} className="text-white" />
-                  </div>
-                )}
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl mb-5"
-                  style={{ background: `${step.color}20`, color: step.color, fontFamily: "'Nunito', sans-serif" }}>{step.num}</div>
-                <h3 className="font-black text-lg mb-2" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#6b7280" }}>{step.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { icon: ShieldCheck, label: "Profesionales verificados",    color: PINK   },
-              { icon: Clock,       label: "Respuesta en menos de 1 hora", color: SKY    },
-              { icon: ThumbsUp,    label: "Garantía de satisfacción",     color: YELLOW },
-            ].map(({ icon: Icon, label, color }) => (
-              <div key={label} className="flex items-center gap-3 rounded-xl p-4 border-2" style={{ borderColor: `${color}40`, background: `${color}0c` }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}25` }}>
-                  <Icon size={20} style={{ color }} />
-                </div>
-                <p className="text-sm font-bold" style={{ color: DARK }}>{label}</p>
-              </div>
-            ))}
+            {trades.map((t, i) => <TradeCard sub={""} key={t.label} {...t} index={i} />)}
           </div>
         </div>
       </section>
