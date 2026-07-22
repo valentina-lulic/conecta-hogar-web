@@ -3,8 +3,8 @@ import { useLocation } from "react-router";
 import { motion, useInView } from "motion/react";
 import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
 import { Link } from "react-router";
-import { ImageWithFallback } from "../components/ui-helpers/ImageWithFallback";
-import { InteractiveLogo } from "../components/custom/InteractiveLogo";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { InteractiveLogo } from "@/components/custom/InteractiveLogo";
 
 const PINK = "#e83360";
 const YELLOW = "#f5d318";

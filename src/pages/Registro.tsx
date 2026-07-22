@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft, UserCircle, Mail, MapPin, IdCard, Briefcase } from "lucide-react";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-import { Checkbox } from "@/app/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const PINK = "#e83360";
-const YELLOW = "#f5d318";
-const SKY = "#55bcd9";
+//const YELLOW = "#f5d318";
+//const SKY = "#55bcd9";
 
 const ESPECIALIDADES = [
   "Gasfitería",
@@ -56,7 +56,7 @@ export function Registro() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validación básica
     if (!formData.nombre || !formData.rut || !formData.correo || !formData.direccion || !formData.tipoUsuario) {
       alert("Por favor completa todos los campos");
@@ -70,7 +70,7 @@ export function Registro() {
 
     // Aquí podrías enviar los datos a un backend
     console.log("Datos del formulario:", formData);
-    
+
     // Redirigir al Home
     navigate("/");
   };
@@ -180,11 +180,10 @@ export function Registro() {
             <div className="flex gap-4">
               <div
                 onClick={() => handleTipoChange("cliente")}
-                className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                  formData.tipoUsuario === "cliente"
+                className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "cliente"
                     ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
                     : "border-gray-200 hover:border-gray-300"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Checkbox
@@ -201,11 +200,10 @@ export function Registro() {
 
               <div
                 onClick={() => handleTipoChange("profesional")}
-                className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                  formData.tipoUsuario === "profesional"
+                className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "profesional"
                     ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
                     : "border-gray-200 hover:border-gray-300"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Checkbox
@@ -237,11 +235,10 @@ export function Registro() {
                   <div
                     key={especialidad}
                     onClick={() => toggleEspecialidad(especialidad)}
-                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                      formData.especialidades.includes(especialidad)
+                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${formData.especialidades.includes(especialidad)
                         ? "border-[#e83360] bg-[#e83360]/10 shadow-sm"
                         : "border-gray-200 hover:border-gray-300"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2">
                       <Checkbox

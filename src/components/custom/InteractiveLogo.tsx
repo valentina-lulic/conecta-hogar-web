@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useSpring, useTransform } from "motion/react";
-import { ImageWithFallback } from "../ui-helpers/ImageWithFallback";
-import logoImg from "@/imports/logoCH-removebg-preview.png";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import logoImg from "@/assets/icons/logoCH-removebg-preview.png";
 
 export function InteractiveLogo({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
