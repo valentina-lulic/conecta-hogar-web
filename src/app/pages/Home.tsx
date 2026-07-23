@@ -15,10 +15,10 @@ const SKY    = "#55bcd9";
 const DARK   = "#0a6880";
 
 const categories = [
-  { icon: Wrench,  label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
-  { icon: Zap,     label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
-  { icon: HardHat, label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
-  { icon: Wrench,  label: "Soldaduría",   color: "#f97316", bg: "#f9731620" },
+  { icon: Wrench,   label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
+  { icon: Zap,      label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
+  { icon: HardHat,  label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
+  { icon: Wrench,   label: "Soldaduría",   color: "#f97316", bg: "#f9731620" },
 ];
 
 const trades = [
@@ -46,8 +46,8 @@ const trades = [
 
 const professionals = [
   { name: "Carlos Muñoz",   specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true,  img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK   },
-  { name: "Ana Rodríguez",  specialty: "Electricista",          likes: 89,  location: "Providencia",     available: true,  img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada",     badgeColor: SKY    },
-  { name: "Pedro Saavedra", specialty: "Pintor profesional",    likes: 64,  location: "Las Condes",      available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado",      badgeColor: YELLOW },
+  { name: "Ana Rodríguez",  specialty: "Electricista",          likes: 89,  location: "Providencia",     available: true,  img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada",      badgeColor: SKY    },
+  { name: "Pedro Saavedra", specialty: "Pintor profesional",    likes: 64,  location: "Las Condes",      available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado",       badgeColor: YELLOW },
 ];
 
 const steps = [
@@ -90,7 +90,7 @@ function TradeCard({ img, label, sub, color, index }: { img: string; label: stri
   );
 }
 
-export function Home() {
+export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery,    setSearchQuery]    = useState("");
   const [searchFocused,  setSearchFocused]  = useState(false);
@@ -183,7 +183,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── Nuestros ficios — justo debajo del hero ───────────────── */}
+      {/* ── Nuestros oficios ───────────────────────────────── */}
       {/* Zona turquesa del fondo — texto oscuro */}
       <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.78)" }}>
         <div className="max-w-5xl mx-auto">
@@ -193,6 +193,37 @@ export function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
             {trades.map((t, i) => <TradeCard sub={""} key={t.label} {...t} index={i} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ¿Cómo funciona? (Pasos) — colocado ANTES de Profesionales ── */}
+      <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.72)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Paso a paso</p>
+            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Cómo funciona?</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {steps.map((step, i) => (
+              <motion.div key={step.num}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="p-6 rounded-2xl bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 flex flex-col items-start relative overflow-hidden"
+              >
+                <span className="text-4xl font-black mb-3" style={{ color: step.color }}>
+                  {step.num}
+                </span>
+                <h3 className="text-lg font-bold mb-2" style={{ color: DARK }}>
+                  {step.title}
+                </h3>
+                <p className="text-sm font-semibold text-gray-600 leading-relaxed">
+                  {step.desc}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

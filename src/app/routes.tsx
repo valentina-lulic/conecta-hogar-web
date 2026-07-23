@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Root } from "./components/custom/Root";
-import { Home } from "./pages/Home";
+import Home from "./pages/Home";
 import Profesionales from "./pages/Profesionales";
 import { Garantia } from "./pages/Garantia";
 import { Contacto } from "./pages/Contacto";
 import { Registro } from "./pages/Registro";
+import Admin from "./pages/Admin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ export const router = createBrowserRouter([
       {
         path: "registro",
         element: <Registro />,
+      },
+      {
+        path: "admin",
+        element: (
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
