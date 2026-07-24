@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router";
+import { useLocation, Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
 import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
-import { Link } from "react-router";
-import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
-import { InteractiveLogo } from "@/components/custom/InteractiveLogo";
+import { ImageWithFallback } from "../components/ui/ImageWithFallback";
+import { InteractiveLogo } from "../components/custom/InteractiveLogo";
+import gasfiteriaImg from "../assets/images/gasfiter.png";
+import electricidadImg from "../assets/images/electricista.png";
+import albanileriaImg from "../assets/images/albanil.png";
+import soldaduraImg from "../assets/images/soldador.png";
 
 const PINK = "#e83360";
 const YELLOW = "#f5d318";
@@ -12,43 +15,39 @@ const SKY = "#55bcd9";
 const DARK = "#0a6880";
 
 const categories = [
-  { icon: Wrench, label: "Gasfitería", color: SKY, bg: `${SKY}20` },
-  { icon: Zap, label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
-  { icon: HardHat, label: "Albañilería", color: PINK, bg: `${PINK}18` },
-  { icon: Wrench, label: "Soldaduría", color: "#f97316", bg: "#f9731620" },
+  { icon: Wrench,   label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
+  { icon: Zap,      label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
+  { icon: HardHat,  label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
+  { icon: Wrench,   label: "Soldaduría",   color: "#f97316", bg: "#f9731620" },
 ];
 
 const trades = [
   {
-    img: "https://images.unsplash.com/photo-1594233078955-e1f73a02ebb2?w=800&h=1067&fit=crop&auto=format",
+    img: gasfiteriaImg,
     label: "Gasfitería",
-    sub: "Mantención de califont",
     color: SKY,
   },
   {
-    img: "https://images.unsplash.com/photo-1751486289947-4f5f5961b3aa?w=800&h=1067&fit=crop&auto=format",
+    img: electricidadImg,
     label: "Electricidad",
-    sub: "Poner enchufe",
     color: YELLOW,
   },
   {
-    img: "https://images.unsplash.com/photo-1779971685817-77e596abd71a?w=800&h=1067&fit=crop&auto=format",
+    img: albanileriaImg,
     label: "Albañilería",
-    sub: "Enyesar",
     color: PINK,
   },
   {
-    img: "https://images.unsplash.com/photo-1579382311054-0701b08da226?w=800&h=1067&fit=crop&auto=format",
+    img: soldaduraImg,
     label: "Soldaduría",
-    sub: "Poner una chapa",
-    color: "#f97316",
+    color: "#ec561b",
   },
 ];
 
 const professionals = [
-  { name: "Carlos Muñoz", specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true, img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK },
-  { name: "Ana Rodríguez", specialty: "Electricista", likes: 89, location: "Providencia", available: true, img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada", badgeColor: SKY },
-  { name: "Pedro Saavedra", specialty: "Pintor profesional", likes: 64, location: "Las Condes", available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado", badgeColor: YELLOW },
+  { name: "Carlos Muñoz",   specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true,  img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK   },
+  { name: "Ana Rodríguez",  specialty: "Electricista",          likes: 89,  location: "Providencia",     available: true,  img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada",      badgeColor: SKY    },
+  { name: "Pedro Saavedra", specialty: "Pintor profesional",    likes: 64,  location: "Las Condes",      available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado",       badgeColor: YELLOW },
 ];
 
 const steps = [
@@ -82,24 +81,19 @@ function TradeCard({ img, label, sub, color, index }: { img: string; label: stri
         <p className="font-black text-white text-xl" style={{ fontFamily: "'Nunito', sans-serif" }}>{label}</p>
         <p className="text-white/80 text-xs font-semibold">{sub}</p>
       </div>
-      <motion.div className="absolute top-3 left-3" initial={{ opacity: 0, x: -8 }} whileHover={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
-        <span className="px-3 py-1 rounded-full text-xs font-black text-white backdrop-blur-sm" style={{ backgroundColor: `${color}cc` }}>
-          Ver profesionales →
-        </span>
-      </motion.div>
     </motion.div>
   );
 }
 
-export function Home() {
+export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeTab, setActiveTab] = useState<"particulares" | "profesionales">("particulares");
   const { hash } = useLocation();
+
   useEffect(() => {
     if (hash) {
-      // Quitamos el '#' del string para buscar el elemento por su ID
       const targetId = hash.replace("#", "");
       const element = document.getElementById(targetId);
       if (element) {
@@ -110,10 +104,8 @@ export function Home() {
 
   return (
     <div>
-
       {/* ── Hero — el fondo viene del Root ────────────────── */}
       <section className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden">
-        {/* Overlay muy sutil — la zona blanca/turquesa del fondo resalta el logo */}
         <div className="absolute inset-0" style={{ background: "rgba(255,255,255,0.08)" }} />
 
         <div className="relative z-10 px-4 md:px-10 py-16">
@@ -148,7 +140,7 @@ export function Home() {
               <p className="text-lg font-semibold leading-relaxed" style={{ color: DARK }}>
                 {activeTab === "particulares"
                   ? "Gasfiteros, electricistas, albañiles y más. Profesionales verificados, precios transparentes y garantía de satisfacción."
-                  : "Únete a nuestra red de +2.400 profesionales y recibe solicitudes de trabajo en tu zona hoy mismo."}
+                  : "Únete a nuestra red de +1.000 profesionales y recibe solicitudes de trabajo en tu zona hoy mismo."}
               </p>
             </div>
 
@@ -185,7 +177,7 @@ export function Home() {
 
           {/* Stats */}
           <div className="max-w-3xl mx-auto mt-14 grid grid-cols-3 gap-4 text-center">
-            {[{ n: "+2.400", l: "Profesionales", c: PINK }, { n: "+18.000", l: "Servicios completados", c: SKY }, { n: "98%", l: "Clientes satisfechos", c: YELLOW }].map(({ n, l, c }) => (
+            {[{ n: "+1.000", l: "Profesionales", c: PINK }, { n: "+4.500", l: "Servicios completados", c: SKY }, { n: "98%", l: "Clientes satisfechos", c: YELLOW }].map(({ n, l, c }) => (
               <div key={l} className="rounded-2xl py-5 px-4 backdrop-blur-md" style={{ background: "rgba(255,255,255,0.65)", border: `2px solid ${c}55` }}>
                 <p className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: c }}>{n}</p>
                 <p className="text-xs font-bold mt-1" style={{ color: DARK }}>{l}</p>
@@ -195,77 +187,42 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── Oficios / Nosotros — justo debajo del hero ───────────────── */}
-      {/* Zona turquesa del fondo — texto oscuro */}
+      {/* ── Nuestros oficios ───────────────────────────────── */}
       <section id="nosotros" className="py-16 px-4 md:px-10 backdrop-blur-sm scroll-mt-24" style={{ background: "rgba(255,255,255,0.78)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Sobre Nosotros</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-              Conecta Hogar: Tu red de confianza
-            </h2>
-            <p className="mt-3 max-w-2xl mx-auto text-sm font-semibold leading-relaxed" style={{ color: "#6b7280" }}>
-              Nacimos para eliminar la incertidumbre al contratar técnicos a domicilio. Creamos un puente transparente, seguro y rápido entre tus necesidades y los mejores maestros especialistas de Chile.
-            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-            {trades.map((t, i) => <TradeCard key={t.label} {...t} index={i} />)}
+            {trades.map((t, i) => <TradeCard sub={""} key={t.label} {...t} index={i} />)}
           </div>
         </div>
       </section>
 
-      {/* ── Categorías ────────────────────────────────────── */}
-      {/* Zona turquesa/amarilla — texto oscuro */}
-      <section id="servicios" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.75)" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: PINK }}>Servicios</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Qué necesitas hoy?</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            {categories.map(({ icon: Icon, label, color, bg }, i) => {
-              const active = activeCategory === label;
-              return (
-                <motion.button key={label} onClick={() => setActiveCategory(active ? null : label)}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                  whileHover={{ y: -5, scale: 1.06 }} whileTap={{ scale: 0.93 }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 text-center transition-colors"
-                  style={{ backgroundColor: active ? color : bg, borderColor: active ? color : "transparent", color: active ? "white" : DARK, boxShadow: active ? `0 8px 24px ${color}55` : "none" }}>
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: active ? "rgba(255,255,255,0.25)" : `${color}25` }}>
-                    <Icon size={20} style={{ color: active ? "white" : color }} />
-                  </div>
-                  <span className="text-xs font-bold leading-tight">{label}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Cómo funciona ─────────────────────────────────── */}
-      {/* Zona amarilla del fondo — texto oscuro */}
-      <section id="como-funciona" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.78)" }}>
+      {/* ── ¿Cómo funciona? ── */}
+      <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.72)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: YELLOW }}>Simple y rápido</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Cómo funciona Conecta Hogar</h2>
+            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Paso a paso</p>
+            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Cómo funciona?</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {steps.map((step, i) => (
               <motion.div key={step.num}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-                whileHover={{ y: -6 }}
-                className="relative rounded-2xl p-8 border-2 bg-white hover:shadow-lg transition-shadow"
-                style={{ borderColor: `${step.color}40` }}>
-                {i < steps.length - 1 && (
-                  <div className="hidden md:flex absolute top-12 -right-3 z-10 w-6 h-6 rounded-full items-center justify-center" style={{ background: step.color }}>
-                    <ChevronRight size={14} className="text-white" />
-                  </div>
-                )}
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl mb-5"
-                  style={{ background: `${step.color}20`, color: step.color, fontFamily: "'Nunito', sans-serif" }}>{step.num}</div>
-                <h3 className="font-black text-lg mb-2" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#6b7280" }}>{step.desc}</p>
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className="p-6 rounded-2xl bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 flex flex-col items-start relative overflow-hidden"
+              >
+                <span className="text-4xl font-black mb-3" style={{ color: step.color }}>
+                  {step.num}
+                </span>
+                <h3 className="text-lg font-bold mb-2" style={{ color: DARK }}>
+                  {step.title}
+                </h3>
+                <p className="text-sm font-semibold text-gray-600 leading-relaxed">
+                  {step.desc}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -287,7 +244,6 @@ export function Home() {
       </section>
 
       {/* ── Profesionales ─────────────────────────────────── */}
-      {/* Zona naranja del fondo — overlay más opaco para legibilidad */}
       <section id="profesionales" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.80)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-end justify-between mb-10">
@@ -345,7 +301,6 @@ export function Home() {
       </section>
 
       {/* ── Testimonios ───────────────────────────────────── */}
-      {/* Zona naranja/rosa — overlay glassmorphism, texto blanco */}
       <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(232,51,96,0.15)" }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
@@ -376,7 +331,6 @@ export function Home() {
       </section>
 
       {/* ── CTA profesionales ─────────────────────────────── */}
-      {/* Zona pink/magenta — texto oscuro sobre overlay blanco */}
       <section className="py-16 px-4 md:px-10 text-center backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.80)" }}>
         <div className="max-w-3xl mx-auto">
           <p className="text-xs font-black tracking-widest uppercase mb-3" style={{ color: PINK }}>¿Eres profesional?</p>

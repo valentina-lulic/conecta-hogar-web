@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { Outlet, Link, useLocation } from "react-router";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
-import logoImg from "@/assets/icons/logoCH-removebg-preview.png";
-import bgImg from "@/assets/images/FONDO.png";
+import { ImageWithFallback } from "../ui/ImageWithFallback";
+import logoImg from "../../assets/icons/logoCH-removebg-preview.png";
+import bgImg from "../../assets/images/FONDO.png";
 import { InteractiveLogo } from "./InteractiveLogo";
 
 const PINK = "#e83360";
 
 const navLinks = [
-  { href: "/#nosotros", label: "Nosotros" },
-  { href: "/#profesionales", label: "Profesionales" },
-  { href: "/contacto", label: "Contacto", route: true },
-  { href: "/garantia", label: "Garantía", route: true },
+  { href: "/#nosotros",       label: "Nosotros" },
+  { href: "/profesionales", label: "Profesionales", route: true },
+  { href: "/contacto",        label: "Contacto", route: true },
+  { href: "/garantia",        label: "Garantía", route: true },
 ];
 
 // ── Root layout ────────────────────────────────────────────────
@@ -26,11 +26,8 @@ export function Root() {
       className="min-h-screen flex flex-col relative bg-top bg-no-repeat w-full"
       style={{
         fontFamily: "'Poppins', sans-serif",
-        /* 💡 1. Usamos SOLO tu imagen sin capas degradadas que opaquen el turquesa */
         backgroundImage: `url(${bgImg as unknown as string})`,
-        /* 💡 2. Hacemos que cubra el 100% del ancho para conservar la proporción vertical */
         backgroundSize: "100% auto",
-        /* 💡 3. Si la página es más larga que la imagen, mantiene el color magenta al final */
         backgroundColor: "#c81e51",
       }}
     >
@@ -190,3 +187,5 @@ export function Root() {
     </div>
   );
 }
+
+export default Root;
