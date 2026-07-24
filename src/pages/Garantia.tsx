@@ -130,7 +130,7 @@ export function Garantia() {
                 className="bg-white rounded-2xl p-7 border-2 hover:shadow-lg transition-shadow"
                 style={{ borderColor: `${color}30` }}>
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
                     style={{ background: `${color}18` }}>
                     <Icon size={26} style={{ color }} />
                   </div>
@@ -163,7 +163,7 @@ export function Garantia() {
                 initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}
                 className="bg-white rounded-2xl p-6 border-2 flex gap-4 items-start"
                 style={{ borderColor: [PINK, SKY, YELLOW, PINK][i] + "30" }}>
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 text-white"
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl shrink-0 text-white"
                   style={{ background: [PINK, SKY, YELLOW, PINK][i], fontFamily: "'Nunito', sans-serif" }}>
                   {s.n}
                 </div>

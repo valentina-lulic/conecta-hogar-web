@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Users, 
-  CheckCircle2, 
-  Clock, 
-  XCircle, 
-  LogOut, 
-  ShieldCheck, 
-  Search, 
-  UserCheck, 
+import {
+  Users,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  LogOut,
+  ShieldCheck,
+  Search,
+  UserCheck,
   AlertCircle,
   Loader2
 } from "lucide-react";
 
-const PINK   = "#e83360";
+const PINK = "#e83360";
 const YELLOW = "#f5d318";
-const SKY    = "#55bcd9";
-const DARK   = "#0a6880";
+const SKY = "#55bcd9";
+const DARK = "#0a6880";
 
 // Cambiar por la URL real de tu backend
 const API_URL = "http://localhost:8080/api";
@@ -101,8 +101,8 @@ export default function Admin() {
 
   // Filtrado de registros
   const filteredProfessionals = professionals.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.specialty.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === "Todos" || p.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
@@ -110,7 +110,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen py-10 px-4 md:px-10 relative z-10" style={{ backgroundColor: "rgba(249, 250, 251, 0.85)" }}>
       <div className="max-w-6xl mx-auto space-y-8">
-        
+
         {/* Encabezado */}
         <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -128,8 +128,8 @@ export default function Admin() {
             </p>
           </div>
 
-          <motion.button 
-            whileHover={{ scale: 1.03 }} 
+          <motion.button
+            whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleLogout}
             className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 transition-colors"
@@ -193,8 +193,8 @@ export default function Admin() {
           <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 max-w-md flex-1">
               <Search size={16} className="text-gray-400" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Buscar por nombre o especialidad..."
                 value={searchTerm}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -207,11 +207,10 @@ export default function Admin() {
                 <button
                   key={status}
                   onClick={() => setFilterStatus(status)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    filterStatus === status 
-                      ? "bg-gray-800 text-white shadow" 
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${filterStatus === status
+                      ? "bg-gray-800 text-white shadow"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   {status}
                 </button>
@@ -246,11 +245,10 @@ export default function Admin() {
                         <td className="py-4 text-gray-500">{pro.location}</td>
                         <td className="py-4 text-gray-400 text-xs">{pro.date}</td>
                         <td className="py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
-                            pro.status === "Aprobado" ? "bg-green-100 text-green-700" :
-                            pro.status === "Pendiente" ? "bg-yellow-100 text-yellow-700" :
-                            "bg-red-100 text-red-700"
-                          }`}>
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${pro.status === "Aprobado" ? "bg-green-100 text-green-700" :
+                              pro.status === "Pendiente" ? "bg-yellow-100 text-yellow-700" :
+                                "bg-red-100 text-red-700"
+                            }`}>
                             {pro.status === "Aprobado" && <CheckCircle2 size={12} />}
                             {pro.status === "Pendiente" && <Clock size={12} />}
                             {pro.status === "Rechazado" && <XCircle size={12} />}
@@ -260,7 +258,7 @@ export default function Admin() {
                         <td className="py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             {pro.status !== "Aprobado" && (
-                              <button 
+                              <button
                                 onClick={() => handleStatusChange(pro.id, "Aprobado")}
                                 className="px-3 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 font-bold text-xs transition-colors"
                               >
@@ -268,7 +266,7 @@ export default function Admin() {
                               </button>
                             )}
                             {pro.status !== "Rechazado" && (
-                              <button 
+                              <button
                                 onClick={() => handleStatusChange(pro.id, "Rechazado")}
                                 className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs transition-colors"
                               >

@@ -181,8 +181,8 @@ export function Registro() {
               <div
                 onClick={() => handleTipoChange("cliente")}
                 className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "cliente"
-                    ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
-                    : "border-gray-200 hover:border-gray-300"
+                  ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
+                  : "border-gray-200 hover:border-gray-300"
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -201,8 +201,8 @@ export function Registro() {
               <div
                 onClick={() => handleTipoChange("profesional")}
                 className={`flex-1 p-4 border-2 rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "profesional"
-                    ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
-                    : "border-gray-200 hover:border-gray-300"
+                  ? "border-[#55bcd9] bg-[#55bcd9]/10 shadow-md"
+                  : "border-gray-200 hover:border-gray-300"
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -236,8 +236,8 @@ export function Registro() {
                     key={especialidad}
                     onClick={() => toggleEspecialidad(especialidad)}
                     className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${formData.especialidades.includes(especialidad)
-                        ? "border-[#e83360] bg-[#e83360]/10 shadow-sm"
-                        : "border-gray-200 hover:border-gray-300"
+                      ? "border-[#e83360] bg-[#e83360]/10 shadow-sm"
+                      : "border-gray-200 hover:border-gray-300"
                       }`}
                   >
                     <div className="flex items-center gap-2">
