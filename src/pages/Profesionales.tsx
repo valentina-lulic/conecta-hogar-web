@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { profesionales, especialidades, type Profesional, } from "../../data/profesionales";
-import "../../styles/Profesionales.css";
+import { profesionales, especialidades, type Profesional, } from "../data/profesionales";
+import "../styles/Profesionales.css";
 
 function iniciales(nombre: string) {
   return nombre
