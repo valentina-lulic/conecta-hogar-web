@@ -14,7 +14,7 @@ const YELLOW = "#f5d318";
 const SKY = "#55bcd9";
 const DARK = "#0a6880";
 
-const categories = [
+const _categories = [
   { icon: Wrench,   label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
   { icon: Zap,      label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
   { icon: HardHat,  label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
@@ -148,7 +148,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto mb-5">
               <div className="flex-1 flex items-center gap-3 px-5 rounded-2xl"
                 style={{ background: "rgba(255,255,255,0.95)", border: searchFocused ? `2.5px solid ${PINK}` : "2.5px solid rgba(255,255,255,0.8)", boxShadow: searchFocused ? `0 0 0 4px ${PINK}25` : "0 4px 20px rgba(0,0,0,0.1)" }}>
-                <Search size={18} style={{ color: PINK }} className="flex-shrink-0" />
+                <Search size={18} style={{ color: PINK }} className="shrink-0" />
                 <input type="text"
                   placeholder={activeTab === "particulares" ? (activeCategory ? `Buscar en ${activeCategory}...` : "¿Qué servicio necesitas?") : "Tu especialidad..."}
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
@@ -271,7 +271,7 @@ export default function Home() {
               { icon: ThumbsUp, label: "Garantía de satisfacción", color: YELLOW },
             ].map(({ icon: Icon, label, color }) => (
               <div key={label} className="flex items-center gap-3 rounded-xl p-4 border-2" style={{ borderColor: `${color}40`, background: `${color}0c` }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${color}25` }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}25` }}>
                   <Icon size={20} style={{ color }} />
                 </div>
                 <p className="text-sm font-bold" style={{ color: DARK }}>{label}</p>
@@ -301,7 +301,7 @@ export default function Home() {
                 className="bg-white rounded-2xl overflow-hidden border-2 cursor-pointer"
                 style={{ borderColor: `${pro.badgeColor}30` }}>
                 <div className="p-5 flex items-start gap-4">
-                  <div className="relative flex-shrink-0">
+                  <div className="relative shrink-0">
                     <img src={pro.img} alt={pro.name} className="w-16 h-16 rounded-2xl object-cover" />
                     {pro.available && <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white bg-green-500" />}
                   </div>
