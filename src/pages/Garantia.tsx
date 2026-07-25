@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { ShieldCheck, ThumbsUp, Clock, Star, BadgeCheck, Headphones, RefreshCw, ArrowRight } from "lucide-react";
 
 const PINK = "#e83360";
@@ -15,7 +15,7 @@ const guarantees = [
     color: PINK,
     title: "Profesionales verificados",
     desc: "Cada profesional en nuestra plataforma pasa por un riguroso proceso de validación: verificación de identidad, antecedentes penales, y comprobación de experiencia y certificaciones. Solo el 30% de los postulantes logra ingresar.",
-    detail: "Más de 2.400 profesionales certificados",
+    detail: "Más de 1.000 profesionales certificados",
   },
   {
     icon: ThumbsUp,
@@ -56,7 +56,7 @@ const guarantees = [
 
 const stats = [
   { n: "98%", l: "Clientes satisfechos" },
-  { n: "+18.000", l: "Servicios completados" },
+  { n: "+4.500", l: "Servicios completados" },
   { n: "4.8★", l: "Puntuación promedio" },
   { n: "< 1 hr", l: "Tiempo de respuesta" },
 ];
@@ -73,7 +73,7 @@ export function Garantia() {
     <div style={{ background: GRAD_HERO }}>
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="px-4 md:px-10 pt-16 pb-20 text-center">
+      <section className="px-4 md:px-10 pt-16 pb-10 text-center">
         <div className="max-w-3xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-6"
@@ -84,22 +84,18 @@ export function Garantia() {
               style={{ fontFamily: "'Nunito', sans-serif", textShadow: "0 2px 20px rgba(0,0,0,0.15)" }}>
               Nuestra garantía
             </h1>
-            <p className="text-lg text-white/85 leading-relaxed max-w-xl mx-auto mb-8">
+            <p className="text-lg text-white/85 leading-relaxed max-w-xl mx-auto mb-6">
               En Conecta Hogar nos comprometemos con tu tranquilidad. Cada servicio está respaldado por nuestra garantía integral de calidad y satisfacción.
             </p>
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} className="inline-block">
-              <Link to="/contacto"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-sm shadow-xl"
-                style={{ background: "white", color: PINK }}>
-                Solicitar servicio garantizado <ArrowRight size={16} />
-              </Link>
+
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Stats ─────────────────────────────────────────── */}
-      <section className="px-4 md:px-10 pb-16">
+      <section className="px-4 md:px-10 pb-16 -mt-8">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map(({ n, l }, i) => (
             <motion.div key={l}
@@ -189,14 +185,14 @@ export function Garantia() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link to="/contacto"
+              <Link to="/registro"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black text-sm text-white shadow-lg"
                 style={{ background: PINK }}>
                 Solicitar servicio <ArrowRight size={16} />
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link to="/"
+              <Link to="/profesionales"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black text-sm border-2"
                 style={{ borderColor: SKY, color: SKY }}>
                 Ver profesionales

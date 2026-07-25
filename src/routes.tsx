@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
+  // 1. Rutas públicas con Navbar y Footer (Root layout)
   { 
     path: "/",
     element: <Root />,
@@ -20,14 +21,22 @@ export const router = createBrowserRouter([
       { path: "garantia", element: <Garantia /> },
       { path: "contacto", element: <Contacto /> },
       { path: "registro", element: <Registro /> },
-      {
-        path: "admin",
-        element: (
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        ),
-      },
     ],
   },
+  
+  // 2. Ruta protegida a Pantalla Completa (Dashboard del Admin sin Navbar cliente)
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
+  },
+
+  // 3. Redirección para URLs desconocidas (404)
+  {
+    path: "*",
+    element: <Home />,
+  }
 ]);

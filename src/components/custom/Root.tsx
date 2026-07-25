@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+// 1. Importa ScrollRestoration aquí 👇
+import { Outlet, Link, useLocation, ScrollRestoration } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
@@ -10,10 +11,10 @@ import { InteractiveLogo } from "./InteractiveLogo";
 const PINK = "#e83360";
 
 const navLinks = [
-  { href: "/#nosotros",       label: "Nosotros" },
+  { href: "/nosotros",      label: "Nosotros", route: true },
   { href: "/profesionales", label: "Profesionales", route: true },
-  { href: "/contacto",        label: "Contacto", route: true },
-  { href: "/garantia",        label: "Garantía", route: true },
+  { href: "/contacto",      label: "Contacto", route: true },
+  { href: "/garantia",      label: "Garantía", route: true },
 ];
 
 // ── Root layout ────────────────────────────────────────────────
@@ -31,6 +32,9 @@ export function Root() {
         backgroundColor: "#c81e51",
       }}
     >
+      {/* ScrollRestoration */}
+      <ScrollRestoration />
+
       <div className="sticky top-5 z-50 px-4 md:px-12 max-w-7xl mx-auto w-full">
         <nav
           className="flex items-center justify-between pl-6 pr-2 py-2 rounded-full border border-white/40 bg-[#fffbf7] shadow-lg"

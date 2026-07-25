@@ -150,7 +150,7 @@ export default function Home() {
                 style={{ background: "rgba(255,255,255,0.95)", border: searchFocused ? `2.5px solid ${PINK}` : "2.5px solid rgba(255,255,255,0.8)", boxShadow: searchFocused ? `0 0 0 4px ${PINK}25` : "0 4px 20px rgba(0,0,0,0.1)" }}>
                 <Search size={18} style={{ color: PINK }} className="shrink-0" />
                 <input type="text"
-                  placeholder={activeTab === "particulares" ? "¿Qué servicio necesitas?" : "Tu especialidad..."}
+                  placeholder={activeTab === "particulares" ? (activeCategory ? `Buscar en ${activeCategory}...` : "¿Qué servicio necesitas?") : "Tu especialidad..."}
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchFocused(true)} onBlur={() => setSearchFocused(false)}
                   className="flex-1 py-4 text-sm font-semibold placeholder:text-gray-400 outline-none bg-transparent"
@@ -163,27 +163,63 @@ export default function Home() {
               </motion.button>
             </div>
 
-            {/* Chips */}
+            {/* Chips de categorías */}
             <div className="flex flex-wrap justify-center gap-2">
-              {["Gasfitería", "Electricidad", "Albañilería", "Control de Plagas"].map(chip => (
-                <button key={chip}
-                  className="px-4 py-1.5 rounded-full text-xs font-bold border-2 backdrop-blur-sm transition-colors hover:bg-white/60"
-                  style={{ borderColor: DARK + "55", color: DARK, background: "rgba(255,255,255,0.5)" }}>
-                  {chip}
-                </button>
-              ))}
+              {categories.map(({ icon: Icon, label, color }) => {
+                const isActive = activeCategory === label;
+                return (
+                  <button
+                    key={label}
+                    onClick={() => setActiveCategory(isActive ? null : label)}
+                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold border-2 backdrop-blur-sm transition-colors hover:bg-white/60"
+                    style={
+                      isActive
+                        ? { borderColor: color, color: "white", background: color }
+                        : { borderColor: DARK + "55", color: DARK, background: "rgba(255,255,255,0.5)" }
+                    }
+                  >
+                    <Icon size={13} />
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="max-w-3xl mx-auto mt-14 grid grid-cols-3 gap-4 text-center">
-            {[{ n: "+1.000", l: "Profesionales", c: PINK }, { n: "+4.500", l: "Servicios completados", c: SKY }, { n: "98%", l: "Clientes satisfechos", c: YELLOW }].map(({ n, l, c }) => (
-              <div key={l} className="rounded-2xl py-5 px-4 backdrop-blur-md" style={{ background: "rgba(255,255,255,0.65)", border: `2px solid ${c}55` }}>
-                <p className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: c }}>{n}</p>
-                <p className="text-xs font-bold mt-1" style={{ color: DARK }}>{l}</p>
-              </div>
-            ))}
-          </div>
+         {/* Stats */}   
+        <div className="max-w-5xl mx-auto mt-14 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-center">
+          {[
+            { n: "+1.000", l: "Profesionales", c: PINK },
+            { n: "+4.500", l: "Servicios completados", c: SKY },
+            { n: "98%", l: "Clientes satisfechos", c: YELLOW },
+          ].map(({ n, l, c }) => (
+            <div
+              key={l}
+              className="rounded-2xl py-3 sm:py-4 md:py-5 px-2 sm:px-3 md:px-4 backdrop-blur-md flex flex-col justify-center items-center min-h-[120px]"
+              style={{
+                background: "rgba(255,255,255,0.65)",
+                border: `2px solid ${c}55`,
+              }}
+            >
+              <p
+                className="text-2xl sm:text-3xl lg:text-4xl font-black whitespace-nowrap"
+                style={{
+                  fontFamily: "'Nunito', sans-serif",
+                  color: c,
+                }}
+              >
+                {n}
+              </p>
+
+              <p
+                className="text-xs sm:text-sm font-bold mt-2"
+                style={{ color: DARK }}
+              >
+                {l}
+              </p>
+            </div>
+          ))}
+        </div>
         </div>
       </section>
 
@@ -193,7 +229,9 @@ export default function Home() {
           <div className="text-center mb-10">
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-            {trades.map((t, i) => <TradeCard sub={""} key={t.label} {...t} index={i} />)}
+            {trades
+              .filter(t => !activeCategory || t.label === activeCategory)
+              .map((t, i) => <TradeCard sub={""} key={t.label} {...t} index={i} />)}
           </div>
         </div>
       </section>
@@ -342,7 +380,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link to="/contacto" className="px-8 py-4 rounded-xl font-black text-sm text-white inline-block shadow-lg" style={{ background: PINK }}>
+              <Link to="/registro" className="px-8 py-4 rounded-xl font-black text-sm text-white inline-block shadow-lg" style={{ background: PINK }}>
                 Registrarme gratis
               </Link>
             </motion.div>

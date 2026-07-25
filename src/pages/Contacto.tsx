@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2 } from "lucide-react";
 
 const PINK   = "#e83360";
@@ -173,7 +173,7 @@ export function Contacto() {
               <Link to="/garantia"
                 className="inline-flex items-center gap-1 text-sm font-black hover:opacity-70 transition-opacity"
                 style={{ color: PINK }}>
-                Ver nuestra garantía →
+                Registrarme →
               </Link>
             </div>
 
