@@ -471,374 +471,107 @@ export default function AdminPanel() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-                <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
-                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 max-w-md flex-1">
-                    <Search size={16} className="text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Buscar por nombre o especialidad..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none text-sm font-semibold text-gray-700 w-full"
-                    />
-                  </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0">
-                    {(["Todos", "Pendiente", "Aprobado", "Rechazado"] as const).map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => setFilterStatus(status)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                          filterStatus === status ? "bg-gray-800 text-white shadow" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }`}
-                      >
-                        {status}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+        {/* Tabla de Administración */}
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
+          <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 max-w-md flex-1">
+              <Search size={16} className="text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar por nombre o especialidad..."
+                value={searchTerm}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="bg-transparent outline-none text-sm font-semibold text-gray-700 w-full"
+              />
+            </div>
 
-                {loadingProfessionals ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-gray-400 gap-2">
-                    <Loader2 className="animate-spin" size={32} style={{ color: SKY }} />
-                    <p className="text-sm font-semibold">Cargando datos del servidor...</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                          <th className="pb-4">Profesional</th>
-                          <th className="pb-4">Especialidad</th>
-                          <th className="pb-4">Ubicación</th>
-                          <th className="pb-4">Fecha</th>
-                          <th className="pb-4">Estado</th>
-                          <th className="pb-4 text-right">Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {filteredProfessionals.length > 0 ? (
-                          filteredProfessionals.map((pro) => (
-                            <tr key={pro.id} className="text-sm font-semibold hover:bg-gray-50/50 transition-colors">
-                              <td className="py-4 font-bold" style={{ color: DARK }}>{pro.name}</td>
-                              <td className="py-4 text-gray-600">{pro.specialty}</td>
-                              <td className="py-4 text-gray-500">{pro.location}</td>
-                              <td className="py-4 text-gray-400 text-xs">{pro.date}</td>
-                              <td className="py-4">
-                                <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
-                                    pro.status === "Aprobado"
-                                      ? "bg-green-100 text-green-700"
-                                      : pro.status === "Pendiente"
-                                      ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-red-100 text-red-700"
-                                  }`}
-                                >
-                                  {pro.status === "Aprobado" && <CheckCircle2 size={12} />}
-                                  {pro.status === "Pendiente" && <Clock size={12} />}
-                                  {pro.status === "Rechazado" && <XCircle size={12} />}
-                                  {pro.status}
-                                </span>
-                              </td>
-                              <td className="py-4 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  {pro.status !== "Aprobado" && (
-                                    <button
-                                      onClick={() => handleStatusChange(pro.id, "Aprobado")}
-                                      className="px-3 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 font-bold text-xs transition-colors"
-                                    >
-                                      Aprobar
-                                    </button>
-                                  )}
-                                  {pro.status !== "Rechazado" && (
-                                    <button
-                                      onClick={() => handleStatusChange(pro.id, "Rechazado")}
-                                      className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs transition-colors"
-                                    >
-                                      Rechazar
-                                    </button>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={6} className="text-center py-8 text-gray-400 font-medium">
-                              No se encontraron registros.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-
-          {/* ---------- GESTIÓN DE USUARIOS ---------- */}
-          {activeTab === "usuarios" && (
-            <>
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-                    Gestión de Usuarios
-                  </h2>
-                  <p className="text-sm font-semibold text-gray-500 mt-1">
-                    {filteredUsers.length} usuarios encontrados
-                  </p>
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white transition-colors"
-                  style={{ background: PINK }}
+            <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0">
+              {(["Todos", "Pendiente", "Aprobado", "Rechazado"] as const).map(status => (
+                <button
+                  key={status}
+                  onClick={() => setFilterStatus(status)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${filterStatus === status
+                    ? "bg-gray-800 text-white shadow"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
                 >
-                  <Plus size={16} />
-                  Nuevo Usuario
-                </motion.button>
-              </div>
+                  {status}
+                </button>
+              ))}
+            </div>
+          </div>
 
-              {usingFallbackUsers && (
-                <p className="text-xs font-semibold text-gray-400 -mt-4 px-2">
-                  Mostrando datos de ejemplo — conecta el endpoint /admin/users para ver datos reales.
-                </p>
-              )}
-
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-                <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
-                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 max-w-md flex-1">
-                    <Search size={16} className="text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Buscar por nombre o correo..."
-                      value={userSearch}
-                      onChange={(e) => setUserSearch(e.target.value)}
-                      className="bg-transparent outline-none text-sm font-semibold text-gray-700 w-full"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <select
-                      value={roleFilter}
-                      onChange={(e) => setRoleFilter(e.target.value as "Todos" | Role)}
-                      className="px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm font-bold text-gray-600 outline-none"
-                    >
-                      <option value="Todos">Todos los roles</option>
-                      <option value="Cliente">Cliente</option>
-                      <option value="Profesional">Profesional</option>
-                      <option value="Administrador">Administrador</option>
-                    </select>
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value as "Todos" | UserStatus)}
-                      className="px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm font-bold text-gray-600 outline-none"
-                    >
-                      <option value="Todos">Todos los estados</option>
-                      <option value="Activo">Activo</option>
-                      <option value="Inactivo">Inactivo</option>
-                    </select>
-                  </div>
-                </div>
-
-                {loadingUsers ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-gray-400 gap-2">
-                    <Loader2 className="animate-spin" size={32} style={{ color: SKY }} />
-                    <p className="text-sm font-semibold">Cargando usuarios...</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                          <th className="pb-4">#</th>
-                          <th className="pb-4">Usuario</th>
-                          <th className="pb-4">Correo</th>
-                          <th className="pb-4">Rol</th>
-                          <th className="pb-4">Estado</th>
-                          <th className="pb-4">Registro</th>
-                          <th className="pb-4 text-right">Acciones</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {filteredUsers.length > 0 ? (
-                          filteredUsers.map((u, i) => (
-                            <tr key={u.id} className="text-sm font-semibold hover:bg-gray-50/50 transition-colors">
-                              <td className="py-4 text-gray-400 text-xs">{String(i + 1).padStart(2, "0")}</td>
-                              <td className="py-4">
-                                <div className="flex items-center gap-3">
-                                  <div
-                                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white"
-                                    style={{ background: SKY }}
-                                  >
-                                    {initials(u.name)}
-                                  </div>
-                                  <span className="font-bold" style={{ color: DARK }}>{u.name}</span>
-                                </div>
-                              </td>
-                              <td className="py-4 text-gray-500">{u.email}</td>
-                              <td className="py-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-black ${ROLE_STYLES[u.role]}`}>
-                                  {u.role}
-                                </span>
-                              </td>
-                              <td className="py-4">
-                                <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
-                                    u.status === "Activo" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                                  }`}
-                                >
-                                  <span className={`w-1.5 h-1.5 rounded-full ${u.status === "Activo" ? "bg-green-600" : "bg-red-600"}`} />
-                                  {u.status}
-                                </span>
-                              </td>
-                              <td className="py-4 text-gray-400 text-xs">{u.registeredAt}</td>
-                              <td className="py-4 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <Eye size={15} />
-                                  </button>
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <Pencil size={15} />
-                                  </button>
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <RefreshCw size={15} />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={7} className="text-center py-8 text-gray-400 font-medium">
-                              No se encontraron registros.
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-12 text-gray-400 gap-2">
+              <Loader2 className="animate-spin" size={32} style={{ color: SKY }} />
+              <p className="text-sm font-semibold">Cargando datos del servidor...</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <th className="pb-4">Profesional</th>
+                    <th className="pb-4">Especialidad</th>
+                    <th className="pb-4">Ubicación</th>
+                    <th className="pb-4">Fecha</th>
+                    <th className="pb-4">Estado</th>
+                    <th className="pb-4 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredProfessionals.length > 0 ? (
+                    filteredProfessionals.map(pro => (
+                      <tr key={pro.id} className="text-sm font-semibold hover:bg-gray-50/50 transition-colors">
+                        <td className="py-4 font-bold" style={{ color: DARK }}>{pro.name}</td>
+                        <td className="py-4 text-gray-600">{pro.specialty}</td>
+                        <td className="py-4 text-gray-500">{pro.location}</td>
+                        <td className="py-4 text-gray-400 text-xs">{pro.date}</td>
+                        <td className="py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${pro.status === "Aprobado" ? "bg-green-100 text-green-700" :
+                            pro.status === "Pendiente" ? "bg-yellow-100 text-yellow-700" :
+                              "bg-red-100 text-red-700"
+                            }`}>
+                            {pro.status === "Aprobado" && <CheckCircle2 size={12} />}
+                            {pro.status === "Pendiente" && <Clock size={12} />}
+                            {pro.status === "Rechazado" && <XCircle size={12} />}
+                            {pro.status}
+                          </span>
+                        </td>
+                        <td className="py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            {pro.status !== "Aprobado" && (
+                              <button
+                                onClick={() => handleStatusChange(pro.id, "Aprobado")}
+                                className="px-3 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 font-bold text-xs transition-colors"
+                              >
+                                Aprobar
+                              </button>
+                            )}
+                            {pro.status !== "Rechazado" && (
+                              <button
+                                onClick={() => handleStatusChange(pro.id, "Rechazado")}
+                                className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs transition-colors"
+                              >
+                                Rechazar
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="text-center py-8 text-gray-400 font-medium">
+                        No se encontraron registros.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
 
-          {/* ---------- ESTADÍSTICAS ---------- */}
-          {activeTab === "estadisticas" && (
-            <>
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <h2 className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-                  Estadísticas del Sistema
-                </h2>
-                <p className="text-sm font-semibold text-gray-500 mt-1">
-                  Métricas de rendimiento y actividad en Conecta Hogar
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <StatCard
-                  icon={TrendingUp}
-                  colorClass="bg-green-100"
-                  iconClass="text-green-600"
-                  label="Tasa de aprobación"
-                  value={
-                    professionals.length
-                      ? Math.round((professionals.filter((p) => p.status === "Aprobado").length / professionals.length) * 100)
-                      : 0
-                  }
-                  suffix="%"
-                />
-                <StatCard
-                  icon={Clock}
-                  color={YELLOW}
-                  iconColor="#d9ab00"
-                  label="Solicitudes pendientes"
-                  value={professionals.filter((p) => p.status === "Pendiente").length}
-                />
-                <StatCard icon={Users} color={SKY} label="Usuarios activos" value={activeUsers} />
-              </div>
-
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-6">
-                  <BarChart3 size={18} style={{ color: PINK }} />
-                  <h3 className="text-sm font-black text-gray-700 uppercase tracking-wide">
-                    Estado de solicitudes de profesionales
-                  </h3>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={[
-                      { estado: "Pendiente", total: professionals.filter((p) => p.status === "Pendiente").length },
-                      { estado: "Aprobado", total: professionals.filter((p) => p.status === "Aprobado").length },
-                      { estado: "Rechazado", total: professionals.filter((p) => p.status === "Rechazado").length },
-                    ]}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis dataKey="estado" tick={{ fontSize: 12, fontWeight: 700, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #f1f1f1", fontWeight: 600, fontSize: 13 }} />
-                    <Bar dataKey="total" fill={SKY} radius={[8, 8, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </>
-          )}
-
-          {/* ---------- CONFIGURACIÓN ---------- */}
-          {activeTab === "configuracion" && (
-            <>
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-1">
-                  <SettingsIcon size={22} style={{ color: PINK }} />
-                  <h2 className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-                    Configuración
-                  </h2>
-                </div>
-                <p className="text-sm font-semibold text-gray-500 mt-1">Ajustes generales de la plataforma</p>
-              </div>
-
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-xl space-y-5">
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Nombre de la plataforma</label>
-                  <input
-                    type="text"
-                    value={platformName}
-                    onChange={(e) => setPlatformName(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Correo de soporte</label>
-                  <input
-                    type="email"
-                    value={supportEmail}
-                    onChange={(e) => setSupportEmail(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Comisión por servicio (%)</label>
-                  <input
-                    type="number"
-                    value={commission}
-                    onChange={(e) => setCommission(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
-                  />
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSaveSettings}
-                  disabled={savingSettings}
-                  className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white transition-colors disabled:opacity-60"
-                  style={{ background: PINK }}
-                >
-                  {settingsSaved ? <CheckCircle2 size={16} /> : <Save size={16} />}
-                  {savingSettings ? "Guardando..." : settingsSaved ? "Guardado" : "Guardar configuración"}
-                </motion.button>
-              </div>
-            </>
-          )}
         </div>
       </main>
     </div>

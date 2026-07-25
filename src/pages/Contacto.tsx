@@ -3,18 +3,18 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2 } from "lucide-react";
 
-const PINK   = "#e83360";
+const PINK = "#e83360";
 const YELLOW = "#f5d318";
-const SKY    = "#55bcd9";
-const DARK   = "#0a6880";
+const SKY = "#55bcd9";
+const DARK = "#0a6880";
 const GRAD_HERO = `linear-gradient(135deg, ${PINK}ee 0%, ${YELLOW}dd 48%, ${SKY}ee 100%)`;
 const GRAD_SOFT = `linear-gradient(135deg, ${PINK}18 0%, ${YELLOW}18 50%, ${SKY}18 100%)`;
 
 const contactInfo = [
-  { icon: Phone,   color: PINK,   label: "Teléfono",        value: "+56 2 2345 6789"          },
-  { icon: Mail,    color: SKY,    label: "Email",            value: "hola@conectahogar.cl"     },
-  { icon: MapPin,  color: YELLOW, label: "Oficina",          value: "Av. Providencia 1234, Santiago" },
-  { icon: Clock,   color: PINK,   label: "Atención",         value: "Lun–Vie 9:00–18:00 hrs"  },
+  { icon: Phone, color: PINK, label: "Teléfono", value: "+56 2 2345 6789" },
+  { icon: Mail, color: SKY, label: "Email", value: "hola@conectahogar.cl" },
+  { icon: MapPin, color: YELLOW, label: "Oficina", value: "Av. Providencia 1234, Santiago" },
+  { icon: Clock, color: PINK, label: "Atención", value: "Lun–Vie 9:00–18:00 hrs" },
 ];
 
 const reasons = ["Solicitar un servicio", "Ser profesional de la plataforma", "Soporte técnico", "Consulta comercial", "Otro"];
@@ -79,7 +79,7 @@ export function Contacto() {
               className="rounded-2xl p-4 text-center backdrop-blur-sm"
               style={{ background: "rgba(255,255,255,0.2)", border: "1.5px solid rgba(255,255,255,0.3)" }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background: "rgba(255,255,255,0.25)" }}>
-                <Icon size={18} style= {{ color: color }} />
+                <Icon size={18} style={{ color: color }} />
               </div>
               <p className="text-xs font-black text-white/60 uppercase tracking-wide mb-0.5">{label}</p>
               <p className="text-xs font-bold text-white leading-snug">{value}</p>

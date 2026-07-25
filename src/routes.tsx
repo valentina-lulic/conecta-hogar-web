@@ -10,8 +10,7 @@ import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
-  // 1. Rutas públicas con Navbar y Footer (Root layout)
-  { 
+  {
     path: "/",
     element: <Root />,
     children: [
