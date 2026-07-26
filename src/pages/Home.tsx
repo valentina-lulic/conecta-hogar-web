@@ -1,13 +1,61 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion, useInView } from "motion/react";
-import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, Phone, CheckCircle2, HardHat } from "lucide-react";
+import { Search, Star, ChevronRight, Wrench, Zap, ShieldCheck, Clock, ThumbsUp, MapPin, MessageSquare, Phone, CheckCircle2, HardHat } from "lucide-react";
 import { ImageWithFallback } from "../components/ui/ImageWithFallback";
 import { InteractiveLogo } from "../components/custom/InteractiveLogo";
 import gasfiteriaImg from "../assets/images/gasfiter.png";
 import electricidadImg from "../assets/images/electricista.png";
 import albanileriaImg from "../assets/images/albanil.png";
 import soldaduraImg from "../assets/images/soldador.png";
+
+function CountUp({ value, duration = 2 }: { value: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [displayValue, setDisplayValue] = useState("0");
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const match = value.match(/^([^\d]*)([\d.,]+)([^\d]*)$/);
+    if (!match) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const [, prefix, numStr, suffix] = match;
+    const cleanNumber = parseFloat(numStr.replace(/\./g, "").replace(",", "."));
+    const isDecimal = numStr.includes(",");
+
+    let startTime: number | null = null;
+    let animationFrameId: number;
+
+    const updateCount = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+
+      const easeOutQuad = 1 - Math.pow(1 - progress, 3);
+      const currentNumber = Math.floor(easeOutQuad * cleanNumber);
+
+      const formattedNumber = isDecimal
+        ? currentNumber.toString()
+        : currentNumber.toLocaleString("es-CL");
+
+      setDisplayValue(`${prefix}${formattedNumber}${suffix}`);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(updateCount);
+      } else {
+        setDisplayValue(value);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(updateCount);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isInView, value, duration]);
+
+  return <span ref={ref}>{displayValue}</span>;
+}
 
 const PINK = "#e83360";
 const YELLOW = "#f5d318";
@@ -104,7 +152,7 @@ export default function Home() {
 
   return (
     <div>
-      {/* ── Hero — el fondo viene del Root ────────────────── */}
+      {/* ── Hero ────────────────── */}
       <section className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden">
         <div className="absolute inset-0" style={{ background: "rgba(255,255,255,0.08)" }} />
 
@@ -208,7 +256,7 @@ export default function Home() {
                     color: c,
                   }}
                 >
-                  {n}
+                  <CountUp value={n} />
                 </p>
 
                 <p
@@ -224,9 +272,15 @@ export default function Home() {
       </section>
 
       {/* ── Nuestros oficios ───────────────────────────────── */}
-      <section id="nosotros" className="py-16 px-4 md:px-10 backdrop-blur-sm scroll-mt-24" style={{ background: "rgba(255,255,255,0.78)" }}>
+      <section id="nosotros" className="py-16 px-4 md:px-10 scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
+            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: PINK }}>
+              Especialidades
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
+              Nuestros Oficios
+            </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
             {trades
@@ -236,58 +290,98 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── ¿Cómo funciona? ── */}
-      <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.72)" }}>
+      {/* ── ¿Cómo funciona? ───────────────────────────────── */}
+      <section className="py-16 px-4 md:px-10 relative z-10">
         <div className="max-w-5xl mx-auto">
+          {/* Encabezado Sofisticado en Blanco */}
           <div className="text-center mb-12">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Paso a paso</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Cómo funciona?</h2>
+            <p className="text-xs md:text-sm font-black tracking-widest uppercase mb-2 text-white/90 drop-shadow">
+              Paso a paso
+            </p>
+            <h2
+              className="text-3xl md:text-5xl font-black text-white drop-shadow-md"
+              style={{ fontFamily: "'Nunito', sans-serif" }}
+            >
+              ¿Cómo funciona?
+            </h2>
           </div>
+
+          {/* Tarjetas 01, 02, 03 con Glassmorphism idéntico a la referencia */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {steps.map((step, i) => (
-              <motion.div key={step.num}
+              <motion.div
+                key={step.num}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="p-6 rounded-2xl bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 flex flex-col items-start relative overflow-hidden"
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="p-8 rounded-3xl backdrop-blur-xl border border-white/50 shadow-2xl flex flex-col items-start relative overflow-hidden transition-all duration-300"
+                style={{
+                  background: "rgba(255, 255, 255, 0.22)", // Mismo cristal traslúcido de la foto
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.12)",
+                }}
               >
-                <span className="text-4xl font-black mb-3" style={{ color: step.color }}>
-                  {step.num}
-                </span>
-                <h3 className="text-lg font-bold mb-2" style={{ color: DARK }}>
+                {/* Badge/Píldora para el número estilo cristal */}
+                <div className="w-14 h-14 rounded-2xl bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center mb-6 shadow-sm">
+                  <span className="text-2xl font-black text-white drop-shadow-sm">
+                    {step.num}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-extrabold text-white mb-3 drop-shadow-sm leading-snug">
                   {step.title}
                 </h3>
-                <p className="text-sm font-semibold text-gray-600 leading-relaxed">
+
+                <p className="text-sm font-medium text-white/90 leading-relaxed drop-shadow-sm">
                   {step.desc}
                 </p>
               </motion.div>
             ))}
           </div>
+
+          {/* Cajas Inferiores alineadas al mismo diseño de cristal */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { icon: ShieldCheck, label: "Profesionales verificados", color: PINK },
-              { icon: Clock, label: "Respuesta en menos de 1 hora", color: SKY },
-              { icon: ThumbsUp, label: "Garantía de satisfacción", color: YELLOW },
-            ].map(({ icon: Icon, label, color }) => (
-              <div key={label} className="flex items-center gap-3 rounded-xl p-4 border-2" style={{ borderColor: `${color}40`, background: `${color}0c` }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}25` }}>
-                  <Icon size={20} style={{ color }} />
+              { icon: ShieldCheck, label: "Profesionales verificados" },
+              { icon: Clock, label: "Respuesta en menos de 1 hora" },
+              { icon: ThumbsUp, label: "Garantía de satisfacción" },
+            ].map(({ icon: Icon, label }, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+                whileHover={{ scale: 1.03, backgroundColor: "rgba(255, 255, 255, 0.35)" }}
+                className="flex items-center gap-4 rounded-2xl p-4 border border-white/50 backdrop-blur-xl shadow-xl transition-all"
+                style={{
+                  background: "rgba(255, 255, 255, 0.22)",
+                }}
+              >
+                <div className="w-11 h-11 rounded-xl bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center shrink-0 shadow-sm">
+                  <Icon size={22} className="text-white drop-shadow" />
                 </div>
-                <p className="text-sm font-bold" style={{ color: DARK }}>{label}</p>
-              </div>
+                <p className="text-sm font-bold text-white tracking-wide drop-shadow-sm">
+                  {label}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Profesionales ─────────────────────────────────── */}
-      <section id="profesionales" className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.80)" }}>
+      <section id="profesionales" className="py-16 px-4 md:px-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: SKY }}>Nuestros expertos</p>
-              <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Profesionales destacados</h2>
+              <p className="text-xs font-black tracking-widest uppercase mb-2 text-yellow-300 drop-shadow-sm">
+                Nuestros expertos
+              </p>
+              <h2 className="text-3xl md:text-4xl font-black text-white" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                Profesionales destacados :
+              </h2>
             </div>
             <a href="#" className="hidden md:inline-flex items-center gap-1 text-sm font-black hover:opacity-60 transition-opacity" style={{ color: PINK }}>
               Ver todos <ChevronRight size={16} />
@@ -339,27 +433,37 @@ export default function Home() {
       </section>
 
       {/* ── Testimonios ───────────────────────────────────── */}
-      <section className="py-16 px-4 md:px-10 backdrop-blur-sm" style={{ background: "rgba(232,51,96,0.15)" }}>
+      <section className="py-16 px-4 md:px-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: PINK }}>Testimonios</p>
-            <h2 className="text-3xl md:text-4xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: "#fff" }}>Lo que dicen nuestros usuarios</h2>
+            <p className="text-xs font-black tracking-widest uppercase mb-2 text-yellow-300 drop-shadow-sm">
+              Testimonios
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black text-white" style={{ fontFamily: "'Nunito', sans-serif" }}>
+              Lo que dicen nuestros usuarios :
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
               <motion.div key={t.name}
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}
-                className="rounded-2xl p-6 backdrop-blur-sm"
-                style={{ background: "rgba(255,255,255,0.2)", border: "1.5px solid rgba(255,255,255,0.35)" }}>
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.rating }).map((_, j) => <Star key={j} size={14} fill="white" stroke="none" />)}
+                className="rounded-2xl p-6 bg-white/60 backdrop-blur-md shadow-sm border border-gray-100 flex flex-col justify-between">
+
+                <div>
+                  {/* Badge de recomendación / Like (Reemplaza a las estrellas) */}
+                  <div className="flex items-center gap-1.5 mb-4 text-xs font-extrabold px-3 py-1 bg-green-50 text-blue-700 rounded-full w-fit border border-blue-200">
+                    <ThumbsUp size={13} className="fill-blue-600 stroke-blue-600" />
+                    <span>Recomendado</span>
+                  </div>
+
+                  <p className="text-sm leading-relaxed mb-5 text-gray-700 font-medium">"{t.text}"</p>
                 </div>
-                <p className="text-sm leading-relaxed mb-5 text-white/90">"{t.text}"</p>
+
                 <div className="flex items-center gap-3">
-                  <img src={t.img} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-white/50" />
+                  <img src={t.img} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
                   <div>
-                    <p className="font-bold text-sm text-white">{t.name}</p>
-                    <p className="text-xs font-semibold text-white/60">{t.location}</p>
+                    <p className="font-bold text-sm" style={{ color: DARK }}>{t.name}</p>
+                    <p className="text-xs font-semibold text-gray-400">{t.location}</p>
                   </div>
                 </div>
               </motion.div>
@@ -369,7 +473,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA profesionales ─────────────────────────────── */}
-      <section className="py-16 px-4 md:px-10 text-center backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.80)" }}>
+      <section className="py-16 px-4 md:px-10 text-center">
         <div className="max-w-3xl mx-auto">
           <p className="text-xs font-black tracking-widest uppercase mb-3" style={{ color: PINK }}>¿Eres profesional?</p>
           <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>

@@ -1,20 +1,19 @@
 import { useState } from "react";
-// 1. Importa ScrollRestoration aquí 👇
 import { Outlet, Link, useLocation, ScrollRestoration } from "react-router-dom";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import logoImg from "../../assets/icons/logoCH-removebg-preview.png";
-import bgImg from "../../assets/images/FONDOAPP.png";
+import bgImg from "../../assets/images/FONDOAPPFINAL.png";
 import { InteractiveLogo } from "./InteractiveLogo";
 
 const PINK = "#e83360";
 
 const navLinks = [
-  { href: "/nosotros",      label: "Nosotros", route: true },
+  { href: "/nosotros", label: "Nosotros", route: true },
   { href: "/profesionales", label: "Profesionales", route: true },
-  { href: "/contacto",      label: "Contacto", route: true },
-  { href: "/garantia",      label: "Garantía", route: true },
+  { href: "/contacto", label: "Contacto", route: true },
+  { href: "/garantia", label: "Garantía", route: true },
 ];
 
 // ── Root layout ────────────────────────────────────────────────
@@ -24,17 +23,20 @@ export function Root() {
 
   return (
     <div
-      className="min-h-screen flex flex-col relative bg-top bg-no-repeat w-full"
+      className="min-h-screen flex flex-col relative w-full"
       style={{
         fontFamily: "'Poppins', sans-serif",
         backgroundImage: `url(${bgImg as unknown as string})`,
-        backgroundSize: "100% auto",
-        backgroundColor: "#c81e51",
+        backgroundPosition: "top center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover", // Se estira en ancho y alto para cubrir siempre todo el contenido dinámico
+        backgroundColor: "#52c3b6", // Color respaldo integrado por si tarda en cargar la imagen
       }}
     >
       {/* ScrollRestoration */}
       <ScrollRestoration />
 
+      {/* Navbar Superior */}
       <div className="sticky top-5 z-50 px-4 md:px-12 max-w-7xl mx-auto w-full">
         <nav
           className="flex items-center justify-between pl-6 pr-2 py-2 rounded-full border border-white/40 bg-[#fffbf7] shadow-lg"
@@ -85,6 +87,7 @@ export function Root() {
         </nav>
       </div>
 
+      {/* Menú Móvil */}
       {menuOpen && (
         <div
           className="fixed inset-0 z-40 flex flex-col pt-28 px-8 gap-6"
@@ -138,13 +141,19 @@ export function Root() {
         </div>
       )}
 
+      {/* Contenido Dinámico */}
       <main className="flex-1">
         <Outlet />
       </main>
 
+      {/* Footer con tinte suave pastel dejando traslucir el mapa */}
       <footer
-        className="px-4 md:px-10 py-12"
-        style={{ background: "rgba(242, 97, 60, 0.85)", backdropFilter: "blur(4px)" }}
+        className="relative z-10 w-full px-4 md:px-10 py-12 border-t backdrop-blur-sm transition-all"
+        style={{
+          /* Transición semitransparente: deja ver el mapa de fondo de forma armoniosa */
+          background: "linear-gradient(to bottom, rgba(82, 195, 182, 0.4) 0%, rgba(131, 208, 163, 0.65) 50%, rgba(226, 220, 108, 0.85) 100%)",
+          borderColor: "rgba(255, 255, 255, 0.3)",
+        }}
       >
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
@@ -152,26 +161,27 @@ export function Root() {
               <div className="inline-block mb-3">
                 <ImageWithFallback src={logoImg} alt="Conecta Hogar" className="h-16 w-auto object-contain drop-shadow-md" />
               </div>
-              <p className="text-white/80 text-sm leading-relaxed">
+              <p className="text-gray-900 text-sm leading-relaxed font-semibold">
                 Conectamos hogares con los mejores profesionales de Chile.
               </p>
             </div>
+
             {[
               { title: "Servicios", links: [["#", "Gasfitería"], ["#", "Electricidad"], ["#", "Albañilería"], ["#", "Soldaduría"]] },
               { title: "Empresa", links: [["#", "Sobre nosotros"], ["/garantia", "Garantía"], ["#", "Prensa"], ["/contacto", "Trabaja con nosotros"]] },
               { title: "Soporte", links: [["/contacto", "Ayuda"], ["/contacto", "Contacto"], ["#", "Términos"], ["#", "Privacidad"]] },
             ].map(({ title, links }) => (
               <div key={title}>
-                <p className="font-black text-white text-sm mb-4">{title}</p>
+                <p className="font-black text-gray-900 text-sm mb-4">{title}</p>
                 <ul className="space-y-2">
                   {links.map(([href, label]) => (
                     <li key={label}>
                       {href.startsWith("/") ? (
-                        <Link to={href} className="text-white/65 text-sm hover:text-white transition-colors">
+                        <Link to={href} className="text-gray-800 text-sm hover:text-black transition-colors font-bold">
                           {label}
                         </Link>
                       ) : (
-                        <a href={href} className="text-white/65 text-sm hover:text-white transition-colors">
+                        <a href={href} className="text-gray-800 text-sm hover:text-black transition-colors font-bold">
                           {label}
                         </a>
                       )}
@@ -182,8 +192,8 @@ export function Root() {
             ))}
           </div>
 
-          <div className="border-t border-white/20 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-white/50 text-xs font-semibold">
-            <p>© 2026 Conecta Hogar. Todos los derechos reservados.</p>
+          <div className="border-t border-gray-800/20 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-gray-800 text-xs font-bold">
+            <p>© {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.</p>
             <p>Hecho con ❤️ en Chile</p>
           </div>
         </div>
