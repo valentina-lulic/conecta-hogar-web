@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import logoImg from "../../assets/icons/logoCH-removebg-preview.png";
-import bgImg from "../../assets/images/FONDO.png";
+import bgImg from "../../assets/images/FONDOAPP.png";
 import { InteractiveLogo } from "./InteractiveLogo";
 
 const PINK = "#e83360";
