@@ -76,7 +76,7 @@ export function Registro() {
   };
 
   return (
-    <div className="w-full py-12 px-4 flex justify-center items-center">
+    <div className="min-h-screen py-12 px-4" style={{ background: "linear-gradient(135deg, #aee6f2 0%, #55bcd9 100%)" }}>
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <motion.div

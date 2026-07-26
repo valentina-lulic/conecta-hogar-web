@@ -14,11 +14,11 @@ const YELLOW = "#f5d318";
 const SKY = "#55bcd9";
 const DARK = "#0a6880";
 
-const _categories = [
-  { icon: Wrench,   label: "Gasfitería",   color: SKY,    bg: `${SKY}20`    },
-  { icon: Zap,      label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
-  { icon: HardHat,  label: "Albañilería",  color: PINK,   bg: `${PINK}18`   },
-  { icon: Wrench,   label: "Soldaduría",   color: "#f97316", bg: "#f9731620" },
+const categories = [
+  { icon: Wrench, label: "Gasfitería", color: SKY, bg: `${SKY}20` },
+  { icon: Zap, label: "Electricidad", color: YELLOW, bg: `${YELLOW}30` },
+  { icon: HardHat, label: "Albañilería", color: PINK, bg: `${PINK}18` },
+  { icon: Wrench, label: "Soldaduría", color: "#f97316", bg: "#f9731620" },
 ];
 
 const trades = [
@@ -45,9 +45,9 @@ const trades = [
 ];
 
 const professionals = [
-  { name: "Carlos Muñoz",   specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true,  img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK   },
-  { name: "Ana Rodríguez",  specialty: "Electricista",          likes: 89,  location: "Providencia",     available: true,  img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada",      badgeColor: SKY    },
-  { name: "Pedro Saavedra", specialty: "Pintor profesional",    likes: 64,  location: "Las Condes",      available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado",       badgeColor: YELLOW },
+  { name: "Carlos Muñoz", specialty: "Gasfitero certificado", likes: 127, location: "Santiago Centro", available: true, img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format", badge: "Top Profesional", badgeColor: PINK },
+  { name: "Ana Rodríguez", specialty: "Electricista", likes: 89, location: "Providencia", available: true, img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format", badge: "Verificada", badgeColor: SKY },
+  { name: "Pedro Saavedra", specialty: "Pintor profesional", likes: 64, location: "Las Condes", available: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format", badge: "Destacado", badgeColor: YELLOW },
 ];
 
 const steps = [
@@ -186,40 +186,40 @@ export default function Home() {
             </div>
           </div>
 
-         {/* Stats */}   
-        <div className="max-w-5xl mx-auto mt-14 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-center">
-          {[
-            { n: "+1.000", l: "Profesionales", c: PINK },
-            { n: "+4.500", l: "Servicios completados", c: SKY },
-            { n: "98%", l: "Clientes satisfechos", c: YELLOW },
-          ].map(({ n, l, c }) => (
-            <div
-              key={l}
-              className="rounded-2xl py-3 sm:py-4 md:py-5 px-2 sm:px-3 md:px-4 backdrop-blur-md flex flex-col justify-center items-center min-h-[120px]"
-              style={{
-                background: "rgba(255,255,255,0.65)",
-                border: `2px solid ${c}55`,
-              }}
-            >
-              <p
-                className="text-2xl sm:text-3xl lg:text-4xl font-black whitespace-nowrap"
+          {/* Stats */}
+          <div className="max-w-5xl mx-auto mt-14 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-center">
+            {[
+              { n: "+1.000", l: "Profesionales", c: PINK },
+              { n: "+4.500", l: "Servicios completados", c: SKY },
+              { n: "98%", l: "Clientes satisfechos", c: YELLOW },
+            ].map(({ n, l, c }) => (
+              <div
+                key={l}
+                className="rounded-2xl py-3 sm:py-4 md:py-5 px-2 sm:px-3 md:px-4 backdrop-blur-md flex flex-col justify-center items-center min-h-[120px]"
                 style={{
-                  fontFamily: "'Nunito', sans-serif",
-                  color: c,
+                  background: "rgba(255,255,255,0.65)",
+                  border: `2px solid ${c}55`,
                 }}
               >
-                {n}
-              </p>
+                <p
+                  className="text-2xl sm:text-3xl lg:text-4xl font-black whitespace-nowrap"
+                  style={{
+                    fontFamily: "'Nunito', sans-serif",
+                    color: c,
+                  }}
+                >
+                  {n}
+                </p>
 
-              <p
-                className="text-xs sm:text-sm font-bold mt-2"
-                style={{ color: DARK }}
-              >
-                {l}
-              </p>
-            </div>
-          ))}
-        </div>
+                <p
+                  className="text-xs sm:text-sm font-bold mt-2"
+                  style={{ color: DARK }}
+                >
+                  {l}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
