@@ -146,56 +146,44 @@ export function Root() {
         <Outlet />
       </main>
 
-      {/* Footer con tinte suave pastel dejando traslucir el mapa */}
+      {/* Footer con difuminado anticipado y mayor espacio para el logo */}
       <footer
-        className="relative z-10 w-full px-4 md:px-10 py-12 border-t backdrop-blur-sm transition-all"
+        className="relative z-10 w-full px-4 md:px-10 pt-24 pb-8 backdrop-blur-lg transition-all text-slate-700 font-medium"
         style={{
-          /* Transición semitransparente: deja ver el mapa de fondo de forma armoniosa */
-          background: "linear-gradient(to bottom, rgba(82, 195, 182, 0.4) 0%, rgba(131, 208, 163, 0.65) 50%, rgba(226, 220, 108, 0.85) 100%)",
-          borderColor: "rgba(255, 255, 255, 0.3)",
+          /* Gradiente que llega al blanco casi puro mucho más rápido */
+          background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 1) 50%)",
+          /* Máscara que inicia la opacidad desde el borde superior absoluto */
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 18%)",
         }}
       >
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-            <div className="md:col-span-1">
-              <div className="inline-block mb-3">
-                <ImageWithFallback src={logoImg} alt="Conecta Hogar" className="h-16 w-auto object-contain drop-shadow-md" />
-              </div>
-              <p className="text-gray-900 text-sm leading-relaxed font-semibold">
-                Conectamos hogares con los mejores profesionales de Chile.
-              </p>
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+
+          {/* Logo y mensaje principal (con mayor separación superior) */}
+          <div className="flex flex-col items-center space-y-3 pt-2">
+            <div className="inline-block relative">
+              <ImageWithFallback
+                src={logoImg}
+                alt="Conecta Hogar"
+                className="h-16 w-auto object-contain drop-shadow-sm"
+              />
             </div>
-
-            {[
-              { title: "Servicios", links: [["#", "Gasfitería"], ["#", "Electricidad"], ["#", "Albañilería"], ["#", "Soldaduría"]] },
-              { title: "Empresa", links: [["#", "Sobre nosotros"], ["/garantia", "Garantía"], ["#", "Prensa"], ["/contacto", "Trabaja con nosotros"]] },
-              { title: "Soporte", links: [["/contacto", "Ayuda"], ["/contacto", "Contacto"], ["#", "Términos"], ["#", "Privacidad"]] },
-            ].map(({ title, links }) => (
-              <div key={title}>
-                <p className="font-black text-gray-900 text-sm mb-4">{title}</p>
-                <ul className="space-y-2">
-                  {links.map(([href, label]) => (
-                    <li key={label}>
-                      {href.startsWith("/") ? (
-                        <Link to={href} className="text-gray-800 text-sm hover:text-black transition-colors font-bold">
-                          {label}
-                        </Link>
-                      ) : (
-                        <a href={href} className="text-gray-800 text-sm hover:text-black transition-colors font-bold">
-                          {label}
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <p className="text-slate-700 text-sm md:text-base font-semibold max-w-md leading-relaxed">
+              Conectamos hogares con los mejores profesionales de Chile.
+            </p>
           </div>
 
-          <div className="border-t border-gray-800/20 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-gray-800 text-xs font-bold">
+          {/* Separador suave */}
+          <div className="w-full max-w-2xl h-[1px] bg-gradient-to-r from-transparent via-slate-300/60 to-transparent my-2" />
+
+          {/* Franja de derechos reservados */}
+          <div className="w-full max-w-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-600 text-xs md:text-sm font-semibold">
             <p>© {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.</p>
-            <p>Hecho con ❤️ en Chile</p>
+            <p className="flex items-center gap-1">
+              Hecho con <span className="text-red-500">❤️</span> en Chile
+            </p>
           </div>
+
         </div>
       </footer>
     </div>
