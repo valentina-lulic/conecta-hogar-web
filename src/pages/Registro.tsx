@@ -88,10 +88,10 @@ export function Registro() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           onSubmit={handleSubmit}
-          className="bg-white/35 backdrop-blur-xl border border-white/50 rounded-3xl shadow-2xl p-8 md:p-12 space-y-6"
+          className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 space-y-6"
         >
           {/* Header dentro de la cápsula */}
-          <div className="text-center md:text-left border-b border-white/40 pb-6">
+          <div className="text-center md:text-left border-b border-gray-100 pb-6">
             <h1
               className="text-3xl md:text-4xl font-bold mb-2 tracking-tight drop-shadow-sm"
               style={{ color: PINK }}
@@ -115,7 +115,7 @@ export function Registro() {
               placeholder="Ej: Juan Pérez González"
               value={formData.nombre}
               onChange={(e) => handleInputChange("nombre", e.target.value)}
-              className="border border-white/60 bg-white/95 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-sm rounded-xl py-5"
+              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
             />
           </div>
 
@@ -131,7 +131,7 @@ export function Registro() {
               placeholder="Ej: 12.345.678-9"
               value={formData.rut}
               onChange={(e) => handleInputChange("rut", e.target.value)}
-              className="border border-white/60 bg-white/95 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-sm rounded-xl py-5"
+              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
             />
           </div>
 
@@ -147,7 +147,7 @@ export function Registro() {
               placeholder="Ej: juan.perez@ejemplo.cl"
               value={formData.correo}
               onChange={(e) => handleInputChange("correo", e.target.value)}
-              className="border border-white/60 bg-white/95 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-sm rounded-xl py-5"
+              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
             />
           </div>
 
@@ -163,12 +163,12 @@ export function Registro() {
               placeholder="Ej: Av. Libertador Bernardo O'Higgins 123, Santiago"
               value={formData.direccion}
               onChange={(e) => handleInputChange("direccion", e.target.value)}
-              className="border border-white/60 bg-white/95 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-sm rounded-xl py-5"
+              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
             />
           </div>
 
           {/* Tipo de usuario */}
-          <div className="space-y-3 pt-4 border-t border-white/40">
+          <div className="space-y-3 pt-4 border-t border-gray-100">
             <Label className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
               <Briefcase size={18} style={{ color: PINK }} />
               Tipo de usuario
@@ -177,8 +177,8 @@ export function Registro() {
               <div
                 onClick={() => handleTipoChange("cliente")}
                 className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "cliente"
-                    ? "border-[#e83360] bg-white shadow-md scale-[1.01]"
-                    : "border-white/60 bg-white/70 hover:bg-white/90 shadow-sm"
+                  ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
+                  : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -197,8 +197,8 @@ export function Registro() {
               <div
                 onClick={() => handleTipoChange("profesional")}
                 className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "profesional"
-                    ? "border-[#e83360] bg-white shadow-md scale-[1.01]"
-                    : "border-white/60 bg-white/70 hover:bg-white/90 shadow-sm"
+                  ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
+                  : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -222,7 +222,7 @@ export function Registro() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               transition={{ duration: 0.3 }}
-              className="space-y-3 pt-4 border-t border-white/40"
+              className="space-y-3 pt-4 border-t border-gray-100"
             >
               <Label className="text-gray-800 font-semibold text-sm">Especialidades</Label>
               <p className="text-xs text-gray-600 font-normal">Selecciona todas las que apliquen</p>
@@ -232,8 +232,8 @@ export function Registro() {
                     key={especialidad}
                     onClick={() => toggleEspecialidad(especialidad)}
                     className={`p-3 border rounded-xl cursor-pointer transition-all ${formData.especialidades.includes(especialidad)
-                        ? "border-[#e83360] bg-white shadow-sm"
-                        : "border-white/60 bg-white/70 hover:bg-white/90 shadow-sm"
+                      ? "border-[#e83360] bg-gray-50 shadow-inner"
+                      : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
                       }`}
                   >
                     <div className="flex items-center gap-2">
