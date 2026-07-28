@@ -146,43 +146,36 @@ export function Root() {
         <Outlet />
       </main>
 
-      {/* Footer con difuminado anticipado y mayor espacio para el logo */}
+      {/* ── Footer Minimalista y Elegante ───────────────────────────────── */}
       <footer
-        className="relative z-10 w-full px-4 md:px-10 pt-24 pb-8 backdrop-blur-lg transition-all text-slate-700 font-medium"
+        className="relative z-10 w-full px-4 md:px-10 pt-20 pb-10 backdrop-blur-lg transition-all text-slate-600 font-medium border-t border-slate-100"
         style={{
-          /* Gradiente que llega al blanco casi puro mucho más rápido */
-          background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 1) 50%)",
-          /* Máscara que inicia la opacidad desde el borde superior absoluto */
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%)",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 18%)",
+          /* Gradiente suave de transparente a blanco sólido */
+          background: "linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 20%, rgba(255, 255, 255, 1) 40%)",
+          /* Máscara para un desvanecimiento suave en el borde superior */
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 15%)",
         }}
       >
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left text-xs md:text-sm font-semibold">
 
-          {/* Logo y mensaje principal (con mayor separación superior) */}
-          <div className="flex flex-col items-center space-y-3 pt-2">
-            <div className="inline-block relative">
-              <ImageWithFallback
-                src={logoImg}
-                alt="Conecta Hogar"
-                className="h-16 w-auto object-contain drop-shadow-sm"
-              />
-            </div>
-            <p className="text-slate-700 text-sm md:text-base font-semibold max-w-md leading-relaxed">
-              Conectamos hogares con los mejores profesionales de Chile.
+          {/* Parte Izquierda: Logo y Copyright */}
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <ImageWithFallback
+              src={logoImg}
+              alt="Conecta Hogar"
+              className="h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+            />
+            <div className="hidden md:block h-6 w-[1px] bg-slate-200" /> {/* Separador vertical solo en desktop */}
+            <p>
+              © {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.
             </p>
           </div>
 
-          {/* Separador suave */}
-          <div className="w-full max-w-2xl h-[1px] bg-gradient-to-r from-transparent via-slate-300/60 to-transparent my-2" />
-
-          {/* Franja de derechos reservados */}
-          <div className="w-full max-w-2xl flex flex-col sm:flex-row justify-between items-center gap-2 text-slate-600 text-xs md:text-sm font-semibold">
-            <p>© {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.</p>
-            <p className="flex items-center gap-1">
-              Hecho con <span className="text-red-500">❤️</span> en Chile
-            </p>
-          </div>
+          {/* Parte Derecha: Hecho con amor */}
+          <p className="flex items-center gap-1.5 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-100 shadow-inner">
+            Hecho con <span className="text-red-500 animate-pulse">❤️</span> en Chile
+          </p>
 
         </div>
       </footer>
