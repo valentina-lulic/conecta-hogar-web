@@ -6,6 +6,7 @@ import Profesionales from "./pages/Profesionales";
 import { Garantia } from "./pages/Garantia";
 import { Contacto } from "./pages/Contacto";
 import { Registro } from "./pages/Registro";
+import { Login } from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
       { path: "garantia", element: <Garantia /> },
       { path: "contacto", element: <Contacto /> },
       { path: "registro", element: <Registro /> },
+      { path: "login", element: <Login /> },
     ],
   },
 

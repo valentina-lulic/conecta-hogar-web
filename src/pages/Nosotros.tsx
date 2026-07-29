@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronLeft, ChevronRight, ShieldCheck, Clock, Users, HeartHandshake } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldCheck, Clock, Users, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Importación de imágenes
@@ -54,7 +54,7 @@ export function Nosotros() {
       }}
     >
 
-      {/* ── 1. HERO COBRIENDO LA PARTE SUPERIOR DEL NAVBAR ── */}
+      {/* ── 1. HERO CuBRIENDO LA PARTE SUPERIOR DEL NAVBAR ── */}
       <section
         className="w-full -mt-20 md:-mt-24 pt-32 md:pt-36 pb-20 px-4 md:px-10 relative overflow-hidden backdrop-blur-sm shadow-sm"
         style={{

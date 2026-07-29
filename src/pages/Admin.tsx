@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import logoImg from "../assets/icons/logito.jpeg";
 import {
   Users,
   CheckCircle2,
@@ -22,7 +23,6 @@ import {
   Pencil,
   RefreshCw,
   Save,
-  Home,
   TrendingUp,
 } from "lucide-react";
 import {
@@ -39,14 +39,13 @@ import {
   Legend,
 } from "recharts";
 
+import { API_URL, clearSession } from "@/data/Api";
+
 // ---- Paleta de marca Conecta Hogar ----
 const PINK = "#e83360";
 const YELLOW = "#f5d318";
 const SKY = "#55bcd9";
 const DARK = "#0a6880";
-
-// Cambiar por la URL real de tu backend
-const API_URL = "http://localhost:8080/api";
 
 type Tab = "dashboard" | "profesionales" | "usuarios" | "estadisticas" | "configuracion";
 
@@ -173,8 +172,7 @@ export default function AdminPanel() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    clearSession();
     navigate("/");
   };
 
@@ -275,22 +273,21 @@ export default function AdminPanel() {
         className={`${sidebarOpen ? "w-64" : "w-20"} bg-white border-r border-gray-100 transition-all duration-300 flex flex-col justify-between z-20`}
       >
         <div>
-          <div className="p-5 flex items-center gap-2 border-b border-gray-100">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: PINK }}>
-              <Home size={18} className="text-white" />
-            </div>
+          <div className="p-5 flex flex-col items-center justify-center gap-2 border-b border-gray-100">
+            <motion.img
+              src={logoImg}
+              alt="Conecta Hogar"
+              animate={{ y: [0, -6, 0], rotate: [0, -3, 3, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className={`${sidebarOpen ? "h-16 w-16" : "h-10 w-10"} rounded-xl object-cover shrink-0 transition-all duration-300`}
+            />
             {sidebarOpen && (
-              <div>
-                <h1 className="font-black text-gray-900 text-base leading-tight" style={{ fontFamily: "'Nunito', sans-serif" }}>
-                  Conecta Hogar
-                </h1>
-                <span
-                  className="inline-block mt-1 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full text-white"
-                  style={{ background: PINK }}
-                >
-                  Panel Admin
-                </span>
-              </div>
+              <span
+                className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full text-white"
+                style={{ background: PINK }}
+              >
+                Panel Admin
+              </span>
             )}
           </div>
 
