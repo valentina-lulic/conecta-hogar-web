@@ -629,7 +629,7 @@ export default function Home() {
                     className="px-4 py-2.5 rounded-full text-white hover:opacity-80 transition-opacity border-2 border-[#55bcd9]"
                     style={{ backgroundColor: "white" }}
                   >
-                    <Phone size={15} color= "#55bcd9"/>
+                    <Phone size={15} color="#55bcd9" />
                   </button>
                 </div>
               </motion.div>
