@@ -69,7 +69,15 @@ export function Root() {
             })}
           </div>
 
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center gap-3">
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <Link
+              to="/login"
+              className="px-5 py-3 text-sm font-bold rounded-full bg-[#55bcd9] text-white hover:opacity-90 transition-opacity text-center tracking-wide"
+            >
+              Ingresar
+            </Link>
+          </motion.div>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
                 to="/registro"
@@ -123,7 +131,7 @@ export function Root() {
 
           <div className="border-t border-gray-300 pt-6 flex flex-col gap-4">
             <Link
-              to="/contacto"
+              to="/login"
               onClick={() => setMenuOpen(false)}
               className="py-3 font-black rounded-full border-2 text-gray-700 border-gray-400 text-center"
             >

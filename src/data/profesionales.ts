@@ -1,175 +1,42 @@
 export const especialidades = [
-  {
-    key: "gasfiteria",
-    nombre: "Gasfitería",
-    color: "var(--turquoise)",
-  },
-  {
-    key: "electricidad",
-    nombre: "Electricidad",
-    color: "var(--yellow)",
-  },
-  {
-    key: "albanileria",
-    nombre: "Albañilería",
-    color: "var(--coral)",
-  },
-  {
-    key: "carpinteria",
-    nombre: "Carpintería",
-    color: "var(--amber)",
-  },
-  {
-    key: "techado",
-    nombre: "Techado",
-    color: "var(--teal)",
-  },
-  {
-    key: "pintura",
-    nombre: "Pintura",
-    color: "var(--rose)",
-  },
+  { key: "gasfiteria", nombre: "Gasfitería", color: "var(--turquoise)" },
+  { key: "electricidad", nombre: "Electricidad", color: "var(--yellow)" },
+  { key: "albanileria", nombre: "Albañilería", color: "var(--coral)" },
+  { key: "carpinteria", nombre: "Carpintería", color: "var(--amber)" },
+  { key: "techado", nombre: "Techado", color: "var(--teal)" },
+  { key: "pintura", nombre: "Pintura", color: "var(--rose)" },
 ];
 
 const NOMBRES_HOMBRES = [
-
-  "Juan",
-  "Pedro",
-  "Luis",
-  "Manuel",
-  "Tomás",
-  "Diego",
-  "Rodrigo",
-  "Esteban",
-  "Francisco",
-  "Ignacio",
-  "Sebastian",
-  "Matías",
-  "Nicolás",
-  "Benjamín",
-  "Marcelo",
-  "Eduardo",
-  "Alejandro",
-  "Cristian",
-  "Omar",
-  "Claudio",
-  "Patricio",
-  "Emilio",
-  "José",
-  "Gabriel",
-  "Andrés",
-  "Felipe",
-  "Daniel",
-  "Cristóbal",
-  "Álvaro",
-  "Vicente",
-  "Joaquín",
-  "Jorge",
-  "Maximiliano",
+  "Juan", "Pedro", "Luis", "Manuel", "Tomás", "Diego", "Rodrigo", "Esteban",
+  "Francisco", "Ignacio", "Sebastian", "Matías", "Nicolás", "Benjamín", "Marcelo",
+  "Eduardo", "Alejandro", "Cristian", "Omar", "Claudio", "Patricio", "Emilio",
+  "José", "Gabriel", "Andrés", "Felipe", "Daniel", "Cristóbal", "Álvaro", "Vicente",
+  "Joaquín", "Jorge", "Maximiliano",
 ];
-  
+
 const NOMBRES_MUJERES = [
-  "Laura",
-  "María",
-  "Camila",
-  "Andrea",
-  "Sofía",
-  "Javiera",
-  "Carolina",
-  "Ana",
-  "Silvia",
-  "Claudia",
-  "Patricia",
-  "Macarena",
-  "Paula",
-  "Constanza",
-  "Raquel",
+  "Laura", "Stephanie", "Camila", "Andrea", "Sofía", "Javiera", "Carolina", "Ana",
+  "Silvia", "Claudia", "Patricia", "Macarena", "Paula", "Constanza", "Raquel", "María",
 ];
 
 const APELLIDOS = [
-  "Pérez",
-  "González",
-  "Silva",
-  "Rojas",
-  "Fuentes",
-  "Herrera",
-  "Bravo",
-  "Muñoz",
-  "Vargas",
-  "Castillo",
-  "Lopez",
-  "Soto",
-  "Martínez",
-  "Ramírez",
-  "Torres",
-  "Cruz",
-  "Morales",
-  "Ortíz",
-  "Rodríguez",
-  "Hernández",
-  "Gutiérrez",
-  "Alarcón",
-  "Navarro",
-  "Padilla",
-  "Vega",
-  "Campos",
-  "Riquelme",
-  "Gaete",
-  "Carrasco",
-  "Marín",
-  "Valderrama",
-  "Pinto",
-  "Gatica",
-  "Betancourt",
-  "Aravena",
-  "Cárdenas",
-  "Concha",
-  "Miranda",
-  "Godoy",
-  "Díaz",
-  "Cortés",
-  "Parra",
-  "Guerrero",
-  "Castro",
+  "Pérez", "González", "Silva", "Rojas", "Fuentes", "Herrera", "Bravo", "Muñoz",
+  "Vargas", "Castillo", "Lopez", "Soto", "Martínez", "Ramírez", "Torres", "Cruz",
+  "Morales", "Ortíz", "Rodríguez", "Hernández", "Gutiérrez", "Alarcón", "Navarro",
+  "Padilla", "Vega", "Campos", "Riquelme", "Gaete", "Carrasco", "Marín", "Valderrama",
+  "Pinto", "Gatica", "Betancourt", "Aravena", "Cárdenas", "Concha", "Miranda",
+  "Godoy", "Díaz", "Cortés", "Parra", "Guerrero", "Castro",
 ];
 
-// Direcciones de ejemplo para que aparezcan en las tarjetas
 const COMUNAS = [
-  "Santiago Centro",
-  "Providencia",
-  "Estación Central",
-  "Ñuñoa",
-  "La Florida",
-  "Maipú",
-  "Vitacura",
-  "Peñalolén",
-  "Puente Alto",
-  "San Joaquín",
-  "La Cisterna",
-  "Independencia",
-  "La Granja",
-  "Quilicura",
-  "Lo Prado",
-  "San Bernardo",
-  "Renca",
-  "Huechuraba",
-  "Conchalí",
-  "San Miguel",
-  "El Bosque",
-  "San Ramón",
-  "Pudahuel",
-  "Lo Espejo",
-  "Cerrillos",
-  "Pirque",
-  "San José de Maipo",
-  "Recoleta",
-  "Buin",
-  "Macul",
-  "Pedro Aguirre Cerda",
-  "Cajón del Maipo",
+  "Santiago Centro", "Providencia", "Estación Central", "Ñuñoa", "La Florida",
+  "Maipú", "Vitacura", "Peñalolén", "Puente Alto", "San Joaquín", "La Cisterna",
+  "Independencia", "La Granja", "Quilicura", "Lo Prado", "San Bernardo", "Renca",
+  "Huechuraba", "Conchalí", "San Miguel", "El Bosque", "San Ramón", "Pudahuel",
+  "Lo Espejo", "Cerrillos", "Pirque", "San José de Maipo", "Recoleta", "Buin",
+  "Macul", "Pedro Aguirre Cerda", "Cajón del Maipo",
 ];
-
-// FOTOS
 
 const FOTOS_HOMBRES = Array.from(
   { length: 100 },
@@ -181,7 +48,6 @@ const FOTOS_MUJERES = Array.from(
   (_, i) => `https://randomuser.me/api/portraits/women/${i}.jpg`
 );
 
-// FUNCIÓN PARA OBTENER FOTO
 function fotoParaPersona(esMujer: boolean, id: number): string {
   const pool = esMujer ? FOTOS_MUJERES : FOTOS_HOMBRES;
   return pool[id % pool.length];
@@ -197,13 +63,32 @@ export interface Profesional {
   whatsapp: string;
   telefono: string;
   email: string;
-  foto?: string; 
-  direccion?: string; 
+  foto?: string;
+  direccion?: string;
 }
 
-const CERTIFICACIONES: any = {
+/**
+ * Función de Clasificación Dinámica (Badges)
+ */
+export function obtenerEtiquetaProfesional(p: Profesional): { label: string; claseCSS: string } | null {
+  if (p.likes >= 100 && p.dislikes <= 2) {
+    return { label: "Top Profesional", claseCSS: "top" };
+  }
+
+  if (p.certificacion && p.certificacion.trim().length > 0) {
+    return { label: "Verificada", claseCSS: "verificada" };
+  }
+
+  if (p.likes >= 30) {
+    return { label: "Destacado", claseCSS: "destacado" };
+  }
+
+  return null;
+}
+
+const CERTIFICACIONES: Record<string, string[]> = {
   gasfiteria: [
-    "Certificado SENCE - Gasfitería",
+    "Gasfítero certificado",
     "Técnico en Instalaciones Sanitarias",
     "Certificado SEC Gas",
     "Técnico en Gas y Calefacción SEC",
@@ -211,36 +96,32 @@ const CERTIFICACIONES: any = {
     "Certificado en Reparación de Fugas",
   ],
   electricidad: [
-    "SEC Clase B",
+    "Electricista",
     "Instalador Eléctrico Autorizado",
     "SEC Clase A - Instalaciones Industriales",
     "Técnico Electricista DUOC",
     "Certificado en Automatización del Hogar",
   ],
   albanileria: [
-    "Técnico en Construcción",
+    "Albañil profesional",
     "Maestro Albañil Certificado",
     "Técnico en Obras Civiles INACAP",
     "Certificado en Estructuras de Hormigón",
-    "Técnico en Terminaciones de Obra",
   ],
   carpinteria: [
-    "Maestro Carpintero Certificado",
+    "Carpintero profesional",
     "Técnico en Muebles y Terminaciones",
-    "Técnico en Diseño y Fabricación de Muebles",
     "Certificado en Carpintería en Obra",
   ],
   techado: [
-    "Instalador de Cubiertas Certificado",
+    "Techador profesional",
     "Técnico en Cubiertas y Aislación",
     "Certificado en Impermeabilización",
-    "Técnico en Estructuras de Techumbre",
   ],
   pintura: [
-    "Técnico en Pintura y Terminaciones",
+    "Pintor profesional",
     "Maestro Pintor Certificado",
     "Certificado en Pintura Decorativa",
-    "Técnico en Revestimientos y Pintura Industrial",
   ],
 };
 
@@ -249,49 +130,36 @@ function quitarTildes(texto: string) {
 }
 
 export function generarProfesionales(
-  cantidadPorCategoria = 250
+  cantidadPorCategoria = 6
 ): Profesional[] {
   const lista: Profesional[] = [];
   let id = 1;
   especialidades.forEach((esp, catIdx) => {
     const certs = CERTIFICACIONES[esp.key];
     for (let i = 0; i < cantidadPorCategoria; i++) {
-      
-// 70% hombres - 30% mujeres
-const esMujer = id % 10 < 3;
+      const esMujer = id % 10 < 3;
 
-// Nombre según el género
-const nombre = esMujer
-  ? NOMBRES_MUJERES[(i + catIdx * 7) % NOMBRES_MUJERES.length]
-  : NOMBRES_HOMBRES[(i + catIdx * 7) % NOMBRES_HOMBRES.length];
+      const nombre = esMujer
+        ? NOMBRES_MUJERES[(i + catIdx * 7) % NOMBRES_MUJERES.length]
+        : NOMBRES_HOMBRES[(i + catIdx * 7) % NOMBRES_HOMBRES.length];
 
-// Apellido
-const apellido =
-  APELLIDOS[(i + catIdx * 11) % APELLIDOS.length];
-
-// Teléfono
-const numero = `569${String(10000000 + id).slice(-8)}`;
-
-// Comuna
-const direccion =
-  COMUNAS[(i + catIdx) % COMUNAS.length];
-
-// Foto (1 de cada 7 sin foto)
-const foto =
-  id % 5 === 0
-    ? undefined
-    : fotoParaPersona(esMujer, id);
+      const apellido = APELLIDOS[(i + catIdx * 11) % APELLIDOS.length];
+      const numero = `569${String(10000000 + id).slice(-8)}`;
+      const direccion = COMUNAS[(i + catIdx) % COMUNAS.length];
+      const foto = fotoParaPersona(esMujer, id);
 
       lista.push({
         id,
         nombre: `${nombre} ${apellido}`,
         especialidad: esp.key,
         certificacion: certs[i % certs.length],
-        likes: 20 + ((i * 13 + catIdx * 29) % 200),
+        likes: 30 + ((i * 15 + catIdx * 29) % 200),
         dislikes: (i * 3 + catIdx) % 14,
         whatsapp: numero,
         telefono: `+56 9 ${numero.slice(3, 7)} ${numero.slice(5)}`,
-        email: `${quitarTildes(nombre.toLowerCase())}.${quitarTildes(apellido.toLowerCase())}@correo.cl`,
+        email: `${quitarTildes(nombre.toLowerCase())}.${quitarTildes(
+          apellido.toLowerCase()
+        )}@correo.cl`,
         foto,
         direccion,
       });
@@ -299,7 +167,26 @@ const foto =
     }
   });
 
-  return lista;
+  return lista.sort((a, b) => {
+    const etiquetaA = obtenerEtiquetaProfesional(a)?.claseCSS;
+    const etiquetaB = obtenerEtiquetaProfesional(b)?.claseCSS;
+
+    const peso = (clase?: string) => {
+      if (clase === "top") return 3;
+      if (clase === "verificada") return 2;
+      if (clase === "destacado") return 1;
+      return 0;
+    };
+
+    const pesoA = peso(etiquetaA);
+    const pesoB = peso(etiquetaB);
+
+    if (pesoA !== pesoB) {
+      return pesoB - pesoA;
+    }
+
+    return b.likes - a.likes;
+  });
 }
 
-export const profesionales = generarProfesionales(250);
+export const profesionales = generarProfesionales(6);
