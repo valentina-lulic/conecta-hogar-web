@@ -117,21 +117,27 @@ function StatCounter({ target, prefix, suffix }: StatCounterProps) {
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
-    let start = 0;
-    const duration = 2000;
-    const increment = target / (duration / 16);
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const duration = 1800; // 1.8s
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      
+      // Easing curve (easeOutQuad)
+      const easeOut = 1 - Math.pow(1 - progress, 2);
+      setCount(Math.floor(easeOut * target));
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
       } else {
-        setCount(Math.floor(start));
+        setCount(target);
       }
-    }, 16);
+    };
 
-    return () => clearInterval(timer);
+    animationFrameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [target]);
 
   return (
@@ -146,35 +152,39 @@ function StatCounter({ target, prefix, suffix }: StatCounterProps) {
 export function Garantia() {
   const [particles, setParticles] = useState<Particle[]>([]);
 
+  // Prevent duplicate font loading
   useEffect(() => {
-    const link = document.createElement("link");
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800;900&display=swap";
-    link.rel = "stylesheet";
-    document.head.appendChild(link);
+    const fontId = "google-font-poppins";
+    if (!document.getElementById(fontId)) {
+      const link = document.createElement("link");
+      link.id = fontId;
+      link.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800;900&display=swap";
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    }
   }, []);
 
   const triggerHeartBurst = () => {
     const newParticles: Particle[] = Array.from({ length: 8 }).map((_, i) => ({
-      id: Date.now() + i,
+      id: Date.now() + i + Math.random(),
       x: (Math.random() - 0.5) * 120,
       y: (Math.random() - 0.5) * 120 - 30,
     }));
+
     setParticles((prev) => [...prev, ...newParticles]);
 
+    const idsToRemove = new Set(newParticles.map((p) => p.id));
     setTimeout(() => {
-      setParticles((prev) => prev.filter((p) => !newParticles.includes(p)));
+      setParticles((prev) => prev.filter((p) => !idsToRemove.has(p.id)));
     }, 1000);
   };
 
   return (
-    <div className="relative w-full min-h-screen">
+    <div className="relative w-full min-h-screen font-['Poppins',sans-serif]">
       {/* ── Capa de Fondo Fijo ── */}
       <div
         className="fixed inset-0 pointer-events-none -z-10 bg-cover bg-top bg-no-repeat"
-        style={{
-          backgroundImage: `url(${fondoGarantia})`,
-        }}
+        style={{ backgroundImage: `url(${fondoGarantia})` }}
       />
 
       {/* ── 1. HERO ── */}
@@ -206,20 +216,14 @@ export function Garantia() {
 
             <h1
               className="text-4xl md:text-6xl font-extrabold text-white mb-5"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 4px 20px rgba(0,0,0,0.3)",
-              }}
+              style={{ textShadow: "0 4px 20px rgba(0,0,0,0.3)" }}
             >
               Nuestra garantía
             </h1>
 
             <p
               className="text-lg text-white/95 leading-relaxed max-w-xl mx-auto mb-6 font-light"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 2px 10px rgba(0,0,0,0.3)"
-              }}
+              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
             >
               En Conecta Hogar nos comprometemos con tu tranquilidad. Cada servicio está respaldado por nuestra garantía integral de calidad y satisfacción.
             </p>
@@ -239,16 +243,10 @@ export function Garantia() {
               whileHover={{ scale: 1.04, translateY: -4 }}
               className="rounded-3xl py-7 px-5 text-center cursor-default shadow-md backdrop-blur-md transition-all border border-white/60 bg-[#fffde8]/70 hover:bg-[#fffde8]/85"
             >
-              <p
-                className="text-3xl sm:text-4xl font-extrabold tracking-tight"
-                style={{ fontFamily: "'Poppins', sans-serif", color: color }}
-              >
+              <p className="text-3xl sm:text-4xl font-extrabold tracking-tight" style={{ color }}>
                 <StatCounter target={target} prefix={prefix} suffix={suffix} />
               </p>
-              <p
-                className="text-xs sm:text-sm font-light mt-1 text-slate-800"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
-              >
+              <p className="text-xs sm:text-sm font-light mt-1 text-slate-800">
                 {label}
               </p>
             </motion.div>
@@ -260,23 +258,15 @@ export function Garantia() {
       <section className="py-12 px-4 md:px-10 bg-transparent relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            {/* "SIN LETRA PEQUEÑA" -> MÁS GROSOR Y SOMBRA */}
             <p
               className="text-sm md:text-base font-bold tracking-widest uppercase mb-2 text-white"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 2px 10px rgba(0,0,0,0.6)"
-              }}
+              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.6)" }}
             >
               Sin letra pequeña
             </p>
-            {/* "6 COMPROMISOS CONTIGO" -> CON SOMBRA APLICADA */}
             <h2
               className="text-3xl md:text-5xl font-extrabold text-white drop-shadow-lg"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 4px 16px rgba(0,0,0,0.4)"
-              }}
+              style={{ textShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
             >
               6 compromisos contigo
             </h2>
@@ -302,16 +292,10 @@ export function Garantia() {
                     <Icon size={26} style={{ color }} />
                   </div>
                   <div>
-                    <h3
-                      className="font-extrabold text-lg mb-2 text-slate-900"
-                      style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
+                    <h3 className="font-extrabold text-lg mb-2 text-slate-900">
                       {title}
                     </h3>
-                    <p
-                      className="text-sm leading-relaxed mb-3 text-slate-700 font-light"
-                      style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
+                    <p className="text-sm leading-relaxed mb-3 text-slate-700 font-light">
                       {desc}
                     </p>
                     <span
@@ -319,7 +303,6 @@ export function Garantia() {
                       style={{
                         background: `${color}18`,
                         color,
-                        fontFamily: "'Poppins', sans-serif"
                       }}
                     >
                       ✓ {detail}
@@ -336,23 +319,15 @@ export function Garantia() {
       <section className="py-16 px-4 md:px-10 bg-transparent relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            {/* "EL PROCESO" -> MÁS GROSOR Y SOMBRA */}
             <p
               className="text-sm md:text-base font-bold tracking-widest uppercase mb-2 text-white"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 2px 10px rgba(0,0,0,0.6)"
-              }}
+              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.6)" }}
             >
               El proceso
             </p>
-            {/* "ASÍ PROTEGEMOS CADA SERVICIO" -> CON SOMBRA APLICADA */}
             <h2
               className="text-3xl md:text-5xl font-extrabold text-white drop-shadow-lg"
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                textShadow: "0 4px 16px rgba(0,0,0,0.4)"
-              }}
+              style={{ textShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
             >
               Así protegemos cada servicio
             </h2>
@@ -371,24 +346,15 @@ export function Garantia() {
               >
                 <div
                   className="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-xl shrink-0 text-white shadow-md"
-                  style={{
-                    background: [PINK, SKY, YELLOW, PINK][i],
-                    fontFamily: "'Poppins', sans-serif"
-                  }}
+                  style={{ background: [PINK, SKY, YELLOW, PINK][i] }}
                 >
                   {s.n}
                 </div>
                 <div>
-                  <h4
-                    className="font-extrabold text-base mb-1 text-slate-900"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
+                  <h4 className="font-extrabold text-base mb-1 text-slate-900">
                     {s.t}
                   </h4>
-                  <p
-                    className="text-sm leading-relaxed text-slate-700 font-light"
-                    style={{ fontFamily: "'Poppins', sans-serif" }}
-                  >
+                  <p className="text-sm leading-relaxed text-slate-700 font-light">
                     {s.d}
                   </p>
                 </div>
@@ -401,10 +367,15 @@ export function Garantia() {
       {/* ── CTA Final ── */}
       <section className="py-16 px-4 md:px-10 text-center bg-transparent relative z-10">
         <div className="max-w-2xl mx-auto">
-          {/* Corazón Interactivo -> Círculo blanco puro, sin borde rosa */}
           <div className="relative inline-block mb-6">
             <motion.div
+              role="button"
+              tabIndex={0}
+              aria-label="Animación de corazón interactivo"
               onClick={triggerHeartBurst}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") triggerHeartBurst();
+              }}
               whileHover={{ scale: 1.2, rotate: 8 }}
               whileTap={{ scale: 0.85 }}
               animate={{
@@ -415,7 +386,7 @@ export function Garantia() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-full cursor-pointer shadow-2xl transition-all bg-white"
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full cursor-pointer shadow-2xl transition-all bg-white outline-none focus:ring-2 focus:ring-pink-500"
             >
               <Heart size={36} style={{ color: PINK }} fill={PINK} />
             </motion.div>
@@ -436,24 +407,16 @@ export function Garantia() {
             </AnimatePresence>
           </div>
 
-          {/* "¿LISTO PARA EMPEZAR CON TRANQUILIDAD?" -> CON SOMBRA APLICADA */}
           <h2
             className="text-3xl md:text-5xl font-extrabold mb-4 text-white drop-shadow-lg"
-            style={{
-              fontFamily: "'Poppins', sans-serif",
-              textShadow: "0 4px 18px rgba(0,0,0,0.5)"
-            }}
+            style={{ textShadow: "0 4px 18px rgba(0,0,0,0.5)" }}
           >
             ¿Listo para empezar con tranquilidad?
           </h2>
 
-          {/* "SOLICITA TU SERVICIO HOY..." -> CON SOMBRA APLICADA */}
           <p
             className="text-base md:text-lg font-light mb-8 leading-relaxed text-white max-w-xl mx-auto"
-            style={{
-              fontFamily: "'Poppins', sans-serif",
-              textShadow: "0 3px 12px rgba(0,0,0,0.6)"
-            }}
+            style={{ textShadow: "0 3px 12px rgba(0,0,0,0.6)" }}
           >
             Solicita tu servicio hoy y experimenta la diferencia de trabajar con profesionales respaldados por nuestra garantía integral.
           </p>
@@ -463,10 +426,7 @@ export function Garantia() {
               <Link
                 to="/registro"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm text-white shadow-lg transition-shadow hover:shadow-pink-500/25"
-                style={{
-                  background: PINK,
-                  fontFamily: "'Poppins', sans-serif"
-                }}
+                style={{ background: PINK }}
               >
                 Solicitar servicio <ArrowRight size={16} />
               </Link>
@@ -475,10 +435,7 @@ export function Garantia() {
               <Link
                 to="/profesionales"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm text-white shadow-lg hover:bg-sky-600 transition-colors"
-                style={{
-                  background: SKY,
-                  fontFamily: "'Poppins', sans-serif"
-                }}
+                style={{ background: SKY }}
               >
                 Ver profesionales
               </Link>

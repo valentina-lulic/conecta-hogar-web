@@ -34,15 +34,14 @@ function Profesionales() {
 
   return (
     <div
-      className="w-full min-h-screen bg-cover bg-no-repeat font-sans"
+      className="w-full min-h-screen bg-cover bg-no-repeat font-sans bg-top"
       style={{
         backgroundImage: "url('/FONDOAPPFINAL.png')",
-        backgroundPosition: "top center",
       }}
     >
       {/* Hero Section */}
-      <section className="relative pt-36 pb-14 px-6 text-center -mt-20 md:-mt-24 isolate overflow-hidden">
-        {/* Capa de degradado + blur + difuminado, separada del contenido */}
+      <section className="relative pt-28 sm:pt-36 pb-10 sm:pb-14 px-4 sm:px-6 text-center -mt-16 sm:-mt-24 isolate overflow-hidden">
+        {/* Capa de degradado + blur + difuminado */}
         <div
           className="absolute inset-0 -z-10 backdrop-blur-sm"
           style={{
@@ -53,42 +52,44 @@ function Profesionales() {
           }}
         />
         <div className="max-w-3xl mx-auto">
-          <span className="inline-block text-xs font-bold tracking-wider uppercase text-white bg-navy/30 px-3.5 py-1.5 rounded-full mb-4">
+          <span className="inline-block text-xs font-bold tracking-wider uppercase text-white bg-navy/30 px-3.5 py-1.5 rounded-full mb-3 sm:mb-4">
             Directorio de profesionales
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal leading-tight mb-2 font-poppins">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-teal leading-tight mb-2 font-poppins">
             Encuentra al profesional
             <span className="text-coral"> perfecto</span>
             <br />
             para tu hogar
           </h1>
-          <p className="mt-3 text-base text-teal/90 max-w-lg mx-auto">
+          <p className="mt-2 sm:mt-3 text-sm sm:text-base text-teal/90 max-w-lg mx-auto px-2">
             Explora por especialidad, revisa su certificación y la satisfacción
             de clientes anteriores antes de contactarlo.
           </p>
 
-          {/* Buscador */}
-          <div className="mt-7 max-w-xl mx-auto flex items-center bg-[#fffdf6] rounded-full p-1.5 pl-6 shadow-xl">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              className="text-muted-foreground shrink-0"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              placeholder="¿Qué tipo de profesional necesitas?"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none px-3 py-2 text-sm text-foreground placeholder-muted-foreground font-medium"
-            />
-            <button className="bg-coral hover:bg-coral-dark text-white font-bold text-sm px-6 py-3 rounded-full transition-colors cursor-pointer font-poppins">
+          {/* Buscador Responsivo */}
+          <div className="mt-6 sm:mt-7 max-w-xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center bg-[#fffdf6] rounded-2xl sm:rounded-full p-2 sm:p-1.5 sm:pl-6 shadow-xl gap-2 sm:gap-0">
+            <div className="flex items-center flex-1 px-2 sm:px-0">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                className="text-muted-foreground shrink-0"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder="¿Qué tipo de profesional necesitas?"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className="w-full bg-transparent border-none outline-none px-3 py-2 text-sm text-foreground placeholder-muted-foreground font-medium"
+              />
+            </div>
+            <button className="bg-coral hover:bg-coral-dark text-white font-bold text-sm px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full transition-colors cursor-pointer font-poppins w-full sm:w-auto">
               Buscar
             </button>
           </div>
@@ -99,176 +100,183 @@ function Profesionales() {
       </section>
 
       {/* Secciones por Especialidad */}
-      <main id="sectionsContainer" className="max-w-6xl mx-auto px-6 pb-16">
-        {especialidades.map((esp) => (
-          <section className="py-6" key={esp.key}>
-            <div className="flex items-center gap-3 mb-5">
-              <span
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ background: esp.color }}
-              />
-              <h2 className="text-xl font-bold text-foreground font-poppins">{esp.nombre}</h2>
-              <span className="text-xs text-muted-foreground bg-white border border-border px-2.5 py-0.5 rounded-full font-bold">
-                {
-                  profesionalesFiltrados.filter(
-                    (p) => p.especialidad === esp.key
-                  ).length
-                }
-              </span>
-            </div>
+      <main id="sectionsContainer" className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+        {especialidades.map((esp) => {
+          const listaFiltrada = profesionalesFiltrados.filter(
+            (p) => p.especialidad === esp.key
+          );
 
-            {/* Grid de Tarjetas */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {profesionalesFiltrados
-                .filter((p) => p.especialidad === esp.key)
-                .sort((a, b) => {
-                  const peso = (prof: Profesional) => {
-                    const tag = obtenerEtiquetaProfesional(prof)?.claseCSS;
-                    if (tag === "top") return 3;
-                    if (tag === "verificada") return 2;
-                    if (tag === "destacado") return 1;
-                    return 0;
-                  };
-                  return peso(b) - peso(a) || b.likes - a.likes;
-                })
-                .map((p) => {
-                  const badgeInfo = obtenerEtiquetaProfesional(p);
+          if (busqueda && listaFiltrada.length === 0) return null;
 
-                  return (
-                    <article
-                      className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between p-5"
-                      key={p.id}
-                    >
-                      <div className="flex flex-col gap-3.5">
-                        {/* Fila Superior: Foto + Info */}
-                        <div className="flex items-start gap-3.5">
-                          <div className="relative shrink-0">
-                            <div className="w-18 h-18 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center font-bold text-turquoise-dark text-lg font-poppins">
-                              {p.foto ? (
-                                <img
-                                  src={p.foto}
-                                  alt={p.nombre}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                iniciales(p.nombre)
-                              )}
+          return (
+            <section className="py-6" key={esp.key}>
+              {/* Título de Especialidad y Contador */}
+              <div className="flex items-center gap-3 mb-5">
+                <span
+                  className="w-3.5 h-3.5 rounded-full shrink-0 shadow-xs"
+                  style={{ background: esp.color }}
+                />
+                <h2 className="text-xl sm:text-2xl font-extrabold text-white font-poppins drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] tracking-wide">
+                  {esp.nombre}
+                </h2>
+                <span className="text-xs text-white bg-coral px-2.5 py-0.5 rounded-full font-bold shadow-xs border-none">
+                  {listaFiltrada.length}
+                </span>
+              </div>
+
+              {/* Grid de Tarjetas Responsivo */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                {listaFiltrada
+                  .sort((a, b) => {
+                    const peso = (prof: Profesional) => {
+                      const tag = obtenerEtiquetaProfesional(prof)?.claseCSS;
+                      if (tag === "top") return 3;
+                      if (tag === "verificada") return 2;
+                      if (tag === "destacado") return 1;
+                      return 0;
+                    };
+                    return peso(b) - peso(a) || b.likes - a.likes;
+                  })
+                  .map((p) => {
+                    const badgeInfo = obtenerEtiquetaProfesional(p);
+
+                    return (
+                      <article
+                        className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between p-4 sm:p-5"
+                        key={p.id}
+                      >
+                        <div className="flex flex-col gap-3.5">
+                          {/* Fila Superior: Foto + Info */}
+                          <div className="flex items-start gap-3.5">
+                            <div className="relative shrink-0">
+                              <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center font-bold text-turquoise-dark text-lg font-poppins">
+                                {p.foto ? (
+                                  <img
+                                    src={p.foto}
+                                    alt={p.nombre}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  iniciales(p.nombre)
+                                )}
+                              </div>
+                              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
                             </div>
-                            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white" />
+
+                            <div className="flex flex-col items-start gap-0.5 min-w-0 flex-1">
+                              <h3 className="text-base font-extrabold text-slate-900 leading-tight font-poppins truncate w-full">
+                                {p.nombre}
+                              </h3>
+
+                              {/* Badge */}
+                              {badgeInfo && (
+                                <span
+                                  className={`inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full my-0.5 text-white ${
+                                    badgeInfo.claseCSS === "top"
+                                      ? "bg-coral"
+                                      : badgeInfo.claseCSS === "verificada"
+                                      ? "bg-turquoise"
+                                      : "bg-yellow-brand !text-slate-900!"
+                                  }`}
+                                >
+                                  {badgeInfo.label}
+                                </span>
+                              )}
+
+                              <p className="text-xs font-medium text-slate-500 line-clamp-1">
+                                {p.certificacion}
+                              </p>
+
+                              {/* Likes */}
+                              <div className="flex items-center gap-1.5 mt-0.5 text-xs text-slate-500">
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 24 24"
+                                  fill="#38bdf8"
+                                  stroke="#38bdf8"
+                                >
+                                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                                </svg>
+                                <span className="font-extrabold text-slate-900">
+                                  {p.likes}
+                                </span>
+                                <span>Me gusta</span>
+                              </div>
+                            </div>
                           </div>
 
-                          <div className="flex flex-col items-start gap-0.5">
-                            <h3 className="text-base font-extrabold text-slate-900 leading-tight font-poppins">
-                              {p.nombre}
-                            </h3>
-
-                            {/* Badge */}
-                            {badgeInfo && (
-                              <span
-                                className={`inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full my-0.5 text-white ${
-                                  badgeInfo.claseCSS === "top"
-                                    ? "bg-coral"
-                                    : badgeInfo.claseCSS === "verificada"
-                                    ? "bg-turquoise"
-                                    : "bg-yellow-brand !text-slate-900!"
-                                }`}
-                              >
-                                {badgeInfo.label}
-                              </span>
-                            )}
-
-                            <p className="text-xs font-medium text-slate-500">
-                              {p.certificacion}
-                            </p>
-
-                            {/* Likes */}
-                            <div className="flex items-center gap-1.5 mt-0.5 text-xs text-slate-500">
+                          {/* Dirección / Ubicación */}
+                          {p.direccion && (
+                            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium -mt-0.5">
                               <svg
                                 width="14"
                                 height="14"
                                 viewBox="0 0 24 24"
-                                fill="#38bdf8"
-                                stroke="#38bdf8"
+                                fill="none"
+                                stroke="#94a3b8"
+                                strokeWidth="2"
+                                className="shrink-0"
                               >
-                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
                               </svg>
-                              <span className="font-extrabold text-slate-900">
-                                {p.likes}
-                              </span>
-                              <span>Me gusta</span>
+                              <span className="truncate">{p.direccion}</span>
                             </div>
-                          </div>
+                          )}
                         </div>
 
-                        {/* Dirección / Ubicación */}
-                        {p.direccion && (
-                          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium -mt-0.5">
+                        {/* Botones de Acción */}
+                        <div className="flex items-center gap-2.5 pt-3 mt-auto">
+                          <button
+                            className="flex-1 h-10 sm:h-11 px-4 rounded-full text-xs font-extrabold text-white bg-coral hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
+                            onClick={() => setProfesionalSeleccionado(p)}
+                          >
+                            Contactar
+                          </button>
+
+                          <a
+                            className="px-3.5 h-10 sm:h-11 rounded-full border-2 border-turquoise text-turquoise bg-white flex items-center justify-center hover:opacity-80 hover:scale-[1.03] active:scale-[0.97] transition-all"
+                            href={`tel:${p.whatsapp}`}
+                            aria-label="Llamar"
+                          >
                             <svg
-                              width="14"
-                              height="14"
+                              width="18"
+                              height="18"
                               viewBox="0 0 24 24"
                               fill="none"
-                              stroke="#94a3b8"
+                              stroke="#38bdf8"
                               strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                              <circle cx="12" cy="10" r="3" />
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                             </svg>
-                            <span>{p.direccion}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Botones de Acción */}
-                      <div className="flex items-center gap-2.5 pt-2.5 mt-auto">
-                        <button
-                          className="flex-1 h-11 px-4 rounded-full text-xs font-extrabold text-white bg-coral hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-xs"
-                          onClick={() => setProfesionalSeleccionado(p)}
-                        >
-                          Contactar
-                        </button>
-
-                        <a
-                          className="px-3.5 py-2.5 rounded-full border-2 border-turquoise text-turquoise bg-white flex items-center justify-center hover:opacity-80 hover:scale-[1.03] active:scale-[0.97] transition-all"
-                          href={`tel:${p.whatsapp}`}
-                          aria-label="Llamar"
-                        >
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#38bdf8"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                          </svg>
-                        </a>
-                      </div>
-                    </article>
-                  );
-                })}
-            </div>
-          </section>
-        ))}
+                          </a>
+                        </div>
+                      </article>
+                    );
+                  })}
+              </div>
+            </section>
+          );
+        })}
 
         {profesionalesFiltrados.length === 0 && (
-          <div className="text-center py-16 text-muted-foreground font-medium text-sm">
+          <div className="text-center py-16 text-muted-foreground font-medium text-sm bg-white/80 rounded-2xl backdrop-blur-xs">
             No encontramos profesionales que coincidan 🔍
           </div>
         )}
       </main>
 
-      {/* Modal de contacto */}
+      {/* Modal de contacto Responsivo */}
       {profesionalSeleccionado && (
         <div
-          className="fixed inset-0 z-50 bg-[#16284a]/45 flex items-center justify-center p-5 animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-[#16284a]/45 flex items-center justify-center p-4 animate-in fade-in duration-150"
           onClick={() => setProfesionalSeleccionado(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-xs w-full p-7 relative shadow-2xl border border-border"
+            className="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-7 relative shadow-2xl border border-border"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -279,7 +287,7 @@ function Profesionales() {
             </button>
 
             <div className="text-center mb-5">
-              <div className="w-17 h-17 rounded-2xl bg-turquoise-dark text-white flex items-center justify-center font-bold text-lg mx-auto mb-2.5 overflow-hidden font-poppins">
+              <div className="w-16 h-16 sm:w-17 sm:h-17 rounded-2xl bg-turquoise-dark text-white flex items-center justify-center font-bold text-lg mx-auto mb-2.5 overflow-hidden font-poppins">
                 {profesionalSeleccionado.foto ? (
                   <img
                     src={profesionalSeleccionado.foto}
@@ -347,9 +355,9 @@ function Profesionales() {
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                   </svg>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span>Correo</span>
-                  <span className="text-xs font-normal text-muted-foreground">
+                  <span className="text-xs font-normal text-muted-foreground truncate">
                     {profesionalSeleccionado.email || "correo@ejemplo.cl"}
                   </span>
                 </div>
