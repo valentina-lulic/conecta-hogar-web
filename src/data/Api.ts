@@ -1,4 +1,6 @@
-export const API_URL = "http://localhost:8080";
+export const BACKEND_URL = "http://localhost:8080";
+
+export const API_URL = BACKEND_URL;
 
 export interface AuthResponse {
   token: string;
@@ -65,4 +67,42 @@ export function isAuthenticated(): boolean {
 
 export function clearSession(): void {
   localStorage.removeItem("token");
+}
+
+// ==============================
+// MAESTROS
+// ==============================
+
+export interface Maestro {
+  id: number;
+  nombre: string;
+  apellido: string;
+  correo: string;
+  telefono: string;
+
+  especialidad: string;
+  descripcion: string;
+  experienciaAnos: number;
+  comuna: string;
+  disponible: boolean;
+
+  foto?: string;
+
+  meGusta?: number;
+  noMeGusta?: number;
+}
+
+export async function getMaestros(): Promise<Maestro[]> {
+  const response = await fetch(`${API_URL}/maestros`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar los profesionales.");
+  }
+
+  return response.json();
 }
