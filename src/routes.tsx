@@ -6,7 +6,7 @@ import Profesionales from "./pages/Profesionales";
 import { Garantia } from "./pages/Garantia";
 import { Contacto } from "./pages/Contacto";
 import { Registro } from "./pages/Registro";
-import { Login } from "./pages/Login";
+import  Login  from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 

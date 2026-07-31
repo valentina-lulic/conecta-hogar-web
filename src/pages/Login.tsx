@@ -9,7 +9,7 @@ import { loginRequest, saveSession } from "@/data/Api";
 
 const PINK = "#e83360";
 
-export function Login() {
+export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,18 +26,24 @@ export function Login() {
     }
 
     setLoading(true);
-    try {
-      const session = await loginRequest(email, password);
-      saveSession(session);
 
-      // Redirige según el rol recibido del backend
-      navigate(session.role === "Administrador" ? "/admin" : "/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo iniciar sesión.");
-    } finally {
-      setLoading(false);
-    }
+try {
+  const session = await loginRequest(email, password);
+
+  saveSession(session);
+
+  navigate("/");
+} catch (err) {
+  setError(
+    err instanceof Error
+      ? err.message
+      : "No se pudo iniciar sesión."
+  );
+} finally {
+  setLoading(false);
+}
   };
+
 
   return (
     <div className="w-full py-12 px-4 flex justify-center items-center min-h-[70vh]">
@@ -49,23 +55,27 @@ export function Login() {
         >
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors mb-6 font-bold"
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors mb-6 font-normal"
           >
             <ArrowLeft size={20} />
             Volver al inicio
           </button>
+
+          {/* TÍTULO POPPINS BLACK */}
           <h1
-        className="text-4xl font-bold text-white mb-2"
-        style={{ textShadow: "0 2px 8px rgba(7, 7, 7, 0.9)" }}
-        >
-        Bienvenido de nuevo
-        </h1>
-        <p
-        className="text-white text-lg font-semibold"
-        style={{ textShadow: "0 1px 4px rgba(13, 13, 14, 0.7)" }}
-        >
-        Ingresa tus datos para continuar
-        </p>
+            className="text-4xl font-black text-white mb-2 tracking-tight"
+            style={{ textShadow: "0 2px 8px rgba(7, 7, 7, 0.9)" }}
+          >
+            Bienvenido de nuevo
+          </h1>
+
+          {/* SUBTÍTULO POPPINS SUAVE */}
+          <p
+            className="text-white text-lg font-normal opacity-90"
+            style={{ textShadow: "0 1px 4px rgba(13, 13, 14, 0.7)" }}
+          >
+            Ingresa tus datos para continuar
+          </p>
         </motion.div>
 
         <motion.form
@@ -76,14 +86,14 @@ export function Login() {
           className="bg-white rounded-2xl shadow-2xl p-8 space-y-6"
         >
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm font-semibold">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm font-normal">
               <AlertCircle size={18} className="shrink-0" />
               {error}
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-700 font-bold flex items-center gap-2">
+            <Label htmlFor="email" className="text-gray-700 font-normal flex items-center gap-2">
               <Mail size={18} style={{ color: PINK }} />
               Correo electrónico
             </Label>
@@ -93,13 +103,13 @@ export function Login() {
               placeholder="Ej: juan.perez@ejemplo.cl"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors"
+              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal"
               autoComplete="email"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-700 font-bold flex items-center gap-2">
+            <Label htmlFor="password" className="text-gray-700 font-normal flex items-center gap-2">
               <Lock size={18} style={{ color: PINK }} />
               Contraseña
             </Label>
@@ -109,7 +119,7 @@ export function Login() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors"
+              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal"
               autoComplete="current-password"
             />
           </div>
@@ -122,7 +132,7 @@ export function Login() {
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
+                <span className="flex items-center justify-center gap-2 font-normal">
                   <Loader2 size={18} className="animate-spin" />
                   Ingresando...
                 </span>
@@ -132,12 +142,12 @@ export function Login() {
             </Button>
           </motion.div>
 
-          <p className="text-center text-sm text-gray-500 pt-2">
+          <p className="text-center text-sm text-gray-500 pt-2 font-normal">
             ¿Aún no tienes cuenta?{" "}
             <button
               type="button"
               onClick={() => navigate("/registro")}
-              className="font-bold underline hover:text-gray-700"
+              className="font-normal underline hover:text-gray-700"
             >
               Regístrate aquí
             </button>
@@ -147,5 +157,3 @@ export function Login() {
     </div>
   );
 }
-
-export default Login;
