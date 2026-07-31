@@ -13,8 +13,6 @@ import {
   LucideIcon,
 } from "lucide-react";
 
-import fondoGarantia from "../assets/images/FONDOCONTACTO.png";
-
 const PINK = "#e83360";
 const YELLOW = "#f5d318";
 const SKY = "#02a2c7";
@@ -180,13 +178,7 @@ export function Garantia() {
   };
 
   return (
-    <div className="relative w-full min-h-screen font-['Poppins',sans-serif]">
-      {/* ── Capa de Fondo Fijo ── */}
-      <div
-        className="fixed inset-0 pointer-events-none -z-10 bg-cover bg-top bg-no-repeat"
-        style={{ backgroundImage: `url(${fondoGarantia})` }}
-      />
-
+    <div className="relative w-full min-h-screen bg-transparent">
       {/* ── 1. HERO ── */}
       <section
         className="w-full -mt-20 md:-mt-24 pt-32 md:pt-36 pb-20 px-4 md:px-10 relative overflow-hidden text-center"
@@ -446,3 +438,5 @@ export function Garantia() {
     </div>
   );
 }
+
+export default Garantia;

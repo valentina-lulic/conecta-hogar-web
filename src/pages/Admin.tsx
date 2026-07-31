@@ -99,7 +99,7 @@ export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // ---- Estado: Profesionales (conectado a tu backend real) ----
+  // ---- Estado: Profesionales ----
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [loadingProfessionals, setLoadingProfessionals] = useState(true);
   const [filterStatus, setFilterStatus] = useState<"Todos" | "Pendiente" | "Aprobado" | "Rechazado">("Todos");
@@ -146,7 +146,7 @@ export default function AdminPanel() {
     fetchProfessionals();
   }, []);
 
-  // 2. Cargar usuarios desde el Backend (con datos de respaldo si el endpoint no existe aún)
+  // 2. Cargar usuarios desde el Backend
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -299,8 +299,9 @@ export default function AdminPanel() {
                 <button
                   key={item.key}
                   onClick={() => setActiveTab(item.key)}
-                  className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-black transition-colors ${active ? "text-white" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                    }`}
+                  className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-black transition-colors ${
+                    active ? "text-white" : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  }`}
                   style={{ backgroundColor: active ? PINK : "transparent" }}
                 >
                   <Icon size={18} className="shrink-0" />
@@ -484,8 +485,9 @@ export default function AdminPanel() {
                       <button
                         key={status}
                         onClick={() => setFilterStatus(status)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${filterStatus === status ? "bg-gray-800 text-white shadow" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                          }`}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                          filterStatus === status ? "bg-gray-800 text-white shadow" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }`}
                       >
                         {status}
                       </button>
@@ -521,12 +523,13 @@ export default function AdminPanel() {
                               <td className="py-4 text-gray-400 text-xs">{pro.date}</td>
                               <td className="py-4">
                                 <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${pro.status === "Aprobado"
-                                    ? "bg-green-100 text-green-700"
-                                    : pro.status === "Pendiente"
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
+                                    pro.status === "Aprobado"
+                                      ? "bg-green-100 text-green-700"
+                                      : pro.status === "Pendiente"
                                       ? "bg-yellow-100 text-yellow-700"
                                       : "bg-red-100 text-red-700"
-                                    }`}
+                                  }`}
                                 >
                                   {pro.status === "Aprobado" && <CheckCircle2 size={12} />}
                                   {pro.status === "Pendiente" && <Clock size={12} />}
@@ -678,8 +681,9 @@ export default function AdminPanel() {
                               </td>
                               <td className="py-4">
                                 <span
-                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${u.status === "Activo" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                                    }`}
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black ${
+                                    u.status === "Activo" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                  }`}
                                 >
                                   <span className={`w-1.5 h-1.5 rounded-full ${u.status === "Activo" ? "bg-green-600" : "bg-red-600"}`} />
                                   {u.status}
@@ -838,6 +842,17 @@ export default function AdminPanel() {
   );
 }
 
+interface StatCardProps {
+  icon: React.ElementType;
+  color?: string;
+  iconColor?: string;
+  colorClass?: string;
+  iconClass?: string;
+  label: string;
+  value: number;
+  suffix?: string;
+}
+
 function StatCard({
   icon: Icon,
   color,
@@ -847,26 +862,17 @@ function StatCard({
   label,
   value,
   suffix,
-}: {
-  icon: React.ElementType;
-  color?: string;
-  iconColor?: string;
-  colorClass?: string;
-  iconClass?: string;
-  label: string;
-  value: number;
-  suffix?: string;
-}) {
+}: StatCardProps) {
   return (
     <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-      <div className={`p-3 rounded-xl ${colorClass ?? ""}`} style={!colorClass ? { backgroundColor: `${color}20` } : undefined}>
-        <Icon size={22} className={iconClass} style={!iconClass ? { color: iconColor ?? color } : undefined} />
+      <div className={`p-3 rounded-xl ${colorClass ?? ""}`} style={!colorClass && color ? { backgroundColor: `${color}20` } : undefined}>
+        <Icon size={22} className={iconClass} style={!iconClass && (iconColor || color) ? { color: iconColor ?? color } : undefined} />
       </div>
       <div>
         <p className="text-xs font-bold text-gray-400">{label}</p>
         <p className="text-2xl font-black" style={{ color: DARK }}>
           {value}
-          {suffix}
+          {suffix ?? ""}
         </p>
       </div>
     </div>

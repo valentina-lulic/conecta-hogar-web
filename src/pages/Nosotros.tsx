@@ -139,7 +139,8 @@ export function Nosotros() {
         backgroundPosition: "25% 45%",
       }}
     >
-      {/* ── 1. HERO ── */}
+
+      {/* ── 1. HERO CUBRIENDO LA PARTE SUPERIOR DEL NAVBAR ── */}
       <section
         className="w-full -mt-20 md:-mt-24 pt-32 md:pt-36 pb-28 md:pb-36 px-4 md:px-10 relative overflow-hidden backdrop-blur-sm shadow-sm"
         style={{
@@ -213,7 +214,7 @@ export function Nosotros() {
           </div>
 
           {/* CAJA CONTENEDORA DE CÓMO FUNCIONA */}
-          <div className="bg-gradient-to-r from-sky-200/40 via-emerald-200/40 to-yellow-200/40 backdrop-blur-md border border-white/60 p-5 md:p-8 rounded-3xl shadow-2xl space-y-6">
+          <div className="bg-linear-to-r from-sky-200/40 via-emerald-200/40 to-yellow-200/40 backdrop-blur-md border border-white/60 p-5 md:p-8 rounded-3xl shadow-2xl space-y-6">
 
             {/* Barra de Pasos / Selectores con el mismo tono turquesa oscuro */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -266,7 +267,7 @@ export function Nosotros() {
             </div>
 
             {/* Tarjeta de Detalle del Paso Animada */}
-            <div className="bg-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 md:p-10 shadow-xl relative overflow-hidden min-h-[280px]">
+            <div className="bg-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 md:p-10 shadow-xl relative overflow-hidden min-h-70">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={pasoActivo}
@@ -282,7 +283,7 @@ export function Nosotros() {
                       initial={{ scale: 0.8, rotate: -3 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                      className="w-full aspect-video md:aspect-square max-w-[280px] rounded-2xl overflow-hidden shadow-xl relative border-2 border-white bg-black/10"
+                      className="w-full aspect-video md:aspect-square max-w-70 rounded-2xl overflow-hidden shadow-xl relative border-2 border-white bg-black/10"
                     >
                       <img
                         src={pasoInfo.imagen}

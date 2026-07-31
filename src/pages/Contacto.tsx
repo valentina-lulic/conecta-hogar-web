@@ -3,27 +3,22 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2 } from "lucide-react";
 
-// Importación directa de la imagen desde src/assets/images
-import fondoContacto from "../assets/images/FONDOCONTACTO.png";
-
-// Paleta de colores exacta de la primera foto
 const PINK = "#e83360";
 const YELLOW = "#f5d318";
 const ORANGE = "#f97316";
 const SKY = "#55bcd9";
 const DARK = "#0a6880";
 
-// Gradiente cálido exacto (Amarillo -> Naranjo -> Rosa Coral)
-const GRADIENTE_FOTO_CONTACTO =
-  "linear-gradient(110deg, rgba(245, 211, 24, 0.4) 0%, rgba(249, 115, 22, 0.35) 50%, rgba(232, 51, 96, 0.4) 100%)";
+const GRADIENTE_FOTO_HERO =
+  "linear-gradient(110deg, rgba(245, 211, 24, 0.45) 0%, rgba(249, 115, 22, 0.55) 50%, rgba(232, 51, 96, 0.45) 100%)";
 
 const GRAD_SOFT = `linear-gradient(135deg, ${PINK}18 0%, ${YELLOW}18 50%, ${SKY}18 100%)`;
 
 const contactInfo = [
-  { icon: Phone, color: PINK, label: "Teléfono", value: "+56 2 2345 6789" },
-  { icon: Mail, color: SKY, label: "Email", value: "hola@conectahogar.cl" },
-  { icon: MapPin, color: YELLOW, label: "Oficina", value: "Av. Providencia 1234, Santiago" },
-  { icon: Clock, color: PINK, label: "Atención", value: "Lun–Vie 9:00–18:00 hrs" },
+  { icon: Phone, label: "TELÉFONO", value: "+56 2 2345 6789" },
+  { icon: Mail, label: "EMAIL", value: "hola@conectahogar.cl" },
+  { icon: MapPin, label: "OFICINA", value: "Av. Providencia 1234, Santiago" },
+  { icon: Clock, label: "ATENCIÓN", value: "Lun–Vie 9:00–18:00 hrs" },
 ];
 
 const reasons = [
@@ -65,82 +60,102 @@ export function Contacto() {
   });
 
   return (
-    <div
-      className="w-full space-y-12 pb-20 min-h-screen bg-cover bg-fixed bg-no-repeat"
-      style={{
-        backgroundImage: `url(${fondoContacto})`,
-        backgroundPosition: "top center",
-      }}
-    >
-      {/* ── 1. HERO CON EL GRADIENTE EXACTO DE LA FOTO ── */}
+    <div className="w-full space-y-12 pb-20 min-h-screen bg-transparent">
+      {/* ── 1. HERO ── */}
       <section
-        className="w-full -mt-20 md:-mt-24 pt-32 md:pt-36 pb-20 px-4 md:px-10 relative overflow-hidden backdrop-blur-[2px] shadow-sm"
+        className="w-full -mt-20 md:-mt-24 pt-36 md:pt-44 pb-20 px-4 md:px-10 relative overflow-hidden backdrop-blur-[2px]"
         style={{
-          background: GRADIENTE_FOTO_CONTACTO,
-          WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
-          maskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
+          background: GRADIENTE_FOTO_HERO,
+          WebkitMaskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
+          maskImage: "linear-gradient(to bottom, black 65%, transparent 100%)",
         }}
       >
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-5 relative z-10">
-
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center shadow-lg mb-1"
+            className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/30 backdrop-blur-md border-2 border-white/80 flex items-center justify-center shadow-lg mb-1"
           >
-            <Mail className="w-8 h-8 md:w-10 md:h-10 text-white drop-shadow-sm" />
+            <Mail className="w-8 h-8 md:w-10 md:h-10 text-white drop-shadow-md" />
           </motion.div>
 
+          {/* 🔴 Título con Poppins Black */}
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-4xl md:text-6xl font-black text-white tracking-tight drop-shadow-md"
-            style={{ fontFamily: "'Nunito', sans-serif" }}
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             Contáctanos
           </motion.h1>
 
+          {/* ⚪ Subtítulo sin mucho grosor */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-sm md:text-base font-medium text-center text-white/95 max-w-xl leading-relaxed drop-shadow-sm"
-            style={{ fontFamily: "'Comfortaa', 'Quicksand', sans-serif" }}
+            className="text-sm md:text-base font-normal text-center text-white/95 max-w-xl leading-relaxed drop-shadow-sm"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             Estamos aquí para ayudarte. Cuéntanos qué necesitas y te respondemos en menos de 2 horas hábiles.
           </motion.p>
 
-          <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-            {contactInfo.map(({ icon: Icon, label, value }, i) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
-                className="rounded-2xl p-4 text-center backdrop-blur-md shadow-sm transition-transform hover:-translate-y-1"
-                style={{ background: "rgba(255, 255, 255, 0.30)", border: "1.5px solid rgba(255, 255, 255, 0.5)" }}
-              >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-inner"
-                  style={{ background: "rgba(255, 255, 255, 0.4)" }}
-                >
-                  <Icon size={18} className="text-white drop-shadow-sm" />
-                </div>
-                <p className="text-[10px] md:text-xs font-black uppercase tracking-wider mb-0.5 text-white/90">{label}</p>
-                <p className="text-xs md:text-sm font-black leading-snug text-white">{value}</p>
-              </motion.div>
-            ))}
-          </div>
+         {/* 🤍 TARJETAS CON SOMBRA Y BLANCO BIEN MARCADO Y LUMINOSO 🤍 */}
+      <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+      {contactInfo.map(({ icon: Icon, label, value }, i) => (
+      <motion.div
+      key={label}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 + i * 0.1 }}
+      className="rounded-2xl p-4 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-white/25"
+      style={{ 
+        background: "rgba(255, 255, 255, 0.20)", // ⚡ Subimos un toque para proyectar el blanco
+        border: "3.5px solid #ffffff",             // ⚡ Borde grueso blanco sólido
+        boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
+       }}
+       >
+       {/* Caja del Icono */}
+      <div
+        className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-2.5 shadow-sm"
+        style={{ 
+          background: "rgba(255, 255, 255, 0.25)",
+          border: "2px solid #ffffff"
+        }}
+       >
+        <Icon size={20} className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+      </div>
 
+      {/* Etiqueta / Título */}
+      <p 
+        className="text-[11px] md:text-xs font-black uppercase tracking-widest mb-1 text-white"
+        style={{ 
+          textShadow: "0 1px 3px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)"
+        }}
+      >
+        {label}
+      </p>
+
+      {/* Valor / Texto */}
+      <p 
+        className="text-xs md:text-sm font-black leading-snug text-white"
+        style={{ 
+          textShadow: "0 1px 3px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.6)"
+        }}
+      >
+        {value}
+      </p>
+    </motion.div>
+  ))}
+</div>
         </div>
       </section>
 
       {/* ── 2. SECCIÓN DEL FORMULARIO ── */}
       <section className="relative z-20 px-4 md:px-10">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
-
           <div
             className="md:col-span-3 p-6 md:p-8 rounded-3xl backdrop-blur-md shadow-xl"
             style={{
@@ -149,7 +164,7 @@ export function Contacto() {
             }}
           >
             <p className="text-xs font-black tracking-widest uppercase mb-2" style={{ color: ORANGE }}>Escríbenos</p>
-            <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
+            <h2 className="text-2xl md:text-3xl font-black mb-6" style={{ fontFamily: "'Poppins', 'Nunito', sans-serif", color: DARK }}>
               Envíanos un mensaje
             </h2>
 
@@ -157,7 +172,7 @@ export function Contacto() {
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 className="rounded-2xl p-10 text-center border-2" style={{ borderColor: `${SKY}40`, background: "rgba(255, 255, 255, 0.9)" }}>
                 <CheckCircle2 size={56} className="mx-auto mb-4" style={{ color: SKY }} />
-                <h3 className="font-black text-xl mb-2" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¡Mensaje enviado!</h3>
+                <h3 className="font-black text-xl mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: DARK }}>¡Mensaje enviado!</h3>
                 <p className="text-sm" style={{ color: "#4b5563" }}>Te responderemos en menos de 2 horas hábiles a <strong>{form.email}</strong></p>
                 <button
                   onClick={() => setSent(false)}
@@ -227,11 +242,11 @@ export function Contacto() {
               className="rounded-3xl p-6 backdrop-blur-md shadow-lg"
               style={{ background: "rgba(255, 255, 255, 0.85)", border: "1.5px solid rgba(255, 255, 255, 0.9)" }}
             >
-              <h3 className="font-black text-lg mb-2" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>¿Eres profesional?</h3>
+              <h3 className="font-black text-lg mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: DARK }}>¿Eres profesional?</h3>
               <p className="text-xs md:text-sm font-semibold leading-relaxed mb-4" style={{ color: "#4b5563" }}>
                 ¿Quieres ofrecer tus servicios en nuestra plataforma? Regístrate gratis y comienza a recibir clientes hoy.
               </p>
-              <Link to="/Registro"
+              <Link to="/registro"
                 className="inline-flex items-center gap-1 text-sm font-black hover:opacity-80 transition-opacity"
                 style={{ color: ORANGE }}>
                 Registrarme →
@@ -242,7 +257,7 @@ export function Contacto() {
               className="rounded-3xl p-6 backdrop-blur-md shadow-lg"
               style={{ background: "rgba(255, 255, 255, 0.85)", border: "1.5px solid rgba(255, 255, 255, 0.9)" }}
             >
-              <h3 className="font-black text-lg mb-3" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>Respuesta rápida</h3>
+              <h3 className="font-black text-lg mb-3" style={{ fontFamily: "'Poppins', sans-serif", color: DARK }}>Respuesta rápida</h3>
               <div className="space-y-3">
                 {[
                   { icon: Clock, text: "Respuesta en menos de 2 hrs hábiles" },
@@ -273,9 +288,10 @@ export function Contacto() {
               </div>
             </div>
           </div>
-
         </div>
       </section>
     </div>
   );
-} 
+}
+
+export default Contacto;
