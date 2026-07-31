@@ -15,7 +15,7 @@ const DARK = "#0a6880";
 
 // Gradiente cálido exacto (Amarillo -> Naranjo -> Rosa Coral)
 const GRADIENTE_FOTO_CONTACTO =
-  "linear-gradient(110deg, rgba(245, 211, 24, 0.88) 0%, rgba(249, 115, 22, 0.85) 50%, rgba(232, 51, 96, 0.80) 100%)";
+  "linear-gradient(110deg, rgba(245, 211, 24, 0.4) 0%, rgba(249, 115, 22, 0.35) 50%, rgba(232, 51, 96, 0.4) 100%)";
 
 const GRAD_SOFT = `linear-gradient(135deg, ${PINK}18 0%, ${YELLOW}18 50%, ${SKY}18 100%)`;
 
@@ -77,8 +77,8 @@ export function Contacto() {
         className="w-full -mt-20 md:-mt-24 pt-32 md:pt-36 pb-20 px-4 md:px-10 relative overflow-hidden backdrop-blur-[2px] shadow-sm"
         style={{
           background: GRADIENTE_FOTO_CONTACTO,
-          WebkitMaskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-          maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
+          maskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
         }}
       >
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-5 relative z-10">
@@ -231,7 +231,7 @@ export function Contacto() {
               <p className="text-xs md:text-sm font-semibold leading-relaxed mb-4" style={{ color: "#4b5563" }}>
                 ¿Quieres ofrecer tus servicios en nuestra plataforma? Regístrate gratis y comienza a recibir clientes hoy.
               </p>
-              <Link to="/garantia"
+              <Link to="/Registro"
                 className="inline-flex items-center gap-1 text-sm font-black hover:opacity-80 transition-opacity"
                 style={{ color: ORANGE }}>
                 Registrarme →
@@ -278,4 +278,4 @@ export function Contacto() {
       </section>
     </div>
   );
-}
+} 
