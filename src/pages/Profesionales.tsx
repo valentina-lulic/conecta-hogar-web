@@ -41,7 +41,17 @@ function Profesionales() {
       }}
     >
       {/* Hero Section */}
-      <section className="relative pt-36 pb-14 px-6 text-center -mt-20 md:-mt-24 isolate">
+      <section className="relative pt-36 pb-14 px-6 text-center -mt-20 md:-mt-24 isolate overflow-hidden">
+        {/* Capa de degradado + blur + difuminado, separada del contenido */}
+        <div
+          className="absolute inset-0 -z-10 backdrop-blur-sm"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(14, 165, 233, 0.55) 0%, rgba(34, 197, 94, 0.45) 50%, rgba(234, 179, 8, 0.55) 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+          }}
+        />
         <div className="max-w-3xl mx-auto">
           <span className="inline-block text-xs font-bold tracking-wider uppercase text-white bg-navy/30 px-3.5 py-1.5 rounded-full mb-4">
             Directorio de profesionales
