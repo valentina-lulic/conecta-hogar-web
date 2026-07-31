@@ -4,8 +4,7 @@ import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import logoImg from "../../assets/icons/logoCH-removebg-preview.png";
-import bgImg from "../../assets/images/FONDOAPPFINAL.png";
-import phoneBgImg from "../../assets/images/PHONEBACK.png";
+import { MapBackground } from "./MapBackground";
 import { InteractiveLogo } from "./InteractiveLogo";
 
 const PINK = "#e83360";
@@ -29,21 +28,8 @@ export function Root() {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
-      {/* CAPA DE FONDO EXCLUSIVA PARA MÓVILES (PHONEBACK) */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none md:hidden bg-no-repeat bg-center bg-cover"
-        style={{
-          backgroundImage: `url(${phoneBgImg as unknown as string})`,
-        }}
-      />
-
-      {/* CAPA DE FONDO EXCLUSIVA PARA DESKTOP (FONDOAPPFINAL) */}
-      <div
-        className="hidden md:block absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-top bg-cover"
-        style={{
-          backgroundImage: `url(${bgImg as unknown as string})`,
-        }}
-      />
+      {/* CAPA DE FONDO UNIFICADA Y RESPONSIVA */}
+      <MapBackground />
 
       {/* CONTENIDO PRINCIPAL DE LA APLICACIÓN */}
       <div className="relative z-10 flex-1 flex flex-col w-full">
@@ -56,7 +42,7 @@ export function Root() {
             className="flex items-center justify-between pl-4 md:pl-6 pr-2 py-2 rounded-full border border-white/40 bg-[#fffbf7] shadow-lg"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            {/* Logo alineado forzadamente a la izquierda */}
+            {/* Logo alineado a la izquierda */}
             <div className="flex items-center justify-start gap-4">
               <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center justify-start text-left">
                 <InteractiveLogo className="h-9 md:h-10 w-auto" />
@@ -129,7 +115,7 @@ export function Root() {
               fontFamily: "'Poppins', sans-serif",
             }}
           >
-            {/* Lista de páginas: Texto en Blanco, Responsivo y con Sombra Suave */}
+            {/* Lista de páginas */}
             <div className="flex flex-col gap-6">
               {navLinks.map(({ href, label, route }) =>
                 route ? (
@@ -197,7 +183,7 @@ export function Root() {
                 alt="Conecta Hogar"
                 className="h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
               />
-              <div className="hidden md:block h-6 w-px[1] bg-slate-200" />
+              <div className="hidden md:block h-6 w-px bg-slate-200" />
               <p>© {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.</p>
             </div>
 
