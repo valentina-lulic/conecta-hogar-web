@@ -382,7 +382,7 @@ export default function Home() {
             ].map(({ n, l, c }) => (
               <div
                 key={l}
-                className="rounded-3xl py-4 sm:py-5 md:py-6 px-3 sm:px-4 md:px-5 backdrop-blur-xl flex flex-col justify-center items-center min-h-[120px] transition-all duration-300"
+                className="rounded-3xl py-4 sm:py-5 md:py-6 px-3 sm:px-4 md:px-5 backdrop-blur-xl flex flex-col justify-center items-center min-h-30 transition-all duration-300"
                 style={{
                   background: "rgba(255, 255, 255, 0.75)",
                   border: `1.5px solid ${c}66`,
