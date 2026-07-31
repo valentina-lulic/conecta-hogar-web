@@ -197,7 +197,7 @@ export function Root() {
                 alt="Conecta Hogar"
                 className="h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
               />
-              <div className="hidden md:block h-6 w-[1px] bg-slate-200" />
+              <div className="hidden md:block h-6 w-px[1] bg-slate-200" />
               <p>© {new Date().getFullYear()} Conecta Hogar. Todos los derechos reservados.</p>
             </div>
 
