@@ -1,8 +1,9 @@
 import { API_URL, BACKEND_URL } from "./Api";
 export const especialidades = [
-  { key: "gasfiteria", nombre: "Gasfitería", color: "var(--turquoise)" },
   { key: "electricidad", nombre: "Electricidad", color: "var(--yellow)" },
+  { key: "gasfiteria", nombre: "Gasfitería", color: "var(--turquoise)" },
   { key: "albanileria", nombre: "Albañilería", color: "var(--coral)" },
+  { key: "soldaduria", nombre: "Soldaduria", color: "var(--coral)" },
   { key: "carpinteria", nombre: "Carpintería", color: "var(--amber)" },
   { key: "techado", nombre: "Techado", color: "var(--teal)" },
   { key: "pintura", nombre: "Pintura", color: "var(--rose)" },
@@ -20,7 +21,7 @@ export interface Profesional {
   especialidad: string;
   descripcion: string;
 
-  experienciaAnos: number;
+
   comuna: string;
 
   disponible: boolean;
@@ -64,12 +65,7 @@ export function obtenerEtiquetaProfesional(
     };
   }
 
-  if (p.experienciaAnos >= 3) {
-    return {
-      label: "Verificado",
-      claseCSS: "verificada",
-    };
-  }
+
 
   if (p.likes >= 30) {
     return {
@@ -114,65 +110,89 @@ export function obtenerFotoProfesional(
    GET MAESTROS
 =========================== */
 
-export async function obtenerProfesionales():
-  Promise<Profesional[]> {
-
-  const response = await fetch(
-    `${API_URL}/maestros`
-  );
+export async function obtenerProfesionales(): Promise<Profesional[]> {
+  const response = await fetch(`${API_URL}/maestros`);
 
   if (!response.ok) {
-    throw new Error(
-      "No se pudieron cargar los profesionales."
-    );
+    throw new Error("No se pudieron cargar los profesionales.");
   }
 
-  const data = await response.json();
+  const data: unknown = await response.json();
 
-  return data.map((maestro: any) => ({
-    id:
-      maestro.id ??
-      maestro.idUsuario ??
-      maestro.id_usuario,
+  if (!Array.isArray(data)) {
+    throw new Error("La respuesta de maestros no tiene el formato esperado.");
+  }
 
-    nombre: maestro.nombre ?? "",
+  return data.map((maestro: any) => {
+    const usuario = maestro.usuario ?? {};
 
-    apellido: maestro.apellido ?? "",
+    return {
+      id:
+        maestro.id ??
+        maestro.idUsuario ??
+        maestro.id_usuario ??
+        usuario.id ??
+        usuario.idUsuario ??
+        usuario.id_usuario ??
+        0,
 
-    correo: maestro.correo ?? "",
+      nombre:
+        maestro.nombre ??
+        usuario.nombre ??
+        "",
 
-    telefono: maestro.telefono ?? "",
+      apellido:
+        maestro.apellido ??
+        usuario.apellido ??
+        "",
 
-    especialidad:
-      maestro.especialidad ?? "",
+      correo:
+        maestro.correo ??
+        usuario.correo ??
+        "",
 
-    descripcion:
-      maestro.descripcion ?? "",
+      telefono:
+        maestro.telefono ??
+        usuario.telefono ??
+        "",
 
-    experienciaAnos:
-      maestro.experienciaAnos ?? 0,
+      especialidad:
+        maestro.especialidad ??
+        "",
 
-    comuna:
-      maestro.comuna ?? "",
+      descripcion:
+        maestro.descripcion ??
+        "",
 
-    disponible:
-      maestro.disponible ?? false,
 
-    foto:
-      maestro.foto_perfil ??
-      maestro.fotoPerfil ??
-      maestro.foto ??
-      maestro.fotoUrl ??
-      maestro.imagenUrl,
+      comuna:
+        maestro.comuna ??
+        "",
 
-    likes:
-      maestro.meGusta ??
-      maestro.likes ??
-      0,
+      disponible:
+        maestro.disponible ??
+        maestro.activo ??
+        false,
 
-    dislikes:
-      maestro.noMeGusta ??
-      maestro.dislikes ??
-      0,
-  }));
+      foto:
+        maestro.fotoPerfil ??
+        maestro.foto_perfil ??
+        maestro.foto ??
+        maestro.fotoUrl ??
+        maestro.imagenUrl ??
+        null,
+
+      likes:
+        maestro.meGusta ??
+        maestro.me_gusta ??
+        maestro.likes ??
+        0,
+
+      dislikes:
+        maestro.noMeGusta ??
+        maestro.no_me_gusta ??
+        maestro.dislikes ??
+        0,
+    };
+  });
 }
