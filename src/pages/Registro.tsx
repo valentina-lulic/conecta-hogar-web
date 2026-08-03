@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { ArrowLeft, UserCircle, Mail, MapPin, IdCard, Briefcase } from "lucide-react";
+import { ArrowLeft, UserCircle, Mail, Lock, IdCard, Briefcase, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+
+import { registrarUsuario, type RegistroData } from "../data/registroApi";
 
 const PINK = "#e83360";
 
@@ -22,51 +24,73 @@ const ESPECIALIDADES = [
 
 export function Registro() {
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     nombre: "",
     rut: "",
     correo: "",
-    direccion: "",
+    password: "",
     tipoUsuario: "" as "cliente" | "profesional" | "",
-    especialidades: [] as string[],
+    especialidad: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Selección directa y única del tipo de usuario
   const handleTipoChange = (tipo: "cliente" | "profesional") => {
     setFormData((prev) => ({
       ...prev,
-      tipoUsuario: prev.tipoUsuario === tipo ? "" : tipo,
-      especialidades: tipo === "cliente" ? [] : prev.especialidades,
+      tipoUsuario: tipo,
+      especialidad: tipo === "cliente" ? "" : prev.especialidad,
     }));
   };
 
-  const toggleEspecialidad = (especialidad: string) => {
+  // Selección única de especialidad
+  const handleEspecialidadSelect = (especialidad: string) => {
     setFormData((prev) => ({
       ...prev,
-      especialidades: prev.especialidades.includes(especialidad)
-        ? prev.especialidades.filter((e) => e !== especialidad)
-        : [...prev.especialidades, especialidad],
+      especialidad: prev.especialidad === especialidad ? "" : especialidad,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.nombre || !formData.rut || !formData.correo || !formData.direccion || !formData.tipoUsuario) {
-      alert("Por favor completa todos los campos");
+    if (!formData.nombre || !formData.rut || !formData.correo || !formData.password || !formData.tipoUsuario) {
+      alert("Por favor completa todos los campos requeridos.");
       return;
     }
 
-    if (formData.tipoUsuario === "profesional" && formData.especialidades.length === 0) {
-      alert("Por favor selecciona al menos una especialidad");
+    if (formData.tipoUsuario === "profesional" && !formData.especialidad) {
+      alert("Por favor selecciona una especialidad.");
       return;
     }
 
-    console.log("Datos del formulario:", formData);
-    navigate("/");
+    setLoading(true);
+
+    try {
+      const payload: RegistroData = {
+        nombre: formData.nombre,
+        rut: formData.rut,
+        correo: formData.correo,
+        password: formData.password,
+        tipoUsuario: formData.tipoUsuario as "cliente" | "profesional",
+        especialidad: formData.tipoUsuario === "profesional" ? formData.especialidad : undefined,
+      };
+
+      const respuesta = await registrarUsuario(payload);
+
+      alert(respuesta.message || "¡Registro completado exitosamente!");
+      navigate("/");
+    } catch (error: any) {
+      alert(error.message || "Hubo un problema al intentar registrarte.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,6 +99,7 @@ export function Registro() {
 
         {/* Botón Volver */}
         <button
+          type="button"
           onClick={() => navigate("/")}
           className="flex items-center gap-2 text-gray-800 hover:text-black transition-colors mb-6 font-semibold bg-white/70 backdrop-blur-md px-4 py-2 rounded-full w-fit shadow-sm border border-white/50 text-sm"
         >
@@ -82,7 +107,7 @@ export function Registro() {
           Volver al inicio
         </button>
 
-        {/* Cápsula / Formulario estilo Glassmorphism */}
+        {/* Formulario */}
         <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -90,7 +115,7 @@ export function Registro() {
           onSubmit={handleSubmit}
           className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 space-y-6"
         >
-          {/* Header dentro de la cápsula */}
+          {/* Header */}
           <div className="text-center md:text-left border-b border-gray-100 pb-6">
             <h1
               className="text-3xl md:text-4xl font-bold mb-2 tracking-tight drop-shadow-sm"
@@ -112,6 +137,7 @@ export function Registro() {
             <Input
               id="nombre"
               type="text"
+              disabled={loading}
               placeholder="Ej: Juan Pérez González"
               value={formData.nombre}
               onChange={(e) => handleInputChange("nombre", e.target.value)}
@@ -128,6 +154,7 @@ export function Registro() {
             <Input
               id="rut"
               type="text"
+              disabled={loading}
               placeholder="Ej: 12.345.678-9"
               value={formData.rut}
               onChange={(e) => handleInputChange("rut", e.target.value)}
@@ -144,6 +171,7 @@ export function Registro() {
             <Input
               id="correo"
               type="email"
+              disabled={loading}
               placeholder="Ej: juan.perez@ejemplo.cl"
               value={formData.correo}
               onChange={(e) => handleInputChange("correo", e.target.value)}
@@ -151,72 +179,71 @@ export function Registro() {
             />
           </div>
 
-          {/* Dirección */}
+          {/* Contraseña */}
           <div className="space-y-2">
-            <Label htmlFor="direccion" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <MapPin size={18} style={{ color: PINK }} />
-              Dirección
+            <Label htmlFor="password" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
+              <Lock size={18} style={{ color: PINK }} />
+              Contraseña
             </Label>
             <Input
-              id="direccion"
-              type="text"
-              placeholder="Ej: Av. Libertador Bernardo O'Higgins 123, Santiago"
-              value={formData.direccion}
-              onChange={(e) => handleInputChange("direccion", e.target.value)}
+              id="password"
+              type="password"
+              disabled={loading}
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) => handleInputChange("password", e.target.value)}
               className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
             />
           </div>
 
-          {/* Tipo de usuario */}
+          {/* Tipo de usuario (Sin subtítulos de ayuda y con selección única) */}
           <div className="space-y-3 pt-4 border-t border-gray-100">
             <Label className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
               <Briefcase size={18} style={{ color: PINK }} />
               Tipo de usuario
             </Label>
             <div className="flex flex-col sm:flex-row gap-4">
+              
+              {/* Opción Cliente */}
               <div
-                onClick={() => handleTipoChange("cliente")}
-                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "cliente"
-                  ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
-                  : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                  }`}
+                onClick={() => !loading && handleTipoChange("cliente")}
+                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all flex items-center gap-3 ${
+                  formData.tipoUsuario === "cliente"
+                    ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
+                    : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    checked={formData.tipoUsuario === "cliente"}
-                    onClick={(e) => e.stopPropagation()}
-                    onCheckedChange={() => handleTipoChange("cliente")}
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Cliente</p>
-                    <p className="text-xs text-gray-600 font-normal">Busco contratar servicios</p>
-                  </div>
-                </div>
+                <Checkbox
+                  checked={formData.tipoUsuario === "cliente"}
+                  disabled={loading}
+                  onClick={(e) => e.stopPropagation()}
+                  onCheckedChange={() => handleTipoChange("cliente")}
+                />
+                <span className="font-semibold text-gray-800 text-sm">Cliente</span>
               </div>
 
+              {/* Opción Profesional */}
               <div
-                onClick={() => handleTipoChange("profesional")}
-                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all ${formData.tipoUsuario === "profesional"
-                  ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
-                  : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                  }`}
+                onClick={() => !loading && handleTipoChange("profesional")}
+                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all flex items-center gap-3 ${
+                  formData.tipoUsuario === "profesional"
+                    ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
+                    : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    checked={formData.tipoUsuario === "profesional"}
-                    onClick={(e) => e.stopPropagation()}
-                    onCheckedChange={() => handleTipoChange("profesional")}
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Profesional</p>
-                    <p className="text-xs text-gray-600 font-normal">Ofrezco servicios</p>
-                  </div>
-                </div>
+                <Checkbox
+                  checked={formData.tipoUsuario === "profesional"}
+                  disabled={loading}
+                  onClick={(e) => e.stopPropagation()}
+                  onCheckedChange={() => handleTipoChange("profesional")}
+                />
+                <span className="font-semibold text-gray-800 text-sm">Profesional</span>
               </div>
+
             </div>
           </div>
 
-          {/* Especialidades */}
+          {/* Especialidades (Selección Única) */}
           {formData.tipoUsuario === "profesional" && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -224,25 +251,27 @@ export function Registro() {
               transition={{ duration: 0.3 }}
               className="space-y-3 pt-4 border-t border-gray-100"
             >
-              <Label className="text-gray-800 font-semibold text-sm">Especialidades</Label>
-              <p className="text-xs text-gray-600 font-normal">Selecciona todas las que apliquen</p>
+              <Label className="text-gray-800 font-semibold text-sm">Especialidad</Label>
+              <p className="text-xs text-gray-600 font-normal">Selecciona tu especialidad principal</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {ESPECIALIDADES.map((especialidad) => (
+                {ESPECIALIDADES.map((item) => (
                   <div
-                    key={especialidad}
-                    onClick={() => toggleEspecialidad(especialidad)}
-                    className={`p-3 border rounded-xl cursor-pointer transition-all ${formData.especialidades.includes(especialidad)
-                      ? "border-[#e83360] bg-gray-50 shadow-inner"
-                      : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                      }`}
+                    key={item}
+                    onClick={() => !loading && handleEspecialidadSelect(item)}
+                    className={`p-3 border rounded-xl cursor-pointer transition-all ${
+                      formData.especialidad === item
+                        ? "border-[#e83360] bg-gray-50 shadow-inner"
+                        : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
+                    }`}
                   >
                     <div className="flex items-center gap-2">
                       <Checkbox
-                        checked={formData.especialidades.includes(especialidad)}
+                        checked={formData.especialidad === item}
+                        disabled={loading}
                         onClick={(e) => e.stopPropagation()}
-                        onCheckedChange={() => toggleEspecialidad(especialidad)}
+                        onCheckedChange={() => handleEspecialidadSelect(item)}
                       />
-                      <span className="text-sm font-medium text-gray-800">{especialidad}</span>
+                      <span className="text-sm font-medium text-gray-800">{item}</span>
                     </div>
                   </div>
                 ))}
@@ -254,10 +283,18 @@ export function Registro() {
           <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-4">
             <Button
               type="submit"
-              className="w-full py-6 text-base font-bold text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
+              disabled={loading}
+              className="w-full py-6 text-base font-bold text-white rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
-              Registrar
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  Registrando...
+                </>
+              ) : (
+                "Registrar"
+              )}
             </Button>
           </motion.div>
 
