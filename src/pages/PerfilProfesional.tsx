@@ -12,6 +12,7 @@ import {
   Save,
   CheckCircle2,
   Sparkles,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +23,9 @@ const PINK = "#e83360";
 
 export default function PerfilProfesional() {
   const navigate = useNavigate();
-  const [session, setSession] = useState(getSession());
+  const [session] = useState(getSession());
   const [guardado, setGuardado] = useState(false);
 
-  // Estado local del perfil del maestro
   const [perfil, setPerfil] = useState({
     nombre: session?.name || "Juan Pérez",
     especialidad: "Gasfitería y Plomería",
@@ -53,7 +53,6 @@ export default function PerfilProfesional() {
     e.preventDefault();
     setGuardado(true);
 
-    // Ocultar mensaje de éxito tras 3 segundos
     setTimeout(() => {
       setGuardado(false);
     }, 3000);
@@ -62,15 +61,24 @@ export default function PerfilProfesional() {
   return (
     <div className="w-full min-h-screen py-12 px-4 flex justify-center items-center">
       <div className="max-w-4xl w-full mx-auto space-y-8">
-        {/* Header / Encabezado */}
+        {/* Volver */}
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 text-gray-800 hover:text-black transition-colors font-semibold bg-white/80 backdrop-blur-md px-4 py-2 rounded-full w-fit shadow-sm border border-white/50 text-sm cursor-pointer"
+        >
+          <ArrowLeft size={18} />
+          Volver al inicio
+        </button>
+
+        {/* Encabezado del Perfil */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-white/50"
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-white/50"
         >
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-[#55bcd9] text-white flex items-center justify-center font-black text-2xl shadow-inner">
-              {perfil.nombre.charAt(0)}
+              {perfil.nombre.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -87,7 +95,7 @@ export default function PerfilProfesional() {
             </div>
           </div>
 
-          {/* Switch de Disponibilidad */}
+          {/* Estado de Disponibilidad */}
           <button
             type="button"
             onClick={() => handleChange("disponible", !perfil.disponible)}
@@ -102,7 +110,7 @@ export default function PerfilProfesional() {
           </button>
         </motion.div>
 
-        {/* Métricas rápidas de Reputación */}
+        {/* Reputación / Métricas */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white p-5 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-4">
             <div className="p-3 rounded-xl bg-sky-50 text-sky-600">
@@ -137,7 +145,7 @@ export default function PerfilProfesional() {
           </div>
         </div>
 
-        {/* Formulario de Edición de Perfil */}
+        {/* Editar Datos */}
         <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,7 +164,6 @@ export default function PerfilProfesional() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Especialidad */}
             <div className="space-y-2">
               <Label className="text-gray-700 font-semibold flex items-center gap-2 text-sm">
                 <Briefcase size={16} style={{ color: PINK }} />
@@ -170,7 +177,6 @@ export default function PerfilProfesional() {
               />
             </div>
 
-            {/* Teléfono */}
             <div className="space-y-2">
               <Label className="text-gray-700 font-semibold flex items-center gap-2 text-sm">
                 <Phone size={16} style={{ color: PINK }} />
@@ -184,7 +190,6 @@ export default function PerfilProfesional() {
               />
             </div>
 
-            {/* Correo */}
             <div className="space-y-2">
               <Label className="text-gray-700 font-semibold flex items-center gap-2 text-sm">
                 <Mail size={16} style={{ color: PINK }} />
@@ -198,7 +203,6 @@ export default function PerfilProfesional() {
               />
             </div>
 
-            {/* Comuna */}
             <div className="space-y-2">
               <Label className="text-gray-700 font-semibold flex items-center gap-2 text-sm">
                 <MapPin size={16} style={{ color: PINK }} />
@@ -213,7 +217,6 @@ export default function PerfilProfesional() {
             </div>
           </div>
 
-          {/* Descripción */}
           <div className="space-y-2 pt-2">
             <Label className="text-gray-700 font-semibold text-sm">
               Presentación de tus Servicios (Biografía)
@@ -227,7 +230,6 @@ export default function PerfilProfesional() {
             />
           </div>
 
-          {/* Botón Guardar */}
           <div className="pt-4 flex justify-end">
             <Button
               type="submit"
