@@ -6,8 +6,9 @@ import Profesionales from "./pages/Profesionales";
 import { Garantia } from "./pages/Garantia";
 import { Contacto } from "./pages/Contacto";
 import { Registro } from "./pages/Registro";
-import  Login  from "./pages/Login";
+import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import PerfilProfesional from "./pages/PerfilProfesional";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export const router = createBrowserRouter([
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: "contacto", element: <Contacto /> },
       { path: "registro", element: <Registro /> },
       { path: "login", element: <Login /> },
+      { path: "perfil-profesional", element: <PerfilProfesional /> },
     ],
   },
 
@@ -40,5 +42,5 @@ export const router = createBrowserRouter([
   {
     path: "*",
     element: <Home />,
-  }
+  },
 ]);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   especialidades,
   obtenerEtiquetaProfesional,
@@ -7,6 +8,7 @@ import {
   normalizarEspecialidad,
   type Profesional,
 } from "../data/profesionales";
+import { getSession } from "../data/Api";
 
 function iniciales(nombre: string) {
   return nombre
@@ -18,6 +20,7 @@ function iniciales(nombre: string) {
 }
 
 function Profesionales() {
+  const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState("");
   const [profesionales, setProfesionales] = useState<Profesional[]>([]);
   const [profesionalSeleccionado, setProfesionalSeleccionado] =
@@ -62,6 +65,28 @@ function Profesionales() {
 
     return texto.includes(busqueda.toLowerCase());
   });
+
+  const handleContactar = (p: Profesional) => {
+    if (!p.disponible) return;
+
+    const session = getSession();
+    if (!session) {
+      navigate("/login");
+    } else {
+      setProfesionalSeleccionado(p);
+    }
+  };
+
+  const handleLlamar = (p: Profesional) => {
+    if (!p.disponible) return;
+
+    const session = getSession();
+    if (!session) {
+      navigate("/login");
+    } else {
+      window.location.href = `tel:${p.telefono}`;
+    }
+  };
 
   return (
     <div
@@ -203,7 +228,7 @@ function Profesionales() {
                   </span>
                 </div>
 
-{/* Grid de tarjetas agrandadas (Máximo 3 columnas para más espacio) */}
+                {/* Grid de tarjetas AGRANDADAS */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {listaFiltrada.map((p) => {
                     const badgeInfo = obtenerEtiquetaProfesional(p);
@@ -312,7 +337,7 @@ function Profesionales() {
                           )}
                         </div>
 
-                        {/* Botones */}
+                        {/* Botones con verificación de sesión */}
                         <div className="flex items-center gap-3 pt-4 mt-2">
                           <button
                             type="button"
@@ -322,22 +347,20 @@ function Profesionales() {
                                 ? "bg-coral hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                                 : "bg-gray-400 cursor-not-allowed opacity-70"
                             }`}
-                            onClick={() => {
-                              if (p.disponible) {
-                                setProfesionalSeleccionado(p);
-                              }
-                            }}
+                            onClick={() => handleContactar(p)}
                           >
                             {p.disponible ? "Contactar" : "No disponible"}
                           </button>
 
-                          <a
+                          <button
+                            type="button"
+                            disabled={!p.disponible}
                             className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-turquoise text-turquoise bg-white flex items-center justify-center transition-all shrink-0 ${
                               p.disponible
-                                ? "hover:opacity-80 hover:scale-[1.03] active:scale-[0.97]"
+                                ? "hover:opacity-80 hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
                                 : "pointer-events-none opacity-40"
                             }`}
-                            href={`tel:${p.telefono}`}
+                            onClick={() => handleLlamar(p)}
                             aria-label="Llamar"
                           >
                             <svg
@@ -352,7 +375,7 @@ function Profesionales() {
                             >
                               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                             </svg>
-                          </a>
+                          </button>
                         </div>
                       </article>
                     );
