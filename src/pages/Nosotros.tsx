@@ -11,7 +11,8 @@ import {
   UserCheck,
   ThumbsUp,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Tally1
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -160,28 +161,26 @@ export function Nosotros() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-xl"
+            className="text-4xl md:text-6xl font-extrabold tracking-tight drop-shadow-xl"
             style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 800 }}
           >
-            <span className="drop-shadow-2xl">Sobre</span> nosotros
+            <span className="text-teal">Sobre</span>{' '}
+            <span style={{ color: PINK }}>nosotros</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-sm md:text-base text-center text-white/95 max-w-xl leading-relaxed drop-shadow-md"
-            style={{ fontFamily: "'Poppins', bold", fontWeight: 300 }}
+            className="text-teal text-sm md:text-base text-center max-w-xl leading-relaxed font-light drop-shadow-sm"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
             Conecta Hogar fue creada para resolver la necesidad de conectar clientes, y ofrecer un servicio confiable y seguro para encontrar profesionales calificados en tu área. Nuestra misión es facilitar la conexión entre usuarios y expertos, asegurando calidad, confianza y eficiencia en cada interacción.
           </motion.p>
         </div>
       </section>
 
-      {/* ── 2. SECCIÓN INTERACTIVA: CÓMO FUNCIONA LA APP (Se aplicó margen negativo para subirla y sombras a los textos) ── */}
+      {/* ── 2. SECCIÓN INTERACTIVA: CÓMO FUNCIONA LA APP ── */}
       <section className="max-w-5xl mx-auto px-4 md:px-10 relative z-10 -mt-12 md:-mt-20">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -190,33 +189,45 @@ export function Nosotros() {
           transition={{ duration: 0.5 }}
           className="space-y-8"
         >
-          {/* Encabezado con color de la imagen ("Encuentra al profesional") */}
-          <div className="text-center space-y-2">
+          {/* Encabezado con mayor espaciado y sombra corregida */}
+          <div className="text-center space-y-4 flex flex-col items-center">
+
+            {/* Píldora con mayor margen inferior (mb-3) */}
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-white/60 text-xs font-bold shadow-sm mb-1"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-white/80 text-xs font-bold shadow-md mb-2"
               style={{ color: TEAL_DARK }}
             >
-              <Sparkles size={14} className="text-amber-500" />
+              <Sparkles size={15} className="text-amber-500 animate-pulse" />
               <span style={{ fontFamily: "'Poppins', sans-serif" }}>Experiencia interactiva</span>
             </div>
 
-            <h2 className="text-3xl md:text-5xl font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              <span style={{ color: WHITE }}>¿Cómo funciona </span>
-              <span className="text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">Conecta Hogar?</span>
+            {/* Título unificado sin sombras duplicadas */}
+            <h2
+              className="text-3xl md:text-5xl font-black text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] tracking-tight"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              ¿Cómo funciona Conecta Hogar?
             </h2>
 
-            <p
-              className="font-semibold text-sm md:text-base max-w-lg mx-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
-              style={{ color: WHITE, fontFamily: "'Poppins', sans-serif" }}
-            >
-              Haz clic en cada paso para ver cómo resolvemos los problemas de tu hogar en minutos.
-            </p>
+            {/* Párrafo con fondo brillante y letra en azul TEAL_DARK para resaltar */}
+            <div className="relative group inline-block mt-1">
+              {/* Resplandor suave de fondo */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-300 via-sky-300 to-pink-300 rounded-2xl blur-md opacity-70 group-hover:opacity-100 transition duration-500"></div>
+
+              <p
+                className="relative bg-white/85 backdrop-blur-md px-5 py-2.5 rounded-2xl font-bold text-xs md:text-sm max-w-lg mx-auto shadow-lg border border-white/90 leading-relaxed"
+                style={{ color: TEAL_DARK, fontFamily: "'Poppins', sans-serif" }}
+              >
+                Haz clic en cada paso para ver cómo resolvemos los problemas de tu hogar en minutos.
+              </p>
+            </div>
+
           </div>
 
           {/* CAJA CONTENEDORA DE CÓMO FUNCIONA */}
           <div className="bg-linear-to-r from-sky-200/40 via-emerald-200/40 to-yellow-200/40 backdrop-blur-md border border-white/60 p-5 md:p-8 rounded-3xl shadow-2xl space-y-6">
 
-            {/* Barra de Pasos / Selectores con el mismo tono turquesa oscuro */}
+            {/* Barra de Pasos / Selectores */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {PASOS_COMO_FUNCIONA.map((paso, idx) => {
                 const IconoPasoBtn = paso.icono;
@@ -353,7 +364,7 @@ export function Nosotros() {
           transition={{ duration: 0.6 }}
           className="space-y-10"
         >
-          {/* TÍTULO: Ambas palabras en Blanco Puro con Sombras */}
+          {/* TÍTULO */}
           <div className="text-center space-y-2">
             <h2 className="text-3xl md:text-5xl font-black text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Nuestros Pilares
@@ -363,7 +374,7 @@ export function Nosotros() {
             </p>
           </div>
 
-          {/* TARJETA ROSADA CON TEXTO BLANCO PURO Y ROSA CLARO */}
+          {/* TARJETA CON CARROUSEL */}
           <div className="relative bg-white/20 backdrop-blur-md border border-white/40 rounded-3xl p-6 md:p-10 max-w-2xl mx-auto text-center space-y-6 shadow-2xl">
             <div className="flex flex-col items-center gap-6">
               {slideActual.imagen && (
