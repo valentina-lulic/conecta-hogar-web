@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { ArrowLeft, UserCircle, Mail, Lock, IdCard, Briefcase, Phone, Loader2 } from "lucide-react";
+import { ArrowLeft, UserCircle, Mail, Lock, IdCard, Briefcase, Phone, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +32,7 @@ export function Registro() {
     apellido: "",
     rut: "",
     telefono: "",
+    direccion: "",
     correo: "",
     password: "",
     tipoUsuario: "" as "cliente" | "profesional" | "",
@@ -65,6 +66,7 @@ export function Registro() {
       !formData.apellido ||
       !formData.rut ||
       !formData.telefono ||
+      !formData.direccion ||
       !formData.correo ||
       !formData.password ||
       !formData.tipoUsuario
@@ -86,6 +88,7 @@ export function Registro() {
         apellido: formData.apellido,
         rut: formData.rut,
         telefono: formData.telefono,
+        direccion: formData.direccion,
         correo: formData.correo,
         password: formData.password,
         tipoUsuario: formData.tipoUsuario as "cliente" | "profesional",
@@ -243,6 +246,23 @@ export function Registro() {
               />
             </div>
 
+            {/* Dirección */}
+            <div className="space-y-1 sm:col-span-2">
+              <Label htmlFor="direccion" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <MapPin size={15} style={{ color: PINK }} />
+                Dirección
+              </Label>
+              <Input
+                id="direccion"
+                type="text"
+                disabled={loading}
+                placeholder="Ej: Av. Providencia 1234, Depto 501, Providencia"
+                value={formData.direccion}
+                onChange={(e) => handleInputChange("direccion", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
           </div>
 
           {/* Tipo de usuario */}
@@ -257,8 +277,8 @@ export function Registro() {
               <div
                 onClick={() => !loading && handleTipoChange("cliente")}
                 className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "cliente"
-                    ? "border-[#e83360] bg-gray-50 shadow-sm"
-                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                  ? "border-[#e83360] bg-gray-50 shadow-sm"
+                  : "border-gray-200 bg-gray-50 hover:bg-gray-100"
                   }`}
               >
                 <Checkbox
@@ -274,8 +294,8 @@ export function Registro() {
               <div
                 onClick={() => !loading && handleTipoChange("profesional")}
                 className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "profesional"
-                    ? "border-[#e83360] bg-gray-50 shadow-sm"
-                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                  ? "border-[#e83360] bg-gray-50 shadow-sm"
+                  : "border-gray-200 bg-gray-50 hover:bg-gray-100"
                   }`}
               >
                 <Checkbox
@@ -305,8 +325,8 @@ export function Registro() {
                     key={item}
                     onClick={() => !loading && handleEspecialidadSelect(item)}
                     className={`p-2 border rounded-lg cursor-pointer transition-all ${formData.especialidad === item
-                        ? "border-[#e83360] bg-gray-50 shadow-sm"
-                        : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                      ? "border-[#e83360] bg-gray-50 shadow-sm"
+                      : "border-gray-200 bg-gray-50 hover:bg-gray-100"
                       }`}
                   >
                     <div className="flex items-center gap-1.5">
