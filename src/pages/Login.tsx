@@ -27,23 +27,22 @@ export default function Login() {
 
     setLoading(true);
 
-try {
-  const session = await loginRequest(email, password);
+    try {
+      const session = await loginRequest(email, password);
 
-  saveSession(session);
+      saveSession(session);
 
-  navigate("/");
-} catch (err) {
-  setError(
-    err instanceof Error
-      ? err.message
-      : "No se pudo iniciar sesión."
-  );
-} finally {
-  setLoading(false);
-}
+      navigate("/", { state: { welcome: true } });
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "No se pudo iniciar sesión."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-
 
   return (
     <div className="w-full py-12 px-4 flex justify-center items-center min-h-[70vh]">
@@ -55,7 +54,7 @@ try {
         >
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors mb-6 font-normal"
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors mb-6 font-normal cursor-pointer"
           >
             <ArrowLeft size={20} />
             Volver al inicio
@@ -128,7 +127,7 @@ try {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-6 text-lg font-black text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow disabled:opacity-60"
+              className="w-full py-6 text-lg font-black text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow disabled:opacity-60 cursor-pointer"
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
               {loading ? (
@@ -147,7 +146,7 @@ try {
             <button
               type="button"
               onClick={() => navigate("/registro")}
-              className="font-normal underline hover:text-gray-700"
+              className="font-normal underline hover:text-gray-700 cursor-pointer"
             >
               Regístrate aquí
             </button>

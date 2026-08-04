@@ -1,25 +1,36 @@
 import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import { getToken, getRole } from "@/data/Api";
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  allowedRoles?: string[]; // Lista opcional de roles permitidos (ej: ["admin", "profesional"])
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  // 1. Obtenemos el token guardado en el navegador tras el login
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role"); // Opcional: si guardas el rol (ej: "ADMIN")
+export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  const token = getToken();
+  const rawRole = getRole();
+  const location = useLocation();
 
-  // 2. Si no hay token, redirigir al Login
+  // 1. Si no está autenticado, redirigir al Login guardando la ubicación actual
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 3. (Opcional) Si existe el token pero NO es rol ADMIN, redirigir a inicio
-  if (role && role !== "ADMIN") {
-    return <Navigate to="/" replace />;
+  // Normalizamos el rol a minúsculas para comparaciones seguras
+  const role = rawRole?.toLowerCase() || "";
+
+  // 2. Si se especificaron roles permitidos y el usuario NO tiene uno de ellos, redirigir al inicio
+  if (allowedRoles && allowedRoles.length > 0) {
+    const hasPermission = allowedRoles.some((allowedRole) =>
+      role.includes(allowedRole.toLowerCase())
+    );
+
+    if (!hasPermission) {
+      return <Navigate to="/" replace />;
+    }
   }
 
-  // 4. Si todo está correcto, renderizar la página protegida (Admin)
+  // 3. Si todo está correcto, renderizar la página protegida
   return <>{children}</>;
 }
