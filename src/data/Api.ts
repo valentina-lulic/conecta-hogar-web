@@ -5,7 +5,7 @@ export const API_URL = BACKEND_URL;
 export interface AuthResponse {
   token: string;
   mensaje: string;
-  role?: string;
+  rol: Role;
   nombre?: string;
   name?: string;
 }
@@ -61,12 +61,16 @@ export async function loginRequest(
   return response.json();
 }
 
-export function saveSession(session: AuthResponse): void {
+export type Role = "CLIENTE" | "MAESTRO" | "ADMIN";
+
+export interface AuthResponse {
+  token: string;
+  mensaje: string;
+  rol: Role;
+}
+export function saveSession(session: AuthResponse) {
   localStorage.setItem("token", session.token);
-  localStorage.setItem("role", session.role || "Cliente");
-  if (session.nombre || session.name) {
-    localStorage.setItem("name", session.nombre || session.name || "");
-  }
+  localStorage.setItem("role", session.rol);
 }
 
 export function getToken(): string | null {

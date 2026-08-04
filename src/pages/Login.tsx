@@ -28,32 +28,37 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // 1. Intentar hacer login real con el Backend Spring Boot
       const session = await loginRequest(email, password);
-      
-      // 2. Guardar la sesión con el JWT devuelto por el servidor
+
       saveSession(session);
 
-      // 3. Redirección inteligente según el rol retornado por la API
-      const rawRole = (session.role || "").toLowerCase();
+      const rol = session.rol;
 
-      if (rawRole.includes("profesional") || rawRole.includes("maestro")) {
-        navigate("/perfil-profesional", { state: { welcome: true } });
-      } else if (rawRole.includes("admin")) {
-        navigate("/admin", { state: { welcome: true } });
+      if (rol === "MAESTRO") {
+        navigate("/perfil-profesional", {
+          state: { welcome: true },
+        });
+      } else if (rol === "ADMIN") {
+        navigate("/admin", {
+          state: { welcome: true },
+        });
       } else {
-        navigate("/perfil-cliente", { state: { welcome: true } });
+        navigate("/perfil-cliente", {
+          state: { welcome: true },
+        });
       }
-
-    } catch (err: any) {
-      // Captura y muestra el mensaje de error devuelto por el backend
+    } catch (err: unknown) {
       console.error("Error en login:", err);
-      setError(err.message || "Correo o contraseña incorrectos. Intenta nuevamente.");
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Correo o contraseña incorrectos. Intenta nuevamente."
+      );
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="w-full py-12 px-4 flex justify-center items-center min-h-[70vh]">
       <div className="max-w-md w-full mx-auto">
