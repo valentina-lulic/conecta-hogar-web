@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   especialidades,
   obtenerEtiquetaProfesional,
   obtenerFotoProfesional,
+  obtenerProfesionales,
   normalizarEspecialidad,
   type Profesional,
 } from "../data/profesionales";
-import { getSession, getMaestros } from "../data/Api";
 
 function iniciales(nombre: string) {
-  if (!nombre) return "CH";
   return nombre
     .split(" ")
     .map((p) => p[0])
@@ -20,7 +18,6 @@ function iniciales(nombre: string) {
 }
 
 function Profesionales() {
-  const navigate = useNavigate();
   const [busqueda, setBusqueda] = useState("");
   const [profesionales, setProfesionales] = useState<Profesional[]>([]);
   const [profesionalSeleccionado, setProfesionalSeleccionado] =
@@ -34,17 +31,13 @@ function Profesionales() {
         setLoading(true);
         setError(null);
 
-        const data = await getMaestros();
+        const data = await obtenerProfesionales();
+
         console.log("Profesionales desde backend:", data);
-
-        const mapeados: Profesional[] = data.map((m: any) => ({
-          ...m,
-          likes: m.meGusta || m.likes || 0,
-        }));
-
-        setProfesionales(mapeados);
+        setProfesionales(data);
       } catch (err) {
         console.error("Error al cargar profesionales:", err);
+
         setError(
           err instanceof Error
             ? err.message
@@ -60,43 +53,15 @@ function Profesionales() {
 
   const profesionalesFiltrados = profesionales.filter((p) => {
     const texto = `
-      ${p.nombre || ""}
-      ${p.apellido || ""}
-      ${p.especialidad || ""}
-      ${p.descripcion || ""}
-      ${p.comuna || ""}
+      ${p.nombre}
+      ${p.apellido}
+      ${p.especialidad}
+      ${p.descripcion}
+      ${p.comuna}
     `.toLowerCase();
 
     return texto.includes(busqueda.toLowerCase());
   });
-
-  const handleContactar = (p: Profesional) => {
-    if (!p.disponible) return;
-    const session = getSession();
-    if (!session) {
-      navigate("/login");
-    } else {
-      setProfesionalSeleccionado(p);
-    }
-  };
-
-  const handleLlamar = (p: Profesional) => {
-    if (!p.disponible) return;
-    const session = getSession();
-    if (!session) {
-      navigate("/login");
-    } else {
-      window.location.href = `tel:${p.telefono}`;
-    }
-  };
-
-  const handleLike = (e: React.MouseEvent, idMaestro: number) => {
-    e.stopPropagation();
-    // Reacción local instantánea en la interfaz
-    setProfesionales((prev) =>
-      prev.map((p) => (p.id === idMaestro ? { ...p, likes: (p.likes || 0) + 1 } : p))
-    );
-  };
 
   return (
     <div
@@ -207,13 +172,15 @@ function Profesionales() {
               .sort((a, b) => {
                 const peso = (prof: Profesional) => {
                   const tag = obtenerEtiquetaProfesional(prof)?.claseCSS;
+
                   if (tag === "top") return 3;
                   if (tag === "verificada") return 2;
                   if (tag === "destacado") return 1;
+
                   return 0;
                 };
 
-                return peso(b) - peso(a) || (b.likes || 0) - (a.likes || 0);
+                return peso(b) - peso(a) || b.likes - a.likes;
               });
 
             if (listaFiltrada.length === 0) return null;
@@ -236,7 +203,7 @@ function Profesionales() {
                   </span>
                 </div>
 
-                {/* Grid de tarjetas */}
+{/* Grid de tarjetas agrandadas (Máximo 3 columnas para más espacio) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {listaFiltrada.map((p) => {
                     const badgeInfo = obtenerEtiquetaProfesional(p);
@@ -259,7 +226,7 @@ function Profesionales() {
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
-                                  iniciales(`${p.nombre || ""} ${p.apellido || ""}`)
+                                  iniciales(`${p.nombre} ${p.apellido}`)
                                 )}
                               </div>
 
@@ -304,28 +271,23 @@ function Profesionales() {
                               </p>
 
                               {/* Likes */}
-                              <button
-                                type="button"
-                                onClick={(e) => handleLike(e, p.id)}
-                                className="flex items-center gap-1.5 mt-1 text-xs text-slate-500 hover:text-sky-600 transition-colors cursor-pointer group border border-slate-100 px-2.5 py-1 rounded-full bg-slate-50 hover:bg-sky-50"
-                              >
+                              <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
                                 <svg
                                   width="16"
                                   height="16"
                                   viewBox="0 0 24 24"
                                   fill="#38bdf8"
                                   stroke="#38bdf8"
-                                  className="group-hover:scale-110 transition-transform"
                                 >
                                   <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                                 </svg>
 
                                 <span className="font-extrabold text-slate-900 text-sm">
-                                  {p.likes || 0}
+                                  {p.likes}
                                 </span>
 
                                 <span>Me gusta</span>
-                              </button>
+                              </div>
                             </div>
                           </div>
 
@@ -350,7 +312,7 @@ function Profesionales() {
                           )}
                         </div>
 
-                        {/* Botones de acción */}
+                        {/* Botones */}
                         <div className="flex items-center gap-3 pt-4 mt-2">
                           <button
                             type="button"
@@ -360,20 +322,22 @@ function Profesionales() {
                                 ? "bg-coral hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                                 : "bg-gray-400 cursor-not-allowed opacity-70"
                             }`}
-                            onClick={() => handleContactar(p)}
+                            onClick={() => {
+                              if (p.disponible) {
+                                setProfesionalSeleccionado(p);
+                              }
+                            }}
                           >
                             {p.disponible ? "Contactar" : "No disponible"}
                           </button>
 
-                          <button
-                            type="button"
-                            disabled={!p.disponible}
+                          <a
                             className={`w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-turquoise text-turquoise bg-white flex items-center justify-center transition-all shrink-0 ${
                               p.disponible
-                                ? "hover:opacity-80 hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
+                                ? "hover:opacity-80 hover:scale-[1.03] active:scale-[0.97]"
                                 : "pointer-events-none opacity-40"
                             }`}
-                            onClick={() => handleLlamar(p)}
+                            href={`tel:${p.telefono}`}
                             aria-label="Llamar"
                           >
                             <svg
@@ -388,7 +352,7 @@ function Profesionales() {
                             >
                               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                             </svg>
-                          </button>
+                          </a>
                         </div>
                       </article>
                     );
@@ -434,7 +398,7 @@ function Profesionales() {
                   />
                 ) : (
                   iniciales(
-                    `${profesionalSeleccionado.nombre || ""} ${profesionalSeleccionado.apellido || ""}`
+                    `${profesionalSeleccionado.nombre} ${profesionalSeleccionado.apellido}`
                   )
                 )}
               </div>
@@ -459,7 +423,7 @@ function Profesionales() {
               {/* WhatsApp */}
               <a
                 className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-turquoise hover:bg-turquoise/10 transition-colors text-foreground text-sm font-semibold"
-                href={`https://wa.me/56${(profesionalSeleccionado.telefono || "").replace(
+                href={`https://wa.me/56${profesionalSeleccionado.telefono.replace(
                   /\D/g,
                   ""
                 )}`}
