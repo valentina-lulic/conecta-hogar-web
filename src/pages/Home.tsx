@@ -10,7 +10,6 @@ import {
   Clock,
   ThumbsUp,
   MapPin,
-  Phone,
   CheckCircle2,
   HardHat,
 } from "lucide-react";
