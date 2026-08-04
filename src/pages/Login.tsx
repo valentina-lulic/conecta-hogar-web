@@ -5,7 +5,7 @@ import { ArrowLeft, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginRequest, saveSession, getRole } from "@/data/Api";
+import { loginRequest, saveSession } from "@/data/Api";
 
 const PINK = "#e83360";
 
@@ -28,28 +28,14 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // 1. Intentar hacer login con el Backend
+      // 1. Intentar hacer login real con el Backend Spring Boot
       const session = await loginRequest(email, password);
+      
+      // 2. Guardar la sesión con el JWT devuelto por el servidor
       saveSession(session);
-    } catch (err) {
-      console.warn("Backend no disponible. Generando sesión local de pruebas...");
 
-      // MOCK DE PRUEBA: Incluye la propiedad 'mensaje' exigida por AuthResponse
-      const emailLower = email.toLowerCase();
-      const esPro = emailLower.includes("pro") || emailLower.includes("maestro");
-      const esAdmin = emailLower.includes("admin");
-
-      saveSession({
-        token: "fake-jwt-token-demo",
-        role: esAdmin ? "Admin" : esPro ? "Profesional" : "Cliente",
-        nombre: esAdmin ? "Administrador" : esPro ? "Carlos Profesional" : "Cliente Demo",
-        mensaje: "Sesión de prueba iniciada correctamente",
-      });
-    } finally {
-      setLoading(false);
-
-      // 2. Redirección Inteligente según el Rol del usuario
-      const rawRole = (getRole() || "").toLowerCase();
+      // 3. Redirección inteligente según el rol retornado por la API
+      const rawRole = (session.role || "").toLowerCase();
 
       if (rawRole.includes("profesional") || rawRole.includes("maestro")) {
         navigate("/perfil-profesional", { state: { welcome: true } });
@@ -58,6 +44,13 @@ export default function Login() {
       } else {
         navigate("/perfil-cliente", { state: { welcome: true } });
       }
+
+    } catch (err: any) {
+      // Captura y muestra el mensaje de error devuelto por el backend
+      console.error("Error en login:", err);
+      setError(err.message || "Correo o contraseña incorrectos. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
     }
   };
 

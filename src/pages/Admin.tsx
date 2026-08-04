@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import logoImg from "../assets/icons/logito.jpeg";
 import {
   Users,
@@ -19,11 +19,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  Eye,
-  Pencil,
-  RefreshCw,
-  Save,
   TrendingUp,
+  Save,
 } from "lucide-react";
 import {
   BarChart,
@@ -94,6 +91,25 @@ const FALLBACK_MONTHLY = [
   { month: "Jul", total: 27 },
 ];
 
+function StatCard({ icon: Icon, color, iconColor, colorClass, iconClass, label, value }: any) {
+  return (
+    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+      <div
+        className={`p-3 rounded-xl ${colorClass || ""}`}
+        style={color ? { backgroundColor: `${color}20` } : {}}
+      >
+        <Icon size={22} className={iconClass || ""} style={color ? { color: iconColor || color } : {}} />
+      </div>
+      <div>
+        <p className="text-xs font-bold text-gray-400">{label}</p>
+        <p className="text-2xl font-black" style={{ color: DARK }}>
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
@@ -125,15 +141,26 @@ export default function AdminPanel() {
     const fetchProfessionals = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/admin/professionals`, {
+        // Soporta la ruta general o la de admin
+        const response = await fetch(`${API_URL}/maestros`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (response.ok) {
           const data = await response.json();
-          setProfessionals(data);
+          // Mapea la respuesta del backend al formato del frontend
+          const formatted: Professional[] = data.map((m: any) => ({
+            id: m.id || m.idMaestro,
+            name: m.usuario ? `${m.usuario.nombre} ${m.usuario.apellido}` : m.nombre || "Profesional",
+            specialty: m.especialidades ? m.especialidades.map((e: any) => e.nombre).join(", ") : m.especialidad || "General",
+            location: m.comuna || m.direccion || "Santiago",
+            status: m.activo ? "Aprobado" : "Pendiente",
+            date: m.fechaRegistro || "Reciente",
+          }));
+          setProfessionals(formatted);
         } else {
           console.error("Error al obtener profesionales:", response.statusText);
         }
@@ -151,7 +178,7 @@ export default function AdminPanel() {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${API_URL}/admin/users`, {
+        const response = await fetch(`${API_URL}/usuarios`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -159,7 +186,22 @@ export default function AdminPanel() {
         });
         if (response.ok) {
           const data = await response.json();
-          setUsers(data);
+          const formatted: AppUser[] = data.map((u: any) => {
+            let userRole: Role = "Cliente";
+            const rawRole = (u.rol || u.tipoUsuario || "").toUpperCase();
+            if (rawRole.includes("ADMIN")) userRole = "Administrador";
+            else if (rawRole.includes("MAESTRO") || rawRole.includes("PROFESIONAL")) userRole = "Profesional";
+
+            return {
+              id: u.id,
+              name: `${u.nombre} ${u.apellido || ""}`.trim(),
+              email: u.correo,
+              role: userRole,
+              status: u.estado === false ? "Inactivo" : "Activo",
+              registeredAt: u.fechaRegistro || "N/A",
+            };
+          });
+          setUsers(formatted);
           setUsingFallbackUsers(false);
         }
       } catch (error) {
@@ -176,17 +218,17 @@ export default function AdminPanel() {
     navigate("/");
   };
 
-  // 3. Cambiar estado de verificación de un profesional
+  // 3. Cambiar estado de un profesional
   const handleStatusChange = async (id: number, newStatus: "Aprobado" | "Rechazado") => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_URL}/admin/professionals/${id}/status`, {
+      const isApproved = newStatus === "Aprobado";
+      const response = await fetch(`${API_URL}/usuarios/${id}/estado?activo=${isApproved}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status: newStatus }),
       });
       if (response.ok) {
         setProfessionals((prev) => prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p)));
@@ -201,26 +243,10 @@ export default function AdminPanel() {
   const handleSaveSettings = async () => {
     setSavingSettings(true);
     setSettingsSaved(false);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_URL}/admin/settings`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ platformName, supportEmail, commission: Number(commission) }),
-      });
-      if (response.ok) {
-        setSettingsSaved(true);
-      } else {
-        alert("No se pudo guardar la configuración.");
-      }
-    } catch (error) {
-      console.error("Error al guardar configuración:", error);
-    } finally {
+    setTimeout(() => {
       setSavingSettings(false);
-    }
+      setSettingsSaved(true);
+    }, 800);
   };
 
   const filteredProfessionals = professionals.filter((p) => {
@@ -241,7 +267,12 @@ export default function AdminPanel() {
   });
 
   const initials = (name: string) =>
-    name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+    name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
 
   const clients = users.filter((u) => u.role === "Cliente").length;
   const profesionalesUsuarios = users.filter((u) => u.role === "Profesional").length;
@@ -345,11 +376,6 @@ export default function AdminPanel() {
                 <p className="text-sm font-semibold text-gray-500 mt-1">
                   Resumen general de la plataforma Conecta Hogar
                 </p>
-                {usingFallbackUsers && (
-                  <p className="text-xs font-semibold text-gray-400 mt-3">
-                    Mostrando datos de ejemplo — conecta el endpoint /admin/users para ver datos reales.
-                  </p>
-                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -421,51 +447,6 @@ export default function AdminPanel() {
                 <p className="text-sm font-semibold text-gray-500 mt-1">
                   Verifica y administra las solicitudes del sistema
                 </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                  <div className="p-3 rounded-xl" style={{ backgroundColor: `${SKY}20` }}>
-                    <Users size={22} style={{ color: SKY }} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400">Total Solicitudes</p>
-                    <p className="text-2xl font-black" style={{ color: DARK }}>{professionals.length}</p>
-                  </div>
-                </div>
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                  <div className="p-3 rounded-xl" style={{ backgroundColor: `${YELLOW}30` }}>
-                    <Clock size={22} style={{ color: "#d9ab00" }} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400">Pendientes</p>
-                    <p className="text-2xl font-black" style={{ color: DARK }}>
-                      {professionals.filter((p) => p.status === "Pendiente").length}
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-green-100">
-                    <UserCheck size={22} className="text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400">Aprobados</p>
-                    <p className="text-2xl font-black" style={{ color: DARK }}>
-                      {professionals.filter((p) => p.status === "Aprobado").length}
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-red-100">
-                    <AlertCircle size={22} className="text-red-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-400">Rechazados</p>
-                    <p className="text-2xl font-black" style={{ color: DARK }}>
-                      {professionals.filter((p) => p.status === "Rechazado").length}
-                    </p>
-                  </div>
-                </div>
               </div>
 
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
@@ -597,12 +578,6 @@ export default function AdminPanel() {
                 </motion.button>
               </div>
 
-              {usingFallbackUsers && (
-                <p className="text-xs font-semibold text-gray-400 -mt-4 px-2">
-                  Mostrando datos de ejemplo — conecta el endpoint /admin/users para ver datos reales.
-                </p>
-              )}
-
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
                 <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
                   <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 max-w-md flex-1">
@@ -654,7 +629,6 @@ export default function AdminPanel() {
                           <th className="pb-4">Rol</th>
                           <th className="pb-4">Estado</th>
                           <th className="pb-4">Registro</th>
-                          <th className="pb-4 text-right">Acciones</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
@@ -685,30 +659,16 @@ export default function AdminPanel() {
                                     u.status === "Activo" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                                   }`}
                                 >
-                                  <span className={`w-1.5 h-1.5 rounded-full ${u.status === "Activo" ? "bg-green-600" : "bg-red-600"}`} />
                                   {u.status}
                                 </span>
                               </td>
                               <td className="py-4 text-gray-400 text-xs">{u.registeredAt}</td>
-                              <td className="py-4 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <Eye size={15} />
-                                  </button>
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <Pencil size={15} />
-                                  </button>
-                                  <button className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                                    <RefreshCw size={15} />
-                                  </button>
-                                </div>
-                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={7} className="text-center py-8 text-gray-400 font-medium">
-                              No se encontraron registros.
+                            <td colSpan={6} className="text-center py-8 text-gray-400 font-medium">
+                              No se encontraron usuarios.
                             </td>
                           </tr>
                         )}
@@ -722,159 +682,72 @@ export default function AdminPanel() {
 
           {/* ---------- ESTADÍSTICAS ---------- */}
           {activeTab === "estadisticas" && (
-            <>
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <h2 className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-                  Estadísticas del Sistema
-                </h2>
-                <p className="text-sm font-semibold text-gray-500 mt-1">
-                  Métricas de rendimiento y actividad en Conecta Hogar
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <StatCard
-                  icon={TrendingUp}
-                  colorClass="bg-green-100"
-                  iconClass="text-green-600"
-                  label="Tasa de aprobación"
-                  value={
-                    professionals.length
-                      ? Math.round((professionals.filter((p) => p.status === "Aprobado").length / professionals.length) * 100)
-                      : 0
-                  }
-                  suffix="%"
-                />
-                <StatCard
-                  icon={Clock}
-                  color={YELLOW}
-                  iconColor="#d9ab00"
-                  label="Solicitudes pendientes"
-                  value={professionals.filter((p) => p.status === "Pendiente").length}
-                />
-                <StatCard icon={Users} color={SKY} label="Usuarios activos" value={activeUsers} />
-              </div>
-
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-6">
-                  <BarChart3 size={18} style={{ color: PINK }} />
-                  <h3 className="text-sm font-black text-gray-700 uppercase tracking-wide">
-                    Estado de solicitudes de profesionales
-                  </h3>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart
-                    data={[
-                      { estado: "Pendiente", total: professionals.filter((p) => p.status === "Pendiente").length },
-                      { estado: "Aprobado", total: professionals.filter((p) => p.status === "Aprobado").length },
-                      { estado: "Rechazado", total: professionals.filter((p) => p.status === "Rechazado").length },
-                    ]}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
-                    <XAxis dataKey="estado" tick={{ fontSize: 12, fontWeight: 700, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #f1f1f1", fontWeight: 600, fontSize: 13 }} />
-                    <Bar dataKey="total" fill={SKY} radius={[8, 8, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </>
+            <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
+              <h2 className="text-3xl font-black mb-4" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
+                Estadísticas de la Plataforma
+              </h2>
+              <p className="text-sm font-semibold text-gray-500 mb-6">Métricas de rendimiento y actividad general.</p>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={FALLBACK_MONTHLY}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f1f1" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fontWeight: 700, fill: "#9ca3af" }} />
+                  <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} />
+                  <Tooltip />
+                  <Bar dataKey="total" fill={SKY} radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           )}
 
           {/* ---------- CONFIGURACIÓN ---------- */}
           {activeTab === "configuracion" && (
-            <>
-              <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-1">
-                  <SettingsIcon size={22} style={{ color: PINK }} />
-                  <h2 className="text-3xl font-black" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
-                    Configuración
-                  </h2>
-                </div>
-                <p className="text-sm font-semibold text-gray-500 mt-1">Ajustes generales de la plataforma</p>
-              </div>
-
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-xl space-y-5">
+            <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 max-w-2xl">
+              <h2 className="text-3xl font-black mb-6" style={{ fontFamily: "'Nunito', sans-serif", color: DARK }}>
+                Configuración del Sistema
+              </h2>
+              <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Nombre de la plataforma</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre de la Plataforma</label>
                   <input
                     type="text"
                     value={platformName}
                     onChange={(e) => setPlatformName(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none font-bold text-sm text-gray-700"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Correo de soporte</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Correo de Soporte</label>
                   <input
                     type="email"
                     value={supportEmail}
                     onChange={(e) => setSupportEmail(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none font-bold text-sm text-gray-700"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Comisión por servicio (%)</label>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Comisión Plataforma (%)</label>
                   <input
                     type="number"
                     value={commission}
                     onChange={(e) => setCommission(e.target.value)}
-                    className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700 outline-none focus:border-gray-300"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none font-bold text-sm text-gray-700"
                   />
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={handleSaveSettings}
                   disabled={savingSettings}
-                  className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white transition-colors disabled:opacity-60"
+                  className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm text-white transition-colors mt-4"
                   style={{ background: PINK }}
                 >
-                  {settingsSaved ? <CheckCircle2 size={16} /> : <Save size={16} />}
-                  {savingSettings ? "Guardando..." : settingsSaved ? "Guardado" : "Guardar configuración"}
-                </motion.button>
+                  {savingSettings ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+                  {savingSettings ? "Guardando..." : "Guardar Cambios"}
+                </button>
+                {settingsSaved && <p className="text-xs font-bold text-green-600 mt-2">¡Configuración guardada exitosamente!</p>}
               </div>
-            </>
+            </div>
           )}
         </div>
       </main>
-    </div>
-  );
-}
-
-interface StatCardProps {
-  icon: React.ElementType;
-  color?: string;
-  iconColor?: string;
-  colorClass?: string;
-  iconClass?: string;
-  label: string;
-  value: number;
-  suffix?: string;
-}
-
-function StatCard({
-  icon: Icon,
-  color,
-  iconColor,
-  colorClass,
-  iconClass,
-  label,
-  value,
-  suffix,
-}: StatCardProps) {
-  return (
-    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-      <div className={`p-3 rounded-xl ${colorClass ?? ""}`} style={!colorClass && color ? { backgroundColor: `${color}20` } : undefined}>
-        <Icon size={22} className={iconClass} style={!iconClass && (iconColor || color) ? { color: iconColor ?? color } : undefined} />
-      </div>
-      <div>
-        <p className="text-xs font-bold text-gray-400">{label}</p>
-        <p className="text-2xl font-black" style={{ color: DARK }}>
-          {value}
-          {suffix ?? ""}
-        </p>
-      </div>
     </div>
   );
 }

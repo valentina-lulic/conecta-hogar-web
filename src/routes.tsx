@@ -8,10 +8,8 @@ import { Contacto } from "./pages/Contacto";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import PerfilProfesional from "./pages/PerfilProfesional";
-import PerfilCliente from "./pages/PerfilCliente"; // 👈 Importamos la vista del Cliente
+import PerfilCliente from "./pages/PerfilCliente";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-// Registro de tu compañera respetando su exportación
 import { Registro } from "./pages/Registro"; 
 
 export const router = createBrowserRouter([
@@ -41,7 +39,7 @@ export const router = createBrowserRouter([
       {
         path: "perfil-profesional",
         element: (
-          <ProtectedRoute allowedRoles={["profesional", "maestro"]}>
+          <ProtectedRoute allowedRoles={["PROFESIONAL", "MAESTRO", "ROLE_MAESTRO", "profesional", "maestro"]}>
             <PerfilProfesional />
           </ProtectedRoute>
         ),
@@ -51,22 +49,22 @@ export const router = createBrowserRouter([
       {
         path: "perfil-cliente",
         element: (
-          <ProtectedRoute allowedRoles={["cliente"]}>
+          <ProtectedRoute allowedRoles={["CLIENTE", "ROLE_CLIENTE", "cliente"]}>
             <PerfilCliente />
           </ProtectedRoute>
         ),
       },
-    ],
-  },
 
-  // Panel de Admin Protegido
-  {
-    path: "/admin",
-    element: (
-      <ProtectedRoute allowedRoles={["admin", "administrador"]}>
-        <Admin />
-      </ProtectedRoute>
-    ),
+      // 🟢 PANEL DE ADMIN (Dentro de Root para compartir Navigation/Layout)
+      {
+        path: "admin",
+        element: (
+          <ProtectedRoute allowedRoles={["ADMIN", "ROLE_ADMIN", "admin", "administrador"]}>
+            <Admin />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 
   // 404 Redirección
