@@ -20,6 +20,12 @@ import gasfiteriaImg from "../assets/images/gasfiter.png";
 import electricidadImg from "../assets/images/electricista.png";
 import albanileriaImg from "../assets/images/albanil.png";
 import soldaduraImg from "../assets/images/soldador.png";
+import {
+    obtenerTopProfesionales,
+    obtenerFotoProfesional,
+    obtenerEtiquetaProfesional,
+    type Profesional,
+} from "../data/profesionales";
 
 function CountUp({ value, duration = 2 }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -88,40 +94,7 @@ const trades = [
   { img: soldaduraImg, label: "Soldaduría", color: "#ec561b" },
 ];
 
-const professionals = [
-  {
-    name: "Carlos Muñoz",
-    specialty: "Gasfitero certificado",
-    likes: 127,
-    location: "Santiago Centro",
-    available: true,
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&auto=format",
-    badge: "Top Profesional",
-    badgeColor: PINK,
-  },
-  {
-    name: "Ana Rodríguez",
-    specialty: "Electricista",
-    likes: 89,
-    location: "Providencia",
-    available: true,
-    img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&auto=format",
-    badge: "Verificada",
-    badgeColor: SKY,
-  },
-  {
-    name: "Pedro Saavedra",
-    specialty: "Pintor profesional",
-    likes: 64,
-    location: "Las Condes",
-    available: false,
-    img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&auto=format",
-    badge: "Destacado",
-    badgeColor: YELLOW,
-  },
-];
-
-const steps = [
+const steps = [ 
   {
     num: "01",
     color: SKY,
@@ -228,18 +201,50 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
-  const [activeTab, setActiveTab] = useState<"particulares" | "profesionales">("particulares");
+  const [activeTab, setActiveTab] =
+    useState<"particulares" | "profesionales">("particulares");
+
+  const [professionals, setProfessionals] = useState<Profesional[]>([]);
+  const [loadingProfessionals, setLoadingProfessionals] = useState(true);
+  const [professionalsError, setProfessionalsError] =
+    useState<string | null>(null);
+
   const { hash } = useLocation();
 
   useEffect(() => {
     if (hash) {
       const targetId = hash.replace("#", "");
       const element = document.getElementById(targetId);
+
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
   }, [hash]);
+
+  useEffect(() => {
+    const cargarTop = async () => {
+      try {
+        setLoadingProfessionals(true);
+        setProfessionalsError(null);
+
+        const data = await obtenerTopProfesionales();
+        setProfessionals(data.slice(0, 3));
+      } catch (error) {
+        console.error("Error cargando profesionales destacados:", error);
+
+        setProfessionalsError(
+          error instanceof Error
+            ? error.message
+            : "No se pudieron cargar los profesionales destacados."
+        );
+      } finally {
+        setLoadingProfessionals(false);
+      }
+    };
+
+    cargarTop();
+  }, []);
 
   return (
     <div>
@@ -536,6 +541,7 @@ export default function Home() {
               <p className="text-xs font-black tracking-widest uppercase mb-2 text-yellow-300 drop-shadow-sm">
                 Nuestros expertos
               </p>
+
               <h2
                 className="text-3xl md:text-4xl font-black text-white"
                 style={{ fontFamily: "'Nunito', sans-serif" }}
@@ -544,97 +550,166 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Botón "Ver todos" en color amarillo y conectado a la ruta /profesionales */}
             <Link
               to="/profesionales"
-              className="hidden md:inline-flex items-center gap-1 text-sm font text-yellow-300 hover:opacity-80 transition-opacity"
+              className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-yellow-300 hover:opacity-80 transition-opacity"
             >
               Ver todos <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {professionals.map((pro, i) => (
-              <motion.div
-                key={pro.name}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.13 }}
-                whileHover={{ y: -8, boxShadow: "0 20px 48px rgba(0,0,0,0.14)" }}
-                className="bg-white rounded-2xl overflow-hidden border-2 cursor-pointer"
-                style={{ borderColor: `${pro.badgeColor}30` }}
-              >
-                <div className="p-5 flex items-start gap-4">
-                  <div className="relative shrink-0">
-                    <img
-                      src={pro.img}
-                      alt={pro.name}
-                      className="w-16 h-16 rounded-2xl object-cover"
-                    />
-                    {pro.available && (
-                      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white bg-green-500" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                      <h3 className="font-black text-base" style={{ color: DARK }}>
-                        {pro.name}
-                      </h3>
-                      <span
-                        className="text-xs font-black px-2 py-0.5 rounded-full text-white"
-                        style={{ background: pro.badgeColor }}
-                      >
-                        {pro.badge}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold" style={{ color: "#6b7280" }}>
-                      {pro.specialty}
-                    </p>
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <ThumbsUp size={13} fill={SKY} stroke={SKY} />
-                      <span className="text-xs font-black" style={{ color: DARK }}>
-                        {pro.likes}
-                      </span>
-                      <span className="text-xs" style={{ color: "#9ca3af" }}>
-                        Me gusta
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="border-t px-5 py-3 flex items-center justify-between"
-                  style={{ borderColor: "#f3f4f6" }}
-                >
-                  <div
-                    className="flex items-center gap-1 text-xs font-semibold"
-                    style={{ color: "#9ca3af" }}
-                  >
-                    <MapPin size={12} />
-                    {pro.location}
-                  </div>
-                </div>
+          {loadingProfessionals && (
+            <div className="bg-white/90 rounded-2xl p-8 text-center shadow-lg">
+              <div className="w-9 h-9 mx-auto mb-3 border-4 border-gray-200 border-t-[#e83360] rounded-full animate-spin" />
 
-                {/* Botones inferiores en formato cápsula/redondeado */}
-                <div className="px-5 pb-5 pt-3 flex gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex-1 py-2.5 rounded-full text-sm font-black text-white shadow-sm"
-                    style={{ background: PINK }}
+              <p className="font-bold" style={{ color: DARK }}>
+                Cargando profesionales destacados...
+              </p>
+            </div>
+          )}
+
+          {professionalsError && !loadingProfessionals && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-5 text-center font-semibold">
+              {professionalsError}
+            </div>
+          )}
+
+          {!loadingProfessionals && !professionalsError && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {professionals.map((pro, i) => {
+                const nombreCompleto =
+                  `${pro.nombre} ${pro.apellido}`.trim();
+
+                const foto = obtenerFotoProfesional(pro);
+                const badge = obtenerEtiquetaProfesional(pro);
+
+                const badgeColor =
+                  badge?.claseCSS === "top"
+                    ? PINK
+                    : badge?.claseCSS === "verificada"
+                      ? SKY
+                      : YELLOW;
+
+                const iniciales =
+                  `${pro.nombre?.charAt(0) ?? ""}${
+                    pro.apellido?.charAt(0) ?? ""
+                  }`.toUpperCase();
+
+                return (
+                  <motion.div
+                    key={pro.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.13 }}
+                    whileHover={{
+                      y: -8,
+                      boxShadow: "0 20px 48px rgba(0,0,0,0.14)",
+                    }}
+                    className="bg-white rounded-2xl overflow-hidden border-2"
+                    style={{ borderColor: `${badgeColor}30` }}
                   >
-                    Contactar
-                  </motion.button>
-                  <button
-                    className="px-4 py-2.5 rounded-full text-white hover:opacity-80 transition-opacity border-2 border-[#55bcd9]"
-                    style={{ backgroundColor: "white" }}
-                  >
-                    <Phone size={15} color="#55bcd9" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                    <div className="p-5 flex items-start gap-4">
+                      <div className="relative shrink-0">
+                        {foto ? (
+                          <img
+                            src={foto}
+                            alt={nombreCompleto}
+                            className="w-16 h-16 rounded-2xl object-cover"
+                          />
+                        ) : (
+                          <div
+                            className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-lg"
+                            style={{
+                              background: `${SKY}20`,
+                              color: DARK,
+                            }}
+                          >
+                            {iniciales}
+                          </div>
+                        )}
+
+                        <span
+                          title={
+                            pro.disponible ? "Disponible" : "No disponible"
+                          }
+                          className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                            pro.disponible
+                              ? "bg-green-500"
+                              : "bg-gray-400"
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <h3
+                            className="font-black text-base"
+                            style={{ color: DARK }}
+                          >
+                            {nombreCompleto}
+                          </h3>
+
+                          {badge && (
+                            <span
+                              className="text-xs font-black px-2 py-0.5 rounded-full"
+                              style={{
+                                background: badgeColor,
+                                color:
+                                  badge.claseCSS === "destacado"
+                                    ? DARK
+                                    : "white",
+                              }}
+                            >
+                              {badge.label}
+                            </span>
+                          )}
+                        </div>
+
+                        <p
+                          className="text-sm font-semibold line-clamp-2"
+                          style={{ color: "#6b7280" }}
+                        >
+                          {pro.descripcion || pro.especialidad}
+                        </p>
+
+                        <div className="flex items-center gap-1 mt-1.5">
+                          <ThumbsUp size={13} fill={SKY} stroke={SKY} />
+
+                          <span
+                            className="text-xs font-black"
+                            style={{ color: DARK }}
+                          >
+                            {pro.likes}
+                          </span>
+
+                          <span
+                            className="text-xs"
+                            style={{ color: "#9ca3af" }}
+                          >
+                            Me gusta
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+   
+
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+
+          {!loadingProfessionals &&
+            !professionalsError &&
+            professionals.length === 0 && (
+              <div className="bg-white/90 rounded-2xl p-8 text-center shadow-lg">
+                <p className="font-bold" style={{ color: DARK }}>
+                  No hay profesionales destacados disponibles.
+                </p>
+              </div>
+            )}
         </div>
       </section>
 

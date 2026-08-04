@@ -196,3 +196,47 @@ export async function obtenerProfesionales(): Promise<Profesional[]> {
     };
   });
 }
+
+export async function obtenerTopProfesionales(): Promise<Profesional[]> {
+
+  const response = await fetch(`${API_URL}/maestros/top`);
+
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar los mejores profesionales.");
+  }
+
+  const data = await response.json();
+
+  return data.map((maestro: any) => ({
+    id: maestro.id,
+
+    nombre: maestro.nombre ?? "",
+    apellido: maestro.apellido ?? "",
+
+    correo: maestro.correo ?? "",
+    telefono: maestro.telefono ?? "",
+
+    especialidad: maestro.especialidad ?? "",
+    descripcion: maestro.descripcion ?? "",
+
+    experienciaAnos: maestro.experienciaAnos ?? 0,
+
+    comuna: maestro.comuna ?? "",
+
+    disponible: maestro.disponible ?? false,
+
+    foto:
+      maestro.fotoPerfil ??
+      maestro.foto_perfil ??
+      maestro.foto ??
+      null,
+
+    likes:
+      maestro.meGusta ??
+      0,
+
+    dislikes:
+      maestro.noMeGusta ??
+      0,
+  }));
+}
