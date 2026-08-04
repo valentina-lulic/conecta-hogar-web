@@ -8,9 +8,10 @@ import { Contacto } from "./pages/Contacto";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import PerfilProfesional from "./pages/PerfilProfesional";
-import ProtectedRoute from "./components/ProtectedRoute"; // 👈 Tu componente protector de rutas
+import PerfilCliente from "./pages/PerfilCliente"; // 👈 Importamos la vista del Cliente
+import ProtectedRoute from "./components/ProtectedRoute";
 
-// Importamos Registro de tu compañera respetando su exportación
+// Registro de tu compañera respetando su exportación
 import { Registro } from "./pages/Registro"; 
 
 export const router = createBrowserRouter([
@@ -21,7 +22,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "nosotros", element: <Nosotros /> },
       
-      // 🟢 RUTA DE PROFESIONALES PROTEGIDA: Solo visible tras iniciar sesión
+      // 🟢 RUTA DE PROFESIONALES: Visible para cualquier usuario logueado
       {
         path: "profesionales",
         element: (
@@ -40,8 +41,18 @@ export const router = createBrowserRouter([
       {
         path: "perfil-profesional",
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["profesional", "maestro"]}>
             <PerfilProfesional />
+          </ProtectedRoute>
+        ),
+      },
+
+      // 🟢 RUTA PERFIL DEL CLIENTE
+      {
+        path: "perfil-cliente",
+        element: (
+          <ProtectedRoute allowedRoles={["cliente"]}>
+            <PerfilCliente />
           </ProtectedRoute>
         ),
       },
@@ -52,7 +63,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={["admin", "administrador"]}>
         <Admin />
       </ProtectedRoute>
     ),
