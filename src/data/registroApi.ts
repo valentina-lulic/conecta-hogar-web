@@ -1,7 +1,10 @@
-// Interfaz actualizada con 'password' y 'especialidad' única
+// src/data/registroApi.ts
+
 export interface RegistroData {
     nombre: string;
+    apellido: string;
     rut: string;
+    telefono: string;
     correo: string;
     password: string;
     tipoUsuario: "cliente" | "profesional";
@@ -16,9 +19,6 @@ export interface RegistroResponse {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-/**
- * Función para registrar un usuario (Cliente o Profesional) en el backend.
- */
 export async function registrarUsuario(data: RegistroData): Promise<RegistroResponse> {
     try {
         const response = await fetch(`${API_URL}/registro`, {

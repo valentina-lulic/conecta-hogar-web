@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { ArrowLeft, UserCircle, Mail, Lock, IdCard, Briefcase, Loader2 } from "lucide-react";
+import { ArrowLeft, UserCircle, Mail, Lock, IdCard, Briefcase, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,9 @@ export function Registro() {
 
   const [formData, setFormData] = useState({
     nombre: "",
+    apellido: "",
     rut: "",
+    telefono: "",
     correo: "",
     password: "",
     tipoUsuario: "" as "cliente" | "profesional" | "",
@@ -40,7 +42,6 @@ export function Registro() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Selección directa y única del tipo de usuario
   const handleTipoChange = (tipo: "cliente" | "profesional") => {
     setFormData((prev) => ({
       ...prev,
@@ -49,7 +50,6 @@ export function Registro() {
     }));
   };
 
-  // Selección única de especialidad
   const handleEspecialidadSelect = (especialidad: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -60,7 +60,15 @@ export function Registro() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.nombre || !formData.rut || !formData.correo || !formData.password || !formData.tipoUsuario) {
+    if (
+      !formData.nombre ||
+      !formData.apellido ||
+      !formData.rut ||
+      !formData.telefono ||
+      !formData.correo ||
+      !formData.password ||
+      !formData.tipoUsuario
+    ) {
       alert("Por favor completa todos los campos requeridos.");
       return;
     }
@@ -75,7 +83,9 @@ export function Registro() {
     try {
       const payload: RegistroData = {
         nombre: formData.nombre,
+        apellido: formData.apellido,
         rut: formData.rut,
+        telefono: formData.telefono,
         correo: formData.correo,
         password: formData.password,
         tipoUsuario: formData.tipoUsuario as "cliente" | "profesional",
@@ -94,124 +104,162 @@ export function Registro() {
   };
 
   return (
-    <div className="relative w-full min-h-screen py-12 px-4 flex justify-center items-center">
-      <div className="max-w-3xl w-full mx-auto relative z-10">
+    <div className="relative w-full min-h-screen py-6 px-4 flex justify-center items-center">
+      <div className="max-w-2xl w-full mx-auto relative z-10">
 
         {/* Botón Volver */}
         <button
           type="button"
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-gray-800 hover:text-black transition-colors mb-6 font-semibold bg-white/70 backdrop-blur-md px-4 py-2 rounded-full w-fit shadow-sm border border-white/50 text-sm"
+          className="flex items-center gap-1.5 text-gray-800 hover:text-black transition-colors mb-3 font-semibold bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full w-fit shadow-sm border border-white/50 text-xs"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} />
           Volver al inicio
         </button>
 
-        {/* Formulario */}
+        {/* Formulario Compacto */}
         <motion.form
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           onSubmit={handleSubmit}
-          className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 space-y-6"
+          className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-4"
         >
           {/* Header */}
-          <div className="text-center md:text-left border-b border-gray-100 pb-6">
+          <div className="border-b border-gray-100 pb-3">
             <h1
-              className="text-3xl md:text-4xl font-bold mb-2 tracking-tight drop-shadow-sm"
+              className="text-2xl md:text-3xl font-bold mb-1 tracking-tight drop-shadow-sm"
               style={{ color: PINK }}
             >
               Únete a Conecta Hogar
             </h1>
-            <p className="text-gray-800 text-base font-normal">
+            <p className="text-gray-600 text-xs font-normal">
               Completa tus datos para registrarte en nuestra plataforma
             </p>
           </div>
 
-          {/* Nombre */}
-          <div className="space-y-2">
-            <Label htmlFor="nombre" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <UserCircle size={18} style={{ color: PINK }} />
-              Nombre completo
-            </Label>
-            <Input
-              id="nombre"
-              type="text"
-              disabled={loading}
-              placeholder="Ej: Juan Pérez González"
-              value={formData.nombre}
-              onChange={(e) => handleInputChange("nombre", e.target.value)}
-              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
-            />
+          {/* Grid de Campos Formulario */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+
+            {/* Nombre */}
+            <div className="space-y-1">
+              <Label htmlFor="nombre" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <UserCircle size={15} style={{ color: PINK }} />
+                Nombre
+              </Label>
+              <Input
+                id="nombre"
+                type="text"
+                disabled={loading}
+                placeholder="Ej: Juan"
+                value={formData.nombre}
+                onChange={(e) => handleInputChange("nombre", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
+            {/* Apellido */}
+            <div className="space-y-1">
+              <Label htmlFor="apellido" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <UserCircle size={15} style={{ color: PINK }} />
+                Apellido
+              </Label>
+              <Input
+                id="apellido"
+                type="text"
+                disabled={loading}
+                placeholder="Ej: Pérez"
+                value={formData.apellido}
+                onChange={(e) => handleInputChange("apellido", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
+            {/* RUT */}
+            <div className="space-y-1">
+              <Label htmlFor="rut" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <IdCard size={15} style={{ color: PINK }} />
+                RUT
+              </Label>
+              <Input
+                id="rut"
+                type="text"
+                disabled={loading}
+                placeholder="Ej: 12.345.678-9"
+                value={formData.rut}
+                onChange={(e) => handleInputChange("rut", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
+            {/* Teléfono */}
+            <div className="space-y-1">
+              <Label htmlFor="telefono" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <Phone size={15} style={{ color: PINK }} />
+                Teléfono
+              </Label>
+              <Input
+                id="telefono"
+                type="tel"
+                disabled={loading}
+                placeholder="Ej: +56 9 1234 5678"
+                value={formData.telefono}
+                onChange={(e) => handleInputChange("telefono", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
+            {/* Correo */}
+            <div className="space-y-1">
+              <Label htmlFor="correo" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <Mail size={15} style={{ color: PINK }} />
+                Correo electrónico
+              </Label>
+              <Input
+                id="correo"
+                type="email"
+                disabled={loading}
+                placeholder="Ej: juan.perez@ejemplo.cl"
+                value={formData.correo}
+                onChange={(e) => handleInputChange("correo", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
+            {/* Contraseña */}
+            <div className="space-y-1">
+              <Label htmlFor="password" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+                <Lock size={15} style={{ color: PINK }} />
+                Contraseña
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                disabled={loading}
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
+              />
+            </div>
+
           </div>
 
-          {/* RUT */}
-          <div className="space-y-2">
-            <Label htmlFor="rut" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <IdCard size={18} style={{ color: PINK }} />
-              RUT
-            </Label>
-            <Input
-              id="rut"
-              type="text"
-              disabled={loading}
-              placeholder="Ej: 12.345.678-9"
-              value={formData.rut}
-              onChange={(e) => handleInputChange("rut", e.target.value)}
-              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
-            />
-          </div>
-
-          {/* Correo */}
-          <div className="space-y-2">
-            <Label htmlFor="correo" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <Mail size={18} style={{ color: PINK }} />
-              Correo electrónico
-            </Label>
-            <Input
-              id="correo"
-              type="email"
-              disabled={loading}
-              placeholder="Ej: juan.perez@ejemplo.cl"
-              value={formData.correo}
-              onChange={(e) => handleInputChange("correo", e.target.value)}
-              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
-            />
-          </div>
-
-          {/* Contraseña */}
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <Lock size={18} style={{ color: PINK }} />
-              Contraseña
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              disabled={loading}
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              className="border border-gray-100 bg-gray-50 text-gray-800 font-normal placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-xl py-5"
-            />
-          </div>
-
-          {/* Tipo de usuario (Sin subtítulos de ayuda y con selección única) */}
-          <div className="space-y-3 pt-4 border-t border-gray-100">
-            <Label className="text-gray-800 font-semibold flex items-center gap-2 text-sm">
-              <Briefcase size={18} style={{ color: PINK }} />
+          {/* Tipo de usuario */}
+          <div className="space-y-2 pt-2 border-t border-gray-100">
+            <Label className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
+              <Briefcase size={15} style={{ color: PINK }} />
               Tipo de usuario
             </Label>
-            <div className="flex flex-col sm:flex-row gap-4">
-              
+            <div className="flex gap-3">
+
               {/* Opción Cliente */}
               <div
                 onClick={() => !loading && handleTipoChange("cliente")}
-                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all flex items-center gap-3 ${
-                  formData.tipoUsuario === "cliente"
-                    ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
-                    : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                }`}
+                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "cliente"
+                    ? "border-[#e83360] bg-gray-50 shadow-sm"
+                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                  }`}
               >
                 <Checkbox
                   checked={formData.tipoUsuario === "cliente"}
@@ -219,17 +267,16 @@ export function Registro() {
                   onClick={(e) => e.stopPropagation()}
                   onCheckedChange={() => handleTipoChange("cliente")}
                 />
-                <span className="font-semibold text-gray-800 text-sm">Cliente</span>
+                <span className="font-semibold text-gray-800 text-xs">Cliente</span>
               </div>
 
               {/* Opción Profesional */}
               <div
                 onClick={() => !loading && handleTipoChange("profesional")}
-                className={`flex-1 p-4 border rounded-xl cursor-pointer transition-all flex items-center gap-3 ${
-                  formData.tipoUsuario === "profesional"
-                    ? "border-[#e83360] bg-gray-50 shadow-md scale-[1.01]"
-                    : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                }`}
+                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "profesional"
+                    ? "border-[#e83360] bg-gray-50 shadow-sm"
+                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                  }`}
               >
                 <Checkbox
                   checked={formData.tipoUsuario === "profesional"}
@@ -237,7 +284,7 @@ export function Registro() {
                   onClick={(e) => e.stopPropagation()}
                   onCheckedChange={() => handleTipoChange("profesional")}
                 />
-                <span className="font-semibold text-gray-800 text-sm">Profesional</span>
+                <span className="font-semibold text-gray-800 text-xs">Profesional</span>
               </div>
 
             </div>
@@ -248,30 +295,28 @@ export function Registro() {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              transition={{ duration: 0.3 }}
-              className="space-y-3 pt-4 border-t border-gray-100"
+              transition={{ duration: 0.2 }}
+              className="space-y-2 pt-2 border-t border-gray-100"
             >
-              <Label className="text-gray-800 font-semibold text-sm">Especialidad</Label>
-              <p className="text-xs text-gray-600 font-normal">Selecciona tu especialidad principal</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Label className="text-gray-800 font-semibold text-xs">Especialidad principal</Label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {ESPECIALIDADES.map((item) => (
                   <div
                     key={item}
                     onClick={() => !loading && handleEspecialidadSelect(item)}
-                    className={`p-3 border rounded-xl cursor-pointer transition-all ${
-                      formData.especialidad === item
-                        ? "border-[#e83360] bg-gray-50 shadow-inner"
-                        : "border-gray-100 bg-gray-100 hover:bg-gray-200 shadow-inner"
-                    }`}
+                    className={`p-2 border rounded-lg cursor-pointer transition-all ${formData.especialidad === item
+                        ? "border-[#e83360] bg-gray-50 shadow-sm"
+                        : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                      }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <Checkbox
                         checked={formData.especialidad === item}
                         disabled={loading}
                         onClick={(e) => e.stopPropagation()}
                         onCheckedChange={() => handleEspecialidadSelect(item)}
                       />
-                      <span className="text-sm font-medium text-gray-800">{item}</span>
+                      <span className="text-[11px] font-medium text-gray-800 truncate">{item}</span>
                     </div>
                   </div>
                 ))}
@@ -279,17 +324,17 @@ export function Registro() {
             </motion.div>
           )}
 
-          {/* Botón de registro */}
-          <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-4">
+          {/* Botón de registro Redondeado */}
+          <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-2">
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-6 text-base font-bold text-white rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 text-sm font-bold text-white rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 h-11"
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} />
+                  <Loader2 className="animate-spin" size={18} />
                   Registrando...
                 </>
               ) : (
@@ -298,7 +343,7 @@ export function Registro() {
             </Button>
           </motion.div>
 
-          <p className="text-center text-xs text-gray-700 font-normal pt-2">
+          <p className="text-center text-[11px] text-gray-600 font-normal pt-1">
             Al registrarte, aceptas nuestros{" "}
             <a href="#" className="underline hover:text-black font-medium">
               Términos y Condiciones
