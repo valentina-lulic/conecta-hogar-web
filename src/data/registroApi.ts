@@ -1,10 +1,9 @@
-// src/data/registroApi.ts
-
 export interface RegistroData {
     nombre: string;
     apellido: string;
     rut: string;
     telefono: string;
+    direccion: string;
     correo: string;
     password: string;
     tipoUsuario: "cliente" | "profesional";
