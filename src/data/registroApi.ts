@@ -17,15 +17,16 @@ export interface RegistroResponse {
     data?: any;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/auth";
 
 export async function registrarUsuario(data: RegistroData): Promise<RegistroResponse> {
     try {
-        const response = await fetch(`${API_URL}/registro`, {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const response = await fetch(`${API_URL}/register`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: myHeaders,
             body: JSON.stringify(data),
         });
 
