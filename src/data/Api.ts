@@ -5,6 +5,15 @@ export const API_URL = BACKEND_URL;
 export interface AuthResponse {
   token: string;
   mensaje: string;
+  role?: string;
+  nombre?: string;
+  name?: string;
+}
+
+export interface SessionData {
+  token: string;
+  role: string;
+  name: string;
 }
 
 async function parseErrorMessage(
@@ -24,7 +33,6 @@ export async function loginRequest(
   email: string,
   password: string
 ): Promise<AuthResponse> {
-
   const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
 
@@ -55,10 +63,29 @@ export async function loginRequest(
 
 export function saveSession(session: AuthResponse): void {
   localStorage.setItem("token", session.token);
+  localStorage.setItem("role", session.role || "Cliente");
+  if (session.nombre || session.name) {
+    localStorage.setItem("name", session.nombre || session.name || "");
+  }
 }
 
 export function getToken(): string | null {
   return localStorage.getItem("token");
+}
+
+export function getRole(): string | null {
+  return localStorage.getItem("role");
+}
+
+export function getSession(): SessionData | null {
+  const token = getToken();
+  if (!token) return null;
+
+  return {
+    token,
+    role: getRole() || "Cliente",
+    name: localStorage.getItem("name") || "",
+  };
 }
 
 export function isAuthenticated(): boolean {
@@ -67,6 +94,8 @@ export function isAuthenticated(): boolean {
 
 export function clearSession(): void {
   localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("name");
 }
 
 // ==============================
