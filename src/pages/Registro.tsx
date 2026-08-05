@@ -15,11 +15,7 @@ const ESPECIALIDADES = [
   "Gasfitería",
   "Electricidad",
   "Albañilería",
-  "Control de Plagas",
-  "Carpintería",
-  "Techado",
-  "Pintura",
-  "Cerrajería",
+  "Soldaduría",
 ];
 
 export function Registro() {
@@ -97,8 +93,31 @@ export function Registro() {
 
       const respuesta = await registrarUsuario(payload);
 
-      alert(respuesta.message || "¡Registro completado exitosamente!");
-      navigate("/");
+      // 💡 1. GUARDAR SESIÓN AL COMPLETAR EL REGISTRO
+      const datosSesion = {
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        correo: formData.correo,
+        email: formData.correo,
+        role: formData.tipoUsuario,
+        tipo: formData.tipoUsuario,
+        especialidad: formData.especialidad,
+        telefono: formData.telefono,
+        comuna: formData.direccion,
+      };
+
+      localStorage.setItem("session", JSON.stringify(datosSesion));
+
+      // 💡 2. REDIRIGIR AL PERFIL CORRESPONDIENTE CON BANNER DE 4 SEGUNDOS
+      const rutaDestino = formData.tipoUsuario === "profesional" ? "/perfil-profesional" : "/perfil-cliente";
+
+      navigate(rutaDestino, {
+        state: {
+          welcome: true,
+          message: respuesta.message || "¡Registro completado e inicio de sesión exitoso!",
+        },
+      });
+
     } catch (error: any) {
       alert(error.message || "Hubo un problema al intentar registrarte.");
     } finally {
