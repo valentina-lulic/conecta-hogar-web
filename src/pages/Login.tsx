@@ -29,27 +29,25 @@ export default function Login() {
 
     try {
       const session = await loginRequest(email, password);
-
       saveSession(session);
 
       const rol = session.rol;
 
       if (rol === "MAESTRO") {
         navigate("/perfil-profesional", {
-          state: { welcome: true },
+          state: { welcome: true, isNewUser: false },
         });
       } else if (rol === "ADMIN") {
         navigate("/admin", {
-          state: { welcome: true },
+          state: { welcome: true, isNewUser: false },
         });
       } else {
         navigate("/perfil-cliente", {
-          state: { welcome: true },
+          state: { welcome: true, isNewUser: false },
         });
       }
     } catch (err: unknown) {
       console.error("Error en login:", err);
-
       setError(
         err instanceof Error
           ? err.message
@@ -59,6 +57,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+
   return (
     <div className="w-full py-12 px-4 flex justify-center items-center min-h-[70vh]">
       <div className="max-w-md w-full mx-auto">
@@ -75,7 +74,6 @@ export default function Login() {
             Volver al inicio
           </button>
 
-          {/* TÍTULO POPPINS BLACK */}
           <h1
             className="text-4xl font-black text-white mb-2 tracking-tight font-poppins"
             style={{ textShadow: "0 2px 8px rgba(7, 7, 7, 0.9)" }}
@@ -83,7 +81,6 @@ export default function Login() {
             Bienvenido de nuevo
           </h1>
 
-          {/* SUBTÍTULO POPPINS SUAVE */}
           <p
             className="text-white text-lg font-normal opacity-90 font-poppins"
             style={{ textShadow: "0 1px 4px rgba(13, 13, 14, 0.7)" }}

@@ -90,12 +90,12 @@ export default function PerfilCliente() {
     session?.nombre || session?.name || session?.user?.nombre || "CLIENTE";
   const apellidoCliente =
     session?.apellido || session?.user?.apellido || "";
+  const esUsuarioNuevo = location.state?.isNewUser;
 
   return (
     <div className="w-full min-h-screen pt-14 sm:pt-16 pb-12 px-4 flex justify-center items-start">
       <div className="max-w-4xl w-full mx-auto space-y-6">
         
-        {/* Botón Volver */}
         <button
           type="button"
           onClick={() => navigate("/")}
@@ -105,7 +105,6 @@ export default function PerfilCliente() {
           Volver al inicio
         </button>
 
-        {/* Banner de Bienvenida Temporal */}
         {mostrarBienvenida && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -115,7 +114,9 @@ export default function PerfilCliente() {
           >
             <div className="flex items-center gap-2">
               <CheckCircle2 size={18} />
-              {location.state?.message || "¡Bienvenido(a) a Conecta Hogar!"}
+              {esUsuarioNuevo
+                ? `¡Bienvenido(a) a Conecta Hogar, ${nombreCliente}! 🎉`
+                : `¡Bienvenido(a) de nuevo, ${nombreCliente}! 👋`}
             </div>
             <button
               type="button"
@@ -127,7 +128,6 @@ export default function PerfilCliente() {
           </motion.div>
         )}
 
-        {/* Encabezado */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -150,7 +150,6 @@ export default function PerfilCliente() {
           </div>
         </motion.div>
 
-        {/* Tarjetas de Plataforma */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -213,7 +212,6 @@ export default function PerfilCliente() {
           </div>
         </motion.div>
 
-        {/* Alerta de Voto */}
         {votoExitoso && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -225,7 +223,6 @@ export default function PerfilCliente() {
           </motion.div>
         )}
 
-        {/* Sección de Calificaciones */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
