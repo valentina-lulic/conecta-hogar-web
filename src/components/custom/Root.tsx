@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation, useNavigate, ScrollRestoration } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, User, LogOut, ShieldCheck, Sparkles, Briefcase } from "lucide-react";
+import { Menu, X, User, LogOut, ShieldCheck, Sparkles, Briefcase, ArrowRight } from "lucide-react";
 import { ImageWithFallback } from "../ui/ImageWithFallback";
 import logoImg from "../../assets/icons/logoCH-removebg-preview.png";
 import { MapBackground } from "./MapBackground";
@@ -10,7 +10,6 @@ import { InteractiveLogo } from "./InteractiveLogo";
 import { getSession, clearSession } from "@/data/Api";
 
 const PINK = "#e83360";
-const DARK = "#0a6880";
 
 const publicNavLinks = [
   { href: "/nosotros", label: "Nosotros" },
@@ -23,7 +22,7 @@ export function Root() {
   const { pathname, state } = useLocation();
   const navigate = useNavigate();
 
-  const [session, setSession] = useState(getSession());
+  const [session, setSession] = useState<any>(getSession());
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export function Root() {
 
     let timer: ReturnType<typeof setTimeout> | undefined;
 
-    // Mostrar mensaje de bienvenida al iniciar sesión
     if (state?.welcome && currentSession) {
       setShowWelcome(true);
       window.history.replaceState({}, document.title);
@@ -56,11 +54,16 @@ export function Root() {
 
   const isProfesional =
     session?.role?.toLowerCase().includes("profesional") ||
-    session?.role?.toLowerCase().includes("maestro");
+    session?.role?.toLowerCase().includes("maestro") ||
+    session?.tipo?.toLowerCase().includes("profesional") ||
+    session?.user?.tipo?.toLowerCase().includes("profesional");
 
   const isAdmin =
     session?.role?.toLowerCase().includes("admin") ||
     session?.role?.toLowerCase().includes("administrador");
+
+  const nombreUsuario = session?.name || session?.nombre || session?.role || "USUARIO";
+  const rutaPerfil = isProfesional ? "/perfil-profesional" : "/perfil-cliente";
 
   return (
     <div
@@ -72,7 +75,7 @@ export function Root() {
       <div className="relative z-10 flex-1 flex flex-col w-full">
         <ScrollRestoration />
 
-        {/* 🌟 BANNER / POPUP FLOTANTE DE BIENVENIDA PERSONALIZADO 🌟 */}
+        {/* POPUP FLOTANTE DE BIENVENIDA */}
         <AnimatePresence>
           {showWelcome && session && (
             <motion.div
@@ -88,7 +91,7 @@ export function Root() {
               <div>
                 <p className="text-xs text-gray-500 font-medium">¡Inicio de sesión exitoso!</p>
                 <p className="text-sm font-black text-[#0a6880]">
-                  Bienvenido(a) de nuevo, <span className="text-[#e83360]">{session.name || session.role}</span> 👋
+                  Bienvenido(a) de nuevo, <span className="text-[#e83360]">{nombreUsuario}</span> 👋
                 </p>
               </div>
             </motion.div>
@@ -107,7 +110,7 @@ export function Root() {
               <div className="hidden sm:block w-0.5 h-8 bg-[#e83360]" />
             </div>
 
-            {/* Enlaces de Navegación */}
+            {/* Links Públicos */}
             <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-[#1f2937]">
               {publicNavLinks.map(({ href, label }) => {
                 const active = pathname === href;
@@ -123,7 +126,6 @@ export function Root() {
                 );
               })}
 
-              {/* 🟢 Solo muestra la pestaña "Profesionales" si hay una sesión activa */}
               {session && (
                 <Link
                   to="/profesionales"
@@ -135,51 +137,42 @@ export function Root() {
               )}
             </div>
 
-            {/* Estado de Usuario / Auth */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Estado de Usuario */}
+            <div className="hidden md:flex items-center gap-2 sm:gap-3">
               {session ? (
-                /* 🟢 SI EL USUARIO YA INICIÓ SESIÓN (BOTONES INGRESAR Y REGISTRARSE DESAPARECEN) */
-                <div className="flex items-center gap-3">
-                  
-                  {/* Píldora Mi Perfil (Si es Profesional) */}
-                  {isProfesional && (
-                    <Link
-                      to="/perfil-profesional"
-                      className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-full bg-pink-100 text-pink-700 hover:bg-pink-200 transition-colors shadow-sm"
-                    >
-                      <Briefcase size={15} /> Mi Perfil
-                    </Link>
-                  )}
-
-                  {/* Píldora Admin (Si es Administrador) */}
+                <>
                   {isAdmin && (
                     <Link
                       to="/admin"
-                      className="flex items-center gap-1.5 text-xs font-black bg-amber-100 text-amber-900 px-3.5 py-2 rounded-full shadow-sm hover:bg-amber-200 transition-colors"
+                      className="flex items-center gap-1.5 text-xs font-black bg-amber-100 text-amber-900 px-3.5 py-2 rounded-full shadow-xs hover:bg-amber-200 transition-colors"
                     >
                       <ShieldCheck size={16} /> Admin
                     </Link>
                   )}
 
-                  {/* Saludo Personalizado */}
-                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
-                    <User size={18} style={{ color: PINK }} />
-                    <span className="text-xs md:text-sm font-black" style={{ color: DARK }}>
-                      Hola, {session.name || session.role}
+                  <Link
+                    to={rutaPerfil}
+                    className="flex items-center gap-1.5 px-4 py-2 text-xs font-black rounded-full bg-pink-100 text-[#e83360] hover:bg-pink-200 transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <Briefcase size={15} /> {isProfesional ? "Mi Perfil" : "Mi Panel"}
+                  </Link>
+
+                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-2xs">
+                    <User size={16} style={{ color: PINK }} />
+                    <span className="text-xs md:text-sm font-black text-slate-800">
+                      Hola, <span className="uppercase">{nombreUsuario}</span>
                     </span>
                   </div>
 
-                  {/* Botón Cerrar Sesión */}
                   <button
                     onClick={handleLogout}
                     title="Cerrar sesión"
-                    className="p-2.5 rounded-full bg-gray-100 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all shadow-sm border border-gray-200 cursor-pointer"
+                    className="p-2.5 rounded-full bg-white text-gray-700 hover:text-red-600 hover:bg-rose-50 transition-all shadow-2xs border border-gray-200 cursor-pointer"
                   >
-                    <LogOut size={18} />
+                    <ArrowRight size={16} />
                   </button>
-                </div>
+                </>
               ) : (
-                /* 🔴 SI ES VISITANTE ANÓNIMO: Mostramos Ingresar y Registrarse */
                 <>
                   <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Link
@@ -202,7 +195,7 @@ export function Root() {
               )}
             </div>
 
-            {/* Menú Móvil Hamburger */}
+            {/* Menú Móvil */}
             <button
               className="md:hidden mr-2 p-1.5 text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -252,18 +245,16 @@ export function Root() {
                 <>
                   <div className="flex items-center justify-center gap-2 bg-white/90 py-3 rounded-full text-[#0a6880] font-black">
                     <User size={20} style={{ color: PINK }} />
-                    <span>Hola, {session.name || session.role}</span>
+                    <span className="uppercase">Hola, {nombreUsuario}</span>
                   </div>
 
-                  {isProfesional && (
-                    <Link
-                      to="/perfil-profesional"
-                      onClick={() => setMenuOpen(false)}
-                      className="py-3 font-black rounded-full bg-pink-100 text-pink-700 text-center text-sm shadow-md flex items-center justify-center gap-2"
-                    >
-                      <Briefcase size={18} /> Mi Perfil Profesional
-                    </Link>
-                  )}
+                  <Link
+                    to={rutaPerfil}
+                    onClick={() => setMenuOpen(false)}
+                    className="py-3 font-black rounded-full bg-pink-100 text-pink-700 text-center text-sm shadow-md flex items-center justify-center gap-2"
+                  >
+                    <Briefcase size={18} /> {isProfesional ? "Mi Perfil" : "Mi Panel"}
+                  </Link>
 
                   {isAdmin && (
                     <Link
