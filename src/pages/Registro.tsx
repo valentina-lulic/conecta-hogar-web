@@ -15,11 +15,7 @@ const ESPECIALIDADES = [
   "Gasfitería",
   "Electricidad",
   "Albañilería",
-  "Control de Plagas",
-  "Carpintería",
-  "Techado",
-  "Pintura",
-  "Cerrajería",
+  "Soldaduría",
 ];
 
 export function Registro() {
@@ -95,10 +91,31 @@ export function Registro() {
         especialidad: formData.tipoUsuario === "profesional" ? formData.especialidad : undefined,
       };
 
-      const respuesta = await registrarUsuario(payload);
+      await registrarUsuario(payload);
 
-      alert(respuesta.message || "¡Registro completado exitosamente!");
-      navigate("/");
+      // Auto-Inicio de Sesión Local
+      const datosSesion = {
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        correo: formData.correo,
+        email: formData.correo,
+        role: formData.tipoUsuario,
+        tipo: formData.tipoUsuario,
+        especialidad: formData.especialidad,
+        telefono: formData.telefono,
+        comuna: formData.direccion,
+      };
+
+      localStorage.setItem("session", JSON.stringify(datosSesion));
+
+      const rutaDestino = formData.tipoUsuario === "profesional" ? "/perfil-profesional" : "/perfil-cliente";
+
+      navigate(rutaDestino, {
+        state: {
+          welcome: true,
+          isNewUser: true,
+        },
+      });
     } catch (error: any) {
       alert(error.message || "Hubo un problema al intentar registrarte.");
     } finally {
@@ -110,7 +127,6 @@ export function Registro() {
     <div className="relative w-full min-h-screen py-6 px-4 flex justify-center items-center">
       <div className="max-w-2xl w-full mx-auto relative z-10">
 
-        {/* Botón Volver */}
         <button
           type="button"
           onClick={() => navigate("/")}
@@ -120,7 +136,6 @@ export function Registro() {
           Volver al inicio
         </button>
 
-        {/* Formulario Compacto */}
         <motion.form
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,7 +143,6 @@ export function Registro() {
           onSubmit={handleSubmit}
           className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-4"
         >
-          {/* Header */}
           <div className="border-b border-gray-100 pb-3">
             <h1
               className="text-2xl md:text-3xl font-bold mb-1 tracking-tight drop-shadow-sm"
@@ -141,10 +155,7 @@ export function Registro() {
             </p>
           </div>
 
-          {/* Grid de Campos Formulario */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-
-            {/* Nombre */}
             <div className="space-y-1">
               <Label htmlFor="nombre" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <UserCircle size={15} style={{ color: PINK }} />
@@ -161,7 +172,6 @@ export function Registro() {
               />
             </div>
 
-            {/* Apellido */}
             <div className="space-y-1">
               <Label htmlFor="apellido" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <UserCircle size={15} style={{ color: PINK }} />
@@ -178,7 +188,6 @@ export function Registro() {
               />
             </div>
 
-            {/* RUT */}
             <div className="space-y-1">
               <Label htmlFor="rut" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <IdCard size={15} style={{ color: PINK }} />
@@ -195,7 +204,6 @@ export function Registro() {
               />
             </div>
 
-            {/* Teléfono */}
             <div className="space-y-1">
               <Label htmlFor="telefono" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <Phone size={15} style={{ color: PINK }} />
@@ -212,7 +220,6 @@ export function Registro() {
               />
             </div>
 
-            {/* Correo */}
             <div className="space-y-1">
               <Label htmlFor="correo" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <Mail size={15} style={{ color: PINK }} />
@@ -229,7 +236,6 @@ export function Registro() {
               />
             </div>
 
-            {/* Contraseña */}
             <div className="space-y-1">
               <Label htmlFor="password" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <Lock size={15} style={{ color: PINK }} />
@@ -246,7 +252,6 @@ export function Registro() {
               />
             </div>
 
-            {/* Dirección */}
             <div className="space-y-1 sm:col-span-2">
               <Label htmlFor="direccion" className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
                 <MapPin size={15} style={{ color: PINK }} />
@@ -265,7 +270,6 @@ export function Registro() {
 
           </div>
 
-          {/* Tipo de usuario */}
           <div className="space-y-2 pt-2 border-t border-gray-100">
             <Label className="text-gray-800 font-semibold flex items-center gap-1.5 text-xs">
               <Briefcase size={15} style={{ color: PINK }} />
@@ -273,7 +277,6 @@ export function Registro() {
             </Label>
             <div className="flex gap-3">
 
-              {/* Opción Cliente */}
               <div
                 onClick={() => !loading && handleTipoChange("cliente")}
                 className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "cliente"
@@ -290,7 +293,6 @@ export function Registro() {
                 <span className="font-semibold text-gray-800 text-xs">Cliente</span>
               </div>
 
-              {/* Opción Profesional */}
               <div
                 onClick={() => !loading && handleTipoChange("profesional")}
                 className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "profesional"
@@ -310,7 +312,6 @@ export function Registro() {
             </div>
           </div>
 
-          {/* Especialidades (Selección Única) */}
           {formData.tipoUsuario === "profesional" && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -344,7 +345,6 @@ export function Registro() {
             </motion.div>
           )}
 
-          {/* Botón de registro Redondeado */}
           <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="pt-2">
             <Button
               type="submit"

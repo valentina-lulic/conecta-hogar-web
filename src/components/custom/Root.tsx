@@ -56,13 +56,21 @@ export function Root() {
     session?.role?.toLowerCase().includes("profesional") ||
     session?.role?.toLowerCase().includes("maestro") ||
     session?.tipo?.toLowerCase().includes("profesional") ||
+    session?.tipoUsuario?.toLowerCase().includes("profesional") ||
     session?.user?.tipo?.toLowerCase().includes("profesional");
 
   const isAdmin =
     session?.role?.toLowerCase().includes("admin") ||
     session?.role?.toLowerCase().includes("administrador");
 
-  const nombreUsuario = session?.name || session?.nombre || session?.role || "USUARIO";
+  const nombreUsuario =
+    session?.nombre ||
+    session?.name ||
+    session?.user?.nombre ||
+    (session?.email ? session.email.split("@")[0] : null) ||
+    (session?.correo ? session.correo.split("@")[0] : null) ||
+    "USUARIO";
+
   const rutaPerfil = isProfesional ? "/perfil-profesional" : "/perfil-cliente";
 
   return (
@@ -75,7 +83,7 @@ export function Root() {
       <div className="relative z-10 flex-1 flex flex-col w-full">
         <ScrollRestoration />
 
-        {/* POPUP FLOTANTE DE BIENVENIDA */}
+        {/* POPUP FLOTANTE DE BIENVENIDA (4 SEGUNDOS) */}
         <AnimatePresence>
           {showWelcome && session && (
             <motion.div
@@ -89,9 +97,19 @@ export function Root() {
                 <Sparkles size={20} className="animate-spin-slow" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-medium">¡Inicio de sesión exitoso!</p>
+                <p className="text-xs text-gray-500 font-medium">
+                  {state?.isNewUser ? "¡Cuenta creada con éxito!" : "¡Inicio de sesión exitoso!"}
+                </p>
                 <p className="text-sm font-black text-[#0a6880]">
-                  Bienvenido(a) de nuevo, <span className="text-[#e83360]">{nombreUsuario}</span> 👋
+                  {state?.isNewUser ? (
+                    <>
+                      ¡Bienvenido(a) a Conecta Hogar, <span className="text-[#e83360] uppercase">{nombreUsuario}</span>! 🎉
+                    </>
+                  ) : (
+                    <>
+                      Bienvenido(a) de nuevo, <span className="text-[#e83360] uppercase">{nombreUsuario}</span> 👋
+                    </>
+                  )}
                 </p>
               </div>
             </motion.div>
@@ -102,7 +120,6 @@ export function Root() {
         <div className="sticky top-5 z-50 px-4 md:px-12 max-w-7xl mx-auto w-full">
           <nav className="flex items-center justify-between pl-4 md:pl-6 pr-2 py-2 rounded-full border border-white/40 bg-[#fffbf7] shadow-lg">
             
-            {/* Logo */}
             <div className="flex items-center justify-start gap-4">
               <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center justify-start text-left">
                 <InteractiveLogo className="h-9 md:h-10 w-auto" />
@@ -110,7 +127,6 @@ export function Root() {
               <div className="hidden sm:block w-0.5 h-8 bg-[#e83360]" />
             </div>
 
-            {/* Links Públicos */}
             <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-[#1f2937]">
               {publicNavLinks.map(({ href, label }) => {
                 const active = pathname === href;
@@ -137,7 +153,6 @@ export function Root() {
               )}
             </div>
 
-            {/* Estado de Usuario */}
             <div className="hidden md:flex items-center gap-2 sm:gap-3">
               {session ? (
                 <>
@@ -195,7 +210,6 @@ export function Root() {
               )}
             </div>
 
-            {/* Menú Móvil */}
             <button
               className="md:hidden mr-2 p-1.5 text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -206,7 +220,7 @@ export function Root() {
           </nav>
         </div>
 
-        {/* Menú Móvil Desplegable */}
+        {/* Menú Móvil */}
         {menuOpen && (
           <div
             className="fixed inset-0 z-40 flex flex-col pt-28 px-8 justify-between pb-12 transition-all duration-300"
