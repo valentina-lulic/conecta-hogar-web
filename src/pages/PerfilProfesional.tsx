@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import {
   Phone, Mail, MapPin, Briefcase, Power, Save,
   CheckCircle2, Sparkles, ArrowLeft, Pencil, X, Camera
@@ -12,33 +11,27 @@ import { getSession } from "@/data/Api";
 
 const PINK = "#e83360";
 
-function extraerDatosPersona(session: any) {
-  if (!session) return { nombreCompleto: "Profesional" };
+function extraerDatosCompletos(session: any) {
+  if (!session) return { nombreCompleto: "", correo: "" };
 
-  const nom = session.nombre || session.name || session.username || session.usuario || session.user?.nombre || session.user?.name || "";
-  const ape = session.apellido || session.lastname || session.user?.apellido || "";
+  const nom = session.nombre || session.name || session.nombres || session.firstName || session.first_name || session.username || session.usuario || session.user?.nombre || session.user?.name || "";
+  const ape = session.apellido || session.lastname || session.lastName || session.last_name || session.user?.apellido || "";
 
   let nombreCompleto = `${nom} ${ape}`.trim();
+  const correo = session.correo || session.email || session.user?.correo || session.user?.email || session.sub || "";
 
-  if (!nombreCompleto) {
-    const correo = session.correo || session.email || session.user?.correo || session.user?.email;
-    if (correo && typeof correo === "string" && correo.includes("@")) {
-      nombreCompleto = correo.split("@")[0];
-    } else {
-      nombreCompleto = "Profesional";
-    }
+  if (!nombreCompleto && correo.includes("@")) {
+    nombreCompleto = correo.split("@")[0];
   }
 
-  return { nombreCompleto };
+  return { nombreCompleto, correo };
 }
 
 export default function PerfilProfesional() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [guardado, setGuardado] = useState(false);
   const [editando, setEditando] = useState(false);
-  const [mostrarBienvenida, setMostrarBienvenida] = useState(location.state?.welcome || false);
 
   const fotoGuardada = localStorage.getItem("user_avatar") || "";
 
@@ -46,7 +39,7 @@ export default function PerfilProfesional() {
     nombre: "",
     especialidad: "Gasfiteria y Plomeria",
     telefono: "+56 9 1234 5678",
-    correo: "profesional@ejemplo.cl",
+    correo: "",
     comuna: "La Florida, Santiago",
     disponible: true,
     foto: fotoGuardada,
@@ -59,29 +52,17 @@ export default function PerfilProfesional() {
       return;
     }
 
-    const { nombreCompleto } = extraerDatosPersona(currentSession);
+    const { nombreCompleto, correo } = extraerDatosCompletos(currentSession);
 
     setPerfil((prev) => ({
       ...prev,
-      nombre: nombreCompleto,
+      nombre: nombreCompleto || prev.nombre || "Profesional",
+      correo: correo || currentSession.correo || currentSession.email || prev.correo || "profesional@ejemplo.cl",
       especialidad: currentSession.especialidad || currentSession.user?.especialidad || prev.especialidad,
       telefono: currentSession.telefono || currentSession.user?.telefono || prev.telefono,
-      correo: currentSession.correo || currentSession.email || currentSession.user?.correo || prev.correo,
       comuna: currentSession.direccion || currentSession.comuna || prev.comuna,
     }));
-
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    if (location.state?.welcome) {
-      timer = setTimeout(() => {
-        setMostrarBienvenida(false);
-      }, 4000);
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [navigate, location.state]);
+  }, [navigate]);
 
   const handleChange = (field: string, value: any) => {
     setPerfil((prev) => ({ ...prev, [field]: value }));
@@ -121,8 +102,6 @@ export default function PerfilProfesional() {
     }, 1500);
   };
 
-  const esUsuarioNuevo = location.state?.isNewUser;
-
   return (
     <div className="w-full min-h-screen py-12 px-4 flex justify-center items-center">
       <div className="max-w-4xl w-full mx-auto space-y-6">
@@ -134,31 +113,9 @@ export default function PerfilProfesional() {
           <ArrowLeft size={18} /> Volver al inicio
         </button>
 
-        {mostrarBienvenida && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="p-4 rounded-2xl bg-emerald-500 text-white font-bold text-sm flex items-center justify-between shadow-lg"
-          >
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={18} />
-              {esUsuarioNuevo
-                ? `¡Bienvenido(a) a Conecta Hogar, ${perfil.nombre}! 🎉`
-                : `¡Bienvenido(a) de nuevo, ${perfil.nombre}! 👋`}
-            </div>
-            <button
-              onClick={() => setMostrarBienvenida(false)}
-              className="text-xs underline cursor-pointer"
-            >
-              Cerrar
-            </button>
-          </motion.div>
-        )}
-
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-white/50">
           <div className="flex flex-col sm:flex-row items-center gap-5">
-
+            
             <div className="relative group">
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#55bcd9] text-white flex items-center justify-center font-black text-3xl shadow-md border-4 border-white overflow-hidden">
                 {perfil.foto ? (
@@ -187,7 +144,7 @@ export default function PerfilProfesional() {
             <div className="text-center sm:text-left space-y-1">
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <h1 className="text-2xl sm:text-3xl font-black text-gray-900">
-                  {perfil.nombre || "Cargando..."}
+                  {perfil.nombre || "Profesional"}
                 </h1>
                 <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                   <Sparkles size={12} /> Profesional
@@ -243,7 +200,7 @@ export default function PerfilProfesional() {
                 <span className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-1.5">
                   <Mail size={13} style={{ color: PINK }} /> Correo Electronico
                 </span>
-                <p className="text-xs sm:text-sm font-bold text-gray-800 truncate">{perfil.correo}</p>
+                <p className="text-xs sm:text-sm font-bold text-gray-800 truncate">{perfil.correo || "No especificado"}</p>
               </div>
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">

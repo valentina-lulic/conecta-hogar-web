@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { registrarUsuario, type RegistroData } from "../data/registroApi";
+import { saveSession, type Role } from "@/data/Api";
 
 const PINK = "#e83360";
 
@@ -91,22 +92,21 @@ export function Registro() {
         especialidad: formData.tipoUsuario === "profesional" ? formData.especialidad : undefined,
       };
 
-      await registrarUsuario(payload);
+      const resBackend = await registrarUsuario(payload);
 
-      // Auto-Inicio de Sesión Local
-      const datosSesion = {
+      // Map de rol a formato Backend (MAESTRO / CLIENTE) con tipado seguro
+      const rolUpper: Role = formData.tipoUsuario === "profesional" ? "MAESTRO" : "CLIENTE";
+      const finalRol: Role = (resBackend?.rol as Role) || rolUpper;
+
+      // Guardado uniforme de sesión
+      saveSession({
+        token: resBackend?.token || "session_token",
+        mensaje: resBackend?.mensaje || "Registro exitoso",
+        rol: finalRol,
         nombre: formData.nombre,
         apellido: formData.apellido,
         correo: formData.correo,
-        email: formData.correo,
-        role: formData.tipoUsuario,
-        tipo: formData.tipoUsuario,
-        especialidad: formData.especialidad,
-        telefono: formData.telefono,
-        comuna: formData.direccion,
-      };
-
-      localStorage.setItem("session", JSON.stringify(datosSesion));
+      });
 
       const rutaDestino = formData.tipoUsuario === "profesional" ? "/perfil-profesional" : "/perfil-cliente";
 
@@ -116,8 +116,9 @@ export function Registro() {
           isNewUser: true,
         },
       });
-    } catch (error: any) {
-      alert(error.message || "Hubo un problema al intentar registrarte.");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Hubo un problema al intentar registrarte.";
+      alert(msg);
     } finally {
       setLoading(false);
     }
@@ -130,7 +131,7 @@ export function Registro() {
         <button
           type="button"
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 text-gray-800 hover:text-black transition-colors mb-3 font-semibold bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full w-fit shadow-sm border border-white/50 text-xs"
+          className="flex items-center gap-1.5 text-gray-800 hover:text-black transition-colors mb-3 font-semibold bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full w-fit shadow-sm border border-white/50 text-xs cursor-pointer"
         >
           <ArrowLeft size={16} />
           Volver al inicio
@@ -267,7 +268,6 @@ export function Registro() {
                 className="border border-gray-200 bg-gray-50 text-gray-800 text-xs placeholder:text-gray-400 focus:border-[#e83360] focus:bg-white transition-all shadow-inner rounded-lg h-9"
               />
             </div>
-
           </div>
 
           <div className="space-y-2 pt-2 border-t border-gray-100">
@@ -276,13 +276,13 @@ export function Registro() {
               Tipo de usuario
             </Label>
             <div className="flex gap-3">
-
               <div
                 onClick={() => !loading && handleTipoChange("cliente")}
-                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "cliente"
-                  ? "border-[#e83360] bg-gray-50 shadow-sm"
-                  : "border-gray-200 bg-gray-50 hover:bg-gray-100"
-                  }`}
+                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${
+                  formData.tipoUsuario === "cliente"
+                    ? "border-[#e83360] bg-gray-50 shadow-sm"
+                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                }`}
               >
                 <Checkbox
                   checked={formData.tipoUsuario === "cliente"}
@@ -295,10 +295,11 @@ export function Registro() {
 
               <div
                 onClick={() => !loading && handleTipoChange("profesional")}
-                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${formData.tipoUsuario === "profesional"
-                  ? "border-[#e83360] bg-gray-50 shadow-sm"
-                  : "border-gray-200 bg-gray-50 hover:bg-gray-100"
-                  }`}
+                className={`flex-1 p-2.5 border rounded-lg cursor-pointer transition-all flex items-center gap-2 ${
+                  formData.tipoUsuario === "profesional"
+                    ? "border-[#e83360] bg-gray-50 shadow-sm"
+                    : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                }`}
               >
                 <Checkbox
                   checked={formData.tipoUsuario === "profesional"}
@@ -308,7 +309,6 @@ export function Registro() {
                 />
                 <span className="font-semibold text-gray-800 text-xs">Profesional</span>
               </div>
-
             </div>
           </div>
 
@@ -325,10 +325,11 @@ export function Registro() {
                   <div
                     key={item}
                     onClick={() => !loading && handleEspecialidadSelect(item)}
-                    className={`p-2 border rounded-lg cursor-pointer transition-all ${formData.especialidad === item
-                      ? "border-[#e83360] bg-gray-50 shadow-sm"
-                      : "border-gray-200 bg-gray-50 hover:bg-gray-100"
-                      }`}
+                    className={`p-2 border rounded-lg cursor-pointer transition-all ${
+                      formData.especialidad === item
+                        ? "border-[#e83360] bg-gray-50 shadow-sm"
+                        : "border-gray-200 bg-gray-50 hover:bg-gray-100"
+                    }`}
                   >
                     <div className="flex items-center gap-1.5">
                       <Checkbox
@@ -349,7 +350,7 @@ export function Registro() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-4 text-sm font-bold text-white rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 h-11"
+              className="w-full py-4 text-sm font-bold text-white rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 h-11 cursor-pointer"
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
               {loading ? (

@@ -8,6 +8,7 @@ export interface AuthResponse {
   mensaje: string;
   rol: Role;
   nombre?: string;
+  name?: string;
   apellido?: string;
   correo?: string;
 }
@@ -15,11 +16,8 @@ export interface AuthResponse {
 export interface SessionData {
   token: string;
   role: string;
-  name?: string;
+  name: string;
   nombre?: string;
-  apellido?: string;
-  correo?: string;
-  rol?: string;
 }
 
 async function parseErrorMessage(
@@ -67,10 +65,12 @@ export async function loginRequest(
 export function saveSession(session: AuthResponse) {
   localStorage.setItem("token", session.token);
   localStorage.setItem("role", session.rol);
-  if (session.nombre) {
-    localStorage.setItem("name", session.nombre);
+  
+  const userName = session.nombre || session.name || "";
+  if (userName) {
+    localStorage.setItem("name", userName);
   }
-  // Guarda el objeto completo de la sesión para que React lo lea sin perder ningún campo
+  
   localStorage.setItem("session", JSON.stringify(session));
 }
 
@@ -115,9 +115,7 @@ export function clearSession(): void {
   localStorage.removeItem("session");
 }
 
-// ==============================
 // MAESTROS
-// ==============================
 
 export interface Maestro {
   id: number;
