@@ -4,7 +4,7 @@
 # 🏠 Conecta Hogar - Frontend
 
 <p align="center">
-  <img src="./src/assets/images/logo.png" width="180" alt="Conecta Hogar"/>
+  <img src="https://github.com/valentina-lulic/conecta-hogar-web/blob/main/src/assets/icons/logoCH.jpeg" width="180" alt="Conecta Hogar"/>
 </p>
 
 ### Plataforma web para conectar clientes con profesionales especializados en servicios para el hogar.
