@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import {
   Phone, Mail, MapPin, Briefcase, Power, Save,
-  CheckCircle2, Sparkles, ArrowLeft, Pencil, X,
+  CheckCircle2, Sparkles, ArrowLeft, Pencil, X, Camera
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,26 @@ import { Label } from "@/components/ui/label";
 import { getSession } from "@/data/Api";
 
 const PINK = "#e83360";
+
+function extraerDatosPersona(session: any) {
+  if (!session) return { nombreCompleto: "Profesional" };
+
+  const nom = session.nombre || session.name || session.username || session.usuario || session.user?.nombre || session.user?.name || "";
+  const ape = session.apellido || session.lastname || session.user?.apellido || "";
+
+  let nombreCompleto = `${nom} ${ape}`.trim();
+
+  if (!nombreCompleto) {
+    const correo = session.correo || session.email || session.user?.correo || session.user?.email;
+    if (correo && typeof correo === "string" && correo.includes("@")) {
+      nombreCompleto = correo.split("@")[0];
+    } else {
+      nombreCompleto = "Profesional";
+    }
+  }
+
+  return { nombreCompleto };
+}
 
 export default function PerfilProfesional() {
   const navigate = useNavigate();
@@ -24,14 +44,11 @@ export default function PerfilProfesional() {
 
   const [perfil, setPerfil] = useState({
     nombre: "",
-    apellido: "",
-    especialidad: "Gasfitería y Plomería",
+    especialidad: "Gasfiteria y Plomeria",
     telefono: "+56 9 1234 5678",
     correo: "profesional@ejemplo.cl",
     comuna: "La Florida, Santiago",
-    descripcion: "",
     disponible: true,
-    likes: 24,
     foto: fotoGuardada,
   });
 
@@ -42,12 +59,11 @@ export default function PerfilProfesional() {
       return;
     }
 
-    const nombreReal = currentSession.nombre || currentSession.name || currentSession.user?.nombre || "Profesional";
-    const apellidoReal = currentSession.apellido || currentSession.user?.apellido || "";
+    const { nombreCompleto } = extraerDatosPersona(currentSession);
 
     setPerfil((prev) => ({
       ...prev,
-      nombre: `${nombreReal} ${apellidoReal}`.trim(),
+      nombre: nombreCompleto,
       especialidad: currentSession.especialidad || currentSession.user?.especialidad || prev.especialidad,
       telefono: currentSession.telefono || currentSession.user?.telefono || prev.telefono,
       correo: currentSession.correo || currentSession.email || currentSession.user?.correo || prev.correo,
@@ -71,6 +87,19 @@ export default function PerfilProfesional() {
     setPerfil((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const fotoBase64 = reader.result as string;
+        handleChange("foto", fotoBase64);
+        localStorage.setItem("user_avatar", fotoBase64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleGuardar = async (e: React.FormEvent) => {
     e.preventDefault();
     setGuardado(true);
@@ -81,21 +110,10 @@ export default function PerfilProfesional() {
       nombre: perfil.nombre,
       telefono: perfil.telefono,
       correo: perfil.correo,
-      email: perfil.correo,
       direccion: perfil.comuna,
       especialidad: perfil.especialidad,
     };
     localStorage.setItem("session", JSON.stringify(nuevaSesion));
-
-    try {
-      await fetch("http://localhost:8080/profesionales/actualizar", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(perfil),
-      });
-    } catch (err) {
-      console.warn("Backend no disponible, datos actualizados en sesión local.", err);
-    }
 
     setTimeout(() => {
       setGuardado(false);
@@ -140,8 +158,30 @@ export default function PerfilProfesional() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-white/50">
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#55bcd9] text-white flex items-center justify-center font-black text-3xl shadow-md border-4 border-white">
-              {perfil.nombre ? perfil.nombre.charAt(0).toUpperCase() : "P"}
+
+            <div className="relative group">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#55bcd9] text-white flex items-center justify-center font-black text-3xl shadow-md border-4 border-white overflow-hidden">
+                {perfil.foto ? (
+                  <img src={perfil.foto} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  perfil.nombre ? perfil.nombre.charAt(0).toUpperCase() : "P"
+                )}
+              </div>
+
+              <label
+                htmlFor="foto-upload"
+                className="absolute bottom-0 right-0 p-2 bg-[#e83360] text-white rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform"
+                title="Cambiar foto de perfil"
+              >
+                <Camera size={14} />
+                <input
+                  id="foto-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotoChange}
+                  className="hidden"
+                />
+              </label>
             </div>
 
             <div className="text-center sm:text-left space-y-1">
@@ -159,19 +199,18 @@ export default function PerfilProfesional() {
 
           <button
             onClick={() => handleChange("disponible", !perfil.disponible)}
-            className={`flex items-center justify-center gap-2.5 px-5 py-3 rounded-full font-bold text-sm transition-all shadow-md cursor-pointer ${
-              perfil.disponible ? "bg-emerald-500 text-white" : "bg-gray-400 text-white"
-            }`}
+            className={`flex items-center justify-center gap-2.5 px-5 py-3 rounded-full font-bold text-sm transition-all shadow-md cursor-pointer ${perfil.disponible ? "bg-emerald-500 text-white" : "bg-gray-400 text-white"
+              }`}
           >
             <Power size={18} />
-            <span>{perfil.disponible ? "En Línea (Disponible)" : "Fuera de Servicio"}</span>
+            <span>{perfil.disponible ? "En Linea (Disponible)" : "Fuera de Servicio"}</span>
           </button>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 space-y-5 border border-gray-100">
           <div className="flex items-center justify-between border-b border-gray-100 pb-4">
             <div>
-              <h2 className="text-lg font-black text-gray-900">Información de Contacto Registrada</h2>
+              <h2 className="text-lg font-black text-gray-900">Informacion de Contacto Registrada</h2>
               <p className="text-xs text-gray-500">Datos visibles para los clientes que te contacten.</p>
             </div>
             <Button
@@ -195,14 +234,14 @@ export default function PerfilProfesional() {
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
                 <span className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-1.5">
-                  <Phone size={13} style={{ color: PINK }} /> Teléfono (WhatsApp)
+                  <Phone size={13} style={{ color: PINK }} /> Telefono (WhatsApp)
                 </span>
                 <p className="text-xs sm:text-sm font-bold text-gray-800">{perfil.telefono}</p>
               </div>
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
                 <span className="text-[11px] font-bold text-gray-400 uppercase flex items-center gap-1.5">
-                  <Mail size={13} style={{ color: PINK }} /> Correo Electrónico
+                  <Mail size={13} style={{ color: PINK }} /> Correo Electronico
                 </span>
                 <p className="text-xs sm:text-sm font-bold text-gray-800 truncate">{perfil.correo}</p>
               </div>
@@ -234,7 +273,7 @@ export default function PerfilProfesional() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs font-bold text-gray-700">Teléfono</Label>
+                  <Label className="text-xs font-bold text-gray-700">Telefono</Label>
                   <Input
                     value={perfil.telefono}
                     onChange={(e) => handleChange("telefono", e.target.value)}

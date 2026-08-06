@@ -20,10 +20,10 @@ import electricidadImg from "../assets/images/electricista.png";
 import albanileriaImg from "../assets/images/albanil.png";
 import soldaduraImg from "../assets/images/soldador.png";
 import {
-    obtenerTopProfesionales,
-    obtenerFotoProfesional,
-    obtenerEtiquetaProfesional,
-    type Profesional,
+  obtenerTopProfesionales,
+  obtenerFotoProfesional,
+  obtenerEtiquetaProfesional,
+  type Profesional,
 } from "../data/profesionales";
 
 function CountUp({ value, duration = 2 }: { value: string; duration?: number }) {
@@ -93,7 +93,7 @@ const trades = [
   { img: soldaduraImg, label: "Soldaduría", color: "#ec561b" },
 ];
 
-const steps = [ 
+const steps = [
   {
     num: "01",
     color: SKY,
@@ -305,7 +305,15 @@ export default function Home() {
                   </>
                 )}
               </h1>
-              <p className="text-lg font-semibold leading-relaxed text-white drop-shadow-sm">
+              {/* CAMBIO 1: Brillo blanco claro alrededor de las letras rojas para máximo contraste */}
+              <p
+                className="text-lg font-bold leading-relaxed"
+                style={{
+                  color: DARK,
+                  textShadow:
+                    "0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.9), 0 2px 6px rgba(255, 255, 255, 0.8)",
+                }}
+              >
                 {activeTab === "particulares"
                   ? "Gasfiteros, electricistas, albañiles y más. Profesionales verificados, precios transparentes y garantía de satisfacción."
                   : "Únete a nuestra red de +1.000 profesionales y recibe solicitudes de trabajo en tu zona hoy mismo."}
@@ -347,7 +355,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="px-8 py-4 rounded-full text-sm font-black text-white whitespace-nowrap transition-all duration-300"
+                className="px-8 py-4 rounded-full text-sm font-bold text-white whitespace-nowrap transition-all duration-300"
                 style={{ background: PINK, boxShadow: `0 6px 20px ${PINK}40` }}
               >
                 {activeTab === "particulares" ? "Buscar" : "Registrarme"}
@@ -415,18 +423,16 @@ export default function Home() {
       <section id="nosotros" className="py-16 px-4 md:px-10 scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p
-              className="text-xs md:text-sm font-black tracking-widest uppercase mb-2 drop-shadow-sm"
-              style={{
-                color: DARK,
-                textShadow:
-                  "0 0 20px rgba(255, 255, 255, 1), 0 0 10px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0,0,0,0.15)",
-              }}
-            >
-              Especialidades
-            </p>
+            <div className="inline-block px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[#0a6880]/20 shadow-md mb-3">
+              <p
+                className="text-xs md:text-sm font-extrabold tracking-widest uppercase"
+                style={{ color: DARK }}
+              >
+                Especialidades
+              </p>
+            </div>
             <h2
-              className="text-3xl md:text-5xl font-black transition-all duration-300"
+              className="text-4xl md:text-6xl font-black transition-all duration-300"
               style={{
                 fontFamily: "'Nunito', sans-serif",
                 color: DARK,
@@ -452,11 +458,16 @@ export default function Home() {
       <section className="py-16 px-4 md:px-10 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs md:text-sm font-black tracking-widest uppercase mb-2 text-white/90 drop-shadow">
-              Paso a paso
-            </p>
+            <div className="inline-block px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[#0a6880]/20 shadow-md mb-3">
+              <p
+                className="text-xs md:text-sm font-extrabold tracking-widest uppercase"
+                style={{ color: DARK }}
+              >
+                Paso a paso
+              </p>
+            </div>
             <h2
-              className="text-3xl md:text-5xl font-black text-white drop-shadow-md"
+              className="text-4xl md:text-6xl font-black text-white drop-shadow-md"
               style={{ fontFamily: "'Nunito', sans-serif" }}
             >
               ¿Cómo funciona?
@@ -537,12 +548,19 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-xs font-black tracking-widest uppercase mb-2 text-yellow-300 drop-shadow-sm">
-                Nuestros expertos
-              </p>
+              {/* CAMBIO 2A: Panel glassmorphic para 'Nuestros expertos' */}
+              <div className="inline-block px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[#0a6880]/20 shadow-md mb-3">
+                <p
+                  className="text-xs md:text-sm font-extrabold tracking-widest uppercase"
+                  style={{ color: DARK }}
+                >
+                  Nuestros expertos
+                </p>
+              </div>
 
+              {/* CAMBIO 2B: 'Profesionales destacados :' más grande */}
               <h2
-                className="text-3xl md:text-4xl font-black text-white"
+                className="text-4xl md:text-5xl font-black text-white drop-shadow-md"
                 style={{ fontFamily: "'Nunito', sans-serif" }}
               >
                 Profesionales destacados :
@@ -590,9 +608,8 @@ export default function Home() {
                       : YELLOW;
 
                 const iniciales =
-                  `${pro.nombre?.charAt(0) ?? ""}${
-                    pro.apellido?.charAt(0) ?? ""
-                  }`.toUpperCase();
+                  `${pro.nombre?.charAt(0) ?? ""}${pro.apellido?.charAt(0) ?? ""
+                    }`.toUpperCase();
 
                 return (
                   <motion.div
@@ -632,11 +649,10 @@ export default function Home() {
                           title={
                             pro.disponible ? "Disponible" : "No disponible"
                           }
-                          className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                            pro.disponible
-                              ? "bg-green-500"
-                              : "bg-gray-400"
-                          }`}
+                          className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${pro.disponible
+                            ? "bg-green-500"
+                            : "bg-gray-400"
+                            }`}
                         />
                       </div>
 
@@ -691,9 +707,6 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-
-   
-
                   </motion.div>
                 );
               })}
@@ -716,11 +729,19 @@ export default function Home() {
       <section className="py-16 px-4 md:px-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-black tracking-widest uppercase mb-2 text-yellow-300 drop-shadow-sm">
-              Testimonios
-            </p>
+            {/* CAMBIO 2A: Panel glassmorphic para 'Testimonios' */}
+            <div className="inline-block px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-[#0a6880]/20 shadow-md mb-3">
+              <p
+                className="text-xs md:text-sm font-extrabold tracking-widest uppercase"
+                style={{ color: DARK }}
+              >
+                Testimonios
+              </p>
+            </div>
+
+            {/* CAMBIO 2C: 'Lo que dicen nuestros usuarios :' más grande */}
             <h2
-              className="text-3xl md:text-4xl font-black text-white"
+              className="text-4xl md:text-5xl font-black text-white drop-shadow-md"
               style={{ fontFamily: "'Nunito', sans-serif" }}
             >
               Lo que dicen nuestros usuarios :
@@ -738,7 +759,6 @@ export default function Home() {
                 whileHover={{ y: -6 }}
                 className="relative bg-white rounded-2xl p-7 shadow-lg border border-gray-100 flex flex-col justify-between transition-all duration-300"
               >
-                {/* Adorno decorativo de comillas sutiles en la esquina */}
                 <span
                   className="absolute top-4 right-6 text-6xl font-serif select-none pointer-events-none opacity-15"
                   style={{ color: PINK }}
@@ -747,7 +767,6 @@ export default function Home() {
                 </span>
 
                 <div>
-                  {/* Badge de recomendación elegante con color SKY */}
                   <div
                     className="flex items-center gap-1.5 mb-5 text-xs font-black px-3 py-1 rounded-full w-fit shadow-sm"
                     style={{ backgroundColor: `${SKY}15`, color: SKY }}
@@ -756,13 +775,11 @@ export default function Home() {
                     <span>Cliente Satisfecho</span>
                   </div>
 
-                  {/* Texto de opinión */}
                   <p className="text-sm leading-relaxed mb-6 font-semibold italic" style={{ color: "#4b5563" }}>
                     "{t.text}"
                   </p>
                 </div>
 
-                {/* Información del usuario */}
                 <div className="flex items-center gap-3.5 pt-4 border-t border-gray-100">
                   <img
                     src={t.img}
@@ -787,79 +804,65 @@ export default function Home() {
       </section>
 
       {/* ── CTA profesionales ─────────────────────────────── */}
-      <section className="py-16 px-4 md:px-10 text-center">
-        <div className="max-w-3xl mx-auto">
-          {/* 1. Texto "¿Eres profesional?" más grande con brillo/sombra blanca */}
-          <p
-            className="text-base md:text-lg font-black tracking-widest uppercase mb-3"
-            style={{
-              color: PINK,
-              textShadow: "0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.6)"
-            }}
-          >
+      <section className="py-20 px-4 md:px-10 text-center">
+        <div className="max-w-4xl mx-auto">
+          {/* CAMBIO 3A: '¿Eres profesional?' sin nada de brillo */}
+          <p className="inline-block px-5 py-2 rounded-full bg-white/20 backdrop-blur-md text-white font-extrabold text-sm uppercase tracking-widest mb-4 border border-white/40 shadow-md">
             ¿Eres profesional?
           </p>
 
-          {/* 2. Título más grande, manteniendo color DARK y agregando brillo blanco */}
           <h2
-            className="text-4xl md:text-5xl font-black mb-4"
+            className="text-4xl md:text-6xl font-black mb-4 text-white drop-shadow-md"
             style={{
               fontFamily: "'Nunito', sans-serif",
-              color: DARK,
-              textShadow: "0 0 12px rgba(255, 255, 255, 0.9), 0 0 24px rgba(255, 255, 255, 0.7)"
+              textShadow: "0 0 16px rgba(255, 255, 255, 0.8), 0 2px 8px rgba(0,0,0,0.2)"
             }}
           >
             Haz crecer tu negocio con Conecta Hogar
           </h2>
 
-          {/* 3. Texto descriptivo en color DARK con leve brillo blanco */}
+          {/* CAMBIO 3B: Mismo color brillante e iluminación que el título principal */}
           <p
-            className="text-lg mb-8 leading-relaxed font-semibold"
+            className="text-lg md:text-xl font-bold mb-10 max-w-2xl mx-auto text-white drop-shadow-md"
             style={{
-              color: DARK,
-              textShadow: "0 0 8px rgba(255, 255, 255, 0.8)"
+              textShadow: "0 0 16px rgba(255, 255, 255, 0.8), 0 2px 8px rgba(0,0,0,0.2)"
             }}
           >
-            Únete a nuestra plataforma y comienza a recibir solicitudes de trabajo verificadas en tu
-            zona. Sin costo de suscripción mensual.
+            Únete a nuestra red de +1.000 profesionales y comienza a recibir solicitudes de clientes en tu zona hoy mismo.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {/* Botón Registraarme: estilo cápsula (rounded-full) y color PINK */}
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                to="/registro"
-                className="px-8 py-4 rounded-full font-black text-sm text-white inline-block shadow-lg"
-                style={{ backgroundColor: PINK }}
-              >
-                Registrarme gratis
-              </Link>
-            </motion.div>
-
-            {/* Botón Garantía: estilo cápsula (rounded-full) y color SKY */}
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                to="/garantia"
-                className="px-8 py-4 rounded-full font-black text-sm text-white inline-block shadow-lg"
-                style={{ backgroundColor: SKY }}
-              >
-                Ver nuestra garantía
-              </Link>
-            </motion.div>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+            <Link
+              to="/registro-profesional"
+              className="px-8 py-4 rounded-full text-sm md:text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105"
+              style={{ background: PINK, boxShadow: `0 8px 25px ${PINK}60` }}
+            >
+              Registrarme gratis
+            </Link>
+            {/* CAMBIO 3C: Botón 'Ver nuestra garantía' en color CYAN */}
+            <Link
+              to="/garantia"
+              className="px-8 py-4 rounded-full text-sm md:text-base font-bold text-white shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105"
+              style={{ background: SKY, boxShadow: `0 8px 25px ${SKY}60` }}
+            >
+              Ver nuestra garantía
+            </Link>
           </div>
 
-          {/* 6. Beneficios: texto blanco con sombra y checks verdes */}
-          <div className="mt-8 flex flex-wrap justify-center gap-6 text-base font-bold">
-            {["Sin costo de suscripción", "Soporte 24/7"].map((item) => (
-              <div
-                key={item}
-                className="flex items-center gap-2 text-white"
-                style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-              >
-                <CheckCircle2 size={22} className="text-green-500" />
-                {item}
-              </div>
-            ))}
+          {/* CAMBIO 3D: Se eliminó la caja contenedora exterior dejando únicamente los paneles directos */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+            <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-white/95 shadow-md">
+              <CheckCircle2 size={20} className="shrink-0" style={{ color: PINK }} />
+              <span className="text-sm font-extrabold" style={{ color: DARK }}>
+                Sin costo de suscripción
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-white/95 shadow-md">
+              <CheckCircle2 size={20} className="shrink-0" style={{ color: SKY }} />
+              <span className="text-sm font-extrabold" style={{ color: DARK }}>
+                Soporte 24/7
+              </span>
+            </div>
           </div>
         </div>
       </section>

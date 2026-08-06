@@ -17,6 +17,33 @@ const publicNavLinks = [
   { href: "/garantia", label: "Garantía" },
 ];
 
+// Helper para extraer el nombre real de cualquier estructura de objeto de sesión
+function obtenerNombreSesion(session: any): string {
+  if (!session) return "USUARIO";
+
+  const posibleNombre =
+    session.nombre ||
+    session.name ||
+    session.username ||
+    session.usuario ||
+    session.user?.nombre ||
+    session.user?.name ||
+    session.user?.username ||
+    session.datos?.nombre;
+
+  if (posibleNombre && typeof posibleNombre === "string" && posibleNombre.trim() !== "") {
+    return posibleNombre.trim();
+  }
+
+  // Si no hay campo de nombre explícito, usar la primera parte del correo
+  const correo = session.correo || session.email || session.user?.correo || session.user?.email;
+  if (correo && typeof correo === "string" && correo.includes("@")) {
+    return correo.split("@")[0];
+  }
+
+  return "USUARIO";
+}
+
 export function Root() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname, state } = useLocation();
@@ -53,6 +80,7 @@ export function Root() {
   };
 
   const isProfesional =
+    session?.rol === "MAESTRO" ||
     session?.role?.toLowerCase().includes("profesional") ||
     session?.role?.toLowerCase().includes("maestro") ||
     session?.tipo?.toLowerCase().includes("profesional") ||
@@ -60,17 +88,11 @@ export function Root() {
     session?.user?.tipo?.toLowerCase().includes("profesional");
 
   const isAdmin =
+    session?.rol === "ADMIN" ||
     session?.role?.toLowerCase().includes("admin") ||
     session?.role?.toLowerCase().includes("administrador");
 
-  const nombreUsuario =
-    session?.nombre ||
-    session?.name ||
-    session?.user?.nombre ||
-    (session?.email ? session.email.split("@")[0] : null) ||
-    (session?.correo ? session.correo.split("@")[0] : null) ||
-    "USUARIO";
-
+  const nombreUsuario = obtenerNombreSesion(session);
   const rutaPerfil = isProfesional ? "/perfil-profesional" : "/perfil-cliente";
 
   return (
@@ -83,7 +105,7 @@ export function Root() {
       <div className="relative z-10 flex-1 flex flex-col w-full">
         <ScrollRestoration />
 
-        {/* POPUP FLOTANTE DE BIENVENIDA (4 SEGUNDOS) */}
+        {/* POPUP FLOTANTE DE BIENVENIDA */}
         <AnimatePresence>
           {showWelcome && session && (
             <motion.div
@@ -119,7 +141,7 @@ export function Root() {
         {/* Navbar Superior */}
         <div className="sticky top-5 z-50 px-4 md:px-12 max-w-7xl mx-auto w-full">
           <nav className="flex items-center justify-between pl-4 md:pl-6 pr-2 py-2 rounded-full border border-white/40 bg-[#fffbf7] shadow-lg">
-            
+
             <div className="flex items-center justify-start gap-4">
               <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center justify-start text-left">
                 <InteractiveLogo className="h-9 md:h-10 w-auto" />

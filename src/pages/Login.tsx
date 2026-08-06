@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { loginRequest, saveSession } from "@/data/Api";
 
 const PINK = "#e83360";
+const BLACK = "#1f2937";
+const CYAN = "#55bcd9";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -62,31 +64,17 @@ export default function Login() {
     <div className="w-full py-12 px-4 flex justify-center items-center min-h-[70vh]">
       <div className="max-w-md w-full mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-4"
         >
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors mb-6 font-normal cursor-pointer"
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors font-normal cursor-pointer"
           >
             <ArrowLeft size={20} />
             Volver al inicio
           </button>
-
-          <h1
-            className="text-4xl font-black text-white mb-2 tracking-tight font-poppins"
-            style={{ textShadow: "0 2px 8px rgba(7, 7, 7, 0.9)" }}
-          >
-            Bienvenido de nuevo
-          </h1>
-
-          <p
-            className="text-white text-lg font-normal opacity-90 font-poppins"
-            style={{ textShadow: "0 1px 4px rgba(13, 13, 14, 0.7)" }}
-          >
-            Ingresa tus datos para continuar
-          </p>
         </motion.div>
 
         <motion.form
@@ -94,8 +82,24 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           onSubmit={handleSubmit}
-          className="bg-white rounded-2xl shadow-2xl p-8 space-y-6"
+          className="bg-white rounded-3xl shadow-2xl p-8 space-y-6"
         >
+          {/* Encabezado dentro de la tarjeta en color celeste */}
+          <div className="space-y-1 text-left">
+            <h1
+              className="text-3xl font-black tracking-tight font-poppins"
+              style={{ color: PINK }}
+            >
+              Bienvenido de nuevo
+            </h1>
+            <p
+              className="text-sm font-normal font-poppins"
+              style={{ color: BLACK }}
+            >
+              Ingresa tus datos para continuar
+            </p>
+          </div>
+
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm font-normal">
               <AlertCircle size={18} className="shrink-0" />
@@ -114,7 +118,7 @@ export default function Login() {
               placeholder="Ej: juan.perez@ejemplo.cl"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal"
+              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal rounded-xl"
               autoComplete="email"
             />
           </div>
@@ -130,16 +134,16 @@ export default function Login() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal"
+              className="border-2 border-gray-200 focus:border-[#55bcd9] transition-colors font-normal rounded-xl"
               autoComplete="current-password"
             />
           </div>
 
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-2">
+          <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }} className="pt-2">
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-6 text-lg font-black text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow disabled:opacity-60 cursor-pointer"
+              className="w-full py-6 text-lg font-black text-white rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-60 cursor-pointer"
               style={{ background: `linear-gradient(135deg, ${PINK} 0%, #d42850 100%)` }}
             >
               {loading ? (

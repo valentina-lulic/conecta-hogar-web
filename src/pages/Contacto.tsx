@@ -102,7 +102,7 @@ export function Contacto() {
             </p>
           </motion.div>
 
-          {/* Tarjetas de contacto (Intactas dentro de la estructura visual del Hero) */}
+          {/* Tarjetas de contacto */}
           <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
             {contactInfo.map(({ icon: Icon, label, value }, i) => (
               <motion.div
@@ -135,8 +135,8 @@ export function Contacto() {
         </div>
       </section>
 
-      {/* ── 2. SECCIÓN DEL FORMULARIO ── */}
-      <section className="relative z-20 px-4 md:px-10 -mt-10 md:-mt-12">
+      {/* ── 2. SECCIÓN DEL FORMULARIO (Se agregaron clases pb-20 md:pb-28) ── */}
+      <section className="relative z-20 px-4 md:px-10 -mt-10 md:-mt-12 pb-20 md:pb-28">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
 
           {/* Caja Formulario Principal */}
